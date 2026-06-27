@@ -216,7 +216,7 @@ export const DashboardLayout = () => {
       >
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 shrink-0">
           {isSidebarOpen && (
-            <span className="font-bold text-lg text-primary tracking-tight truncate">Enterprise ERP</span>
+            <span className="font-bold text-lg text-primary tracking-tight truncate">🌾 Rice Mill Pro</span>
           )}
           <Button 
             variant="ghost"
