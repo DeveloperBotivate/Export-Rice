@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardLayout } from './layouts/DashboardLayout';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 import { DashboardPage } from './modules/dashboard/DashboardPage';
 import { LoginPage } from './modules/auth/LoginPage';
@@ -105,7 +106,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<DashboardLayout />}>
+        <Route path="/" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<DashboardPage />} />
           
           <Route path="procurement-planning" element={<ProcurementPlanning />} />

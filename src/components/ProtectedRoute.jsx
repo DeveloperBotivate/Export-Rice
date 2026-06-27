@@ -1,14 +1,14 @@
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
-  const { user } = useAuthStore();
+export const ProtectedRoute = ({ children }) => {
+  const location = useLocation();
+  const isAuthenticated = !!localStorage.getItem('rm_user');
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <>{children}</>;
+  return children;
 };
-
-export default ProtectedRoute;
