@@ -79,7 +79,6 @@ export const DashboardLayout = () => {
         { path: '/advance-payment', label: 'Advance Payment', icon: Calculator },
         { path: '/lift', label: 'Lift', icon: Map },
         { path: '/lab-report', label: 'Lab Report', icon: TestTube },
-        { path: '/full-kitting', label: 'Full Kitting', icon: Package },
         { path: '/purchase-closure', label: 'Purchase Closure', icon: Database },
       ]
     },

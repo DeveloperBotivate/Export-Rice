@@ -96,7 +96,6 @@ import { POEntry } from './modules/purchase/POEntry';
 import { AdvancePayment } from './modules/purchase/AdvancePayment';
 import { Lift } from './modules/purchase/Lift';
 import { LabReport } from './modules/purchase/LabReport';
-import { FullKitting } from './modules/purchase/FullKitting';
 import { PurchaseClosure } from './modules/purchase/PurchaseClosure';
 
 function App() {
@@ -161,7 +160,6 @@ function App() {
           <Route path="advance-payment" element={<AdvancePayment />} />
           <Route path="lift" element={<Lift />} />
           <Route path="lab-report" element={<LabReport />} />
-          <Route path="full-kitting" element={<FullKitting />} />
           <Route path="purchase-closure" element={<PurchaseClosure />} />
           <Route path="order-receive" element={<OrderReceive />} />
           <Route path="sent-quotation" element={<SentQuotation />} />

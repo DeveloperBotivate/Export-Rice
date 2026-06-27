@@ -47,6 +47,7 @@ const rmData = Array.from({ length: 20 }, (_, i) => {
     moisture: parseFloat((Math.random() * 5 + 10).toFixed(1)),
     fefoDate: new Date(Date.now() + (Math.random() * 90 - 10) * 86400000).toISOString().split('T')[0], // Some in past/soon
     purchaseRef: `IND-00${i+1}`,
+    fullKitting: `FK-${(i + 1).toString().padStart(3, '0')}`,
     createdBy: 'System',
     createdAt: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`
   };
@@ -198,7 +199,8 @@ export const InventoryLedger = () => {
         return <span className={isExpiringSoon ? 'text-red-600 font-medium' : ''}>{row.fefoDate}</span>;
       }
     },
-    { header: "Purchase Ref", accessor: "purchaseRef" }
+    { header: "Purchase Ref", accessor: "purchaseRef" },
+    { header: "Full Kitting ID", accessor: "fullKitting" }
   ];
 
   // Columns for FG

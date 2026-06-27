@@ -341,65 +341,7 @@ const stages = [
       { label: 'Approved for Purchase', name: 'approved', type: 'select', options: ['Yes', 'No'] }
     ]
   },
-  {
-    file: 'FullKitting.jsx', name: 'FullKitting', title: 'Stage 9 - Full Kitting', action: 'Process Kitting', modalTitle: 'Full Kitting Details',
-    pendingCols: [
-      { header: 'Lab Report ID', accessor: 'labReportId' },
-      { header: 'Lift ID', accessor: 'liftId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Vehicle Number', accessor: 'vehicleNumber' },
-      { header: 'Net Weight Lifted Kg', accessor: 'netWeight' },
-      { header: 'Paddy Grade Result', accessor: 'gradeResult' },
-      { header: 'Lab Result', accessor: 'labResult' },
-      { header: 'Approved', accessor: 'approved', cell: true }
-    ],
-    historyCols: [
-      { header: 'Full Kitting ID', accessor: 'kittingId' },
-      { header: 'Challan No', accessor: 'challanNo' },
-      { header: 'Lab Report ID', accessor: 'labReportId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Kitting Date', accessor: 'kittingDate' },
-      { header: 'Farmer / Agency Name', accessor: 'agencyVendorName' },
-      { header: 'No. of Bags', accessor: 'noOfBags' },
-      { header: 'Net Weight Kg', accessor: 'netWeight' },
-      { header: 'Rate ₹/Qt', accessor: 'rate' },
-      { header: 'Total Amount ₹', accessor: 'totalAmount' },
-      { header: 'Advance Paid ₹', accessor: 'advancePaid' },
-      { header: 'Balance Paid ₹', accessor: 'balancePaid' },
-      { header: 'Net Payable ₹', accessor: 'netPayable' },
-      { header: 'Paid By', accessor: 'paidBy' }
-    ],
-    fields: [
-      { label: 'Lab Report ID', name: 'labReportId', type: 'text', readOnly: true },
-      { label: 'Lift ID', name: 'liftId', type: 'text', readOnly: true },
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Full Kitting ID', name: 'kittingId', type: 'text', readOnly: true },
-      { label: 'Kitting Date', name: 'kittingDate', type: 'date' },
-      { label: 'Challan Number', name: 'challanNo', type: 'text', readOnly: true },
-      { label: 'Challan Date', name: 'challanDate', type: 'date' },
-      { label: 'Farmer / Agency Name', name: 'agencyVendorName', type: 'text', readOnly: true },
-      { label: 'Farmer ID / Aadhaar', name: 'farmerId', type: 'text' },
-      { label: 'Village / Tehsil', name: 'village', type: 'text' },
-      { label: 'No. of Bags', name: 'noOfBags', type: 'number', readOnly: true },
-      { label: 'Gross Weight Kg', name: 'grossWeight', type: 'number', readOnly: true },
-      { label: 'Tare Weight Kg', name: 'tareWeight', type: 'number', readOnly: true },
-      { label: 'Net Weight Kg', name: 'netWeight', type: 'number', readOnly: true },
-      { label: 'Rate ₹/Qt', name: 'rate', type: 'number', readOnly: true },
-      { label: 'Total Amount ₹', name: 'totalAmount', type: 'number', readOnly: true },
-      { label: 'Mandi Cess %', name: 'cess', type: 'number' },
-      { label: 'Commission Amount ₹', name: 'commission', type: 'number' },
-      { label: 'Net Payable ₹', name: 'netPayable', type: 'number', readOnly: true },
-      { label: 'Advance Already Paid ₹', name: 'advancePaid', type: 'number', readOnly: true },
-      { label: 'Balance Payable ₹', name: 'balancePayable', type: 'number', readOnly: true },
-      { label: 'Balance Payment Mode', name: 'paymentMode', type: 'select', options: ['NEFT', 'RTGS', 'Cheque', 'Cash'] },
-      { label: 'Balance UTR / Cheque No', name: 'utrNo', type: 'text' },
-      { label: 'Paid By', name: 'paidBy', type: 'text' },
-      { label: 'Kitting Remarks', name: 'remarks', type: 'text' }
-    ]
-  },
+
   {
     file: 'PurchaseClosure.jsx', name: 'PurchaseClosure', title: 'Stage 10 - Purchase Closure → Inventory', action: 'Close & Update', modalTitle: 'Purchase Closure Details',
     pendingCols: [
