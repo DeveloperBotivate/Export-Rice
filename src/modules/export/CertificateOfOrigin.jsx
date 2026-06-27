@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play } from 'lucide-react';
+import { Search, Play, Plus } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -10,127 +10,117 @@ import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => {
-    const qty = Math.floor(Math.random() * 50) + 10;
-    const price = Math.floor(Math.random() * 500) + 400; // USD price
-    
     return {
       id: i + 1,
-      contractNo: `EC-2026-${(i + 1).toString().padStart(4, '0')}`,
+      contractNo: `EC-00${(i + 1).toString().padStart(2, '0')}`,
       contractDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      buyerName: `Global Buyer ${i+1}`,
-      buyerCountry: ['UAE', 'UK', 'USA', 'Saudi Arabia', 'Singapore'][Math.floor(Math.random() * 5)],
-      buyerAddress: 'International Ave 101',
-      buyerContactPerson: 'Mr. Smith',
-      buyerEmail: `contact@global${i+1}.com`,
-      buyerPhone: `+1 555 010${i}`,
+      buyerName: `Buyer ${i+1}`,
+      buyerCountry: ['USA', 'UK', 'UAE', 'Singapore'][Math.floor(Math.random() * 4)],
+      riceGrade: ['Basmati', 'Non-Basmati'][Math.floor(Math.random() * 2)],
+      quantity: Math.floor(Math.random() * 50) + 10,
       incoterms: ['FOB', 'CIF', 'CNF', 'EXW'][Math.floor(Math.random() * 4)],
-      riceGrade: ['Premium Basmati', '1121 Sella', 'IR64'][Math.floor(Math.random() * 3)],
-      quantity: qty,
-      price: price,
-      totalContractValue: qty * price,
-      portOfLoading: 'Mundra Port',
+      portOfLoading: 'Mundra',
       portOfDestination: 'Jebel Ali',
       shipmentDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      paymentTerms: ['LC', 'TT', 'DA', 'CAD'][Math.floor(Math.random() * 4)],
-      createdBy: 'Export Manager',
-
-      packingListNo: `PL-${(i + 1).toString().padStart(4, '0')}`,
+      paymentTerms: 'LC',
+      
+      packingListNo: `PL-00${(i + 1).toString().padStart(2, '0')}`,
       plDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      noOfBags: qty * 40,
-      totalNetWeight: qty,
-      totalGrossWeight: qty + 0.5,
-      lotNumbers: `LT-${i+1}`,
-      batchNumbers: `BT-${i+1}`,
-      preparedBy: 'Warehouse Exec',
-
-      bookingRefNo: `CB-${(i + 1).toString().padStart(4, '0')}`,
+      noOfBags: 1000,
+      netWeight: 25,
+      grossWeight: 25.5,
+      lotNumbers: 'LOT123',
+      batchNumbers: 'B123',
+      preparedBy: 'Packing Team',
+      
+      bookingRefNo: `CB-00${(i + 1).toString().padStart(2, '0')}`,
       shippingLine: 'Maersk',
-      containerType: '40ft',
-      noOfContainers: Math.ceil(qty / 25),
+      containerType: '20ft',
+      noOfContainers: 2,
       etd: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      eta: `2026-08-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      totalFreight: 1500,
+      eta: `2026-07-${(i % 28 + 15).toString().padStart(2, '0')}`,
+      totalFreight: 2000,
       doReceived: 'Y',
       bookingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      bookedBy: 'Logistics Head',
-
-      loadingId: `CL-${(i + 1).toString().padStart(4, '0')}`,
-      containerNumber: `MSKU${(i+1).toString().padStart(6, '0')}`,
-      sealNumber: `SL${(i+1).toString().padStart(5, '0')}`,
-      tareWeight: 3.5,
-      netWeightLoaded: qty,
-      bagsLoaded: qty * 40,
-      loadingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T10:00`,
-      surveyorName: 'Surveyor Co',
-      cfsName: 'CFS Mundra',
+      bookedBy: 'Logistics',
+      
+      loadingId: `CL-00${(i + 1).toString().padStart(2, '0')}`,
+      containerNumber: 'MSKU1234567',
+      sealNumber: 'SEAL123',
+      tareWeight: 2.2,
+      netWeightLoaded: 25,
+      bagsLoaded: 1000,
+      loadingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      loadingSurveyor: 'SGS',
+      cfsName: 'Mundra CFS',
       fumigationDone: 'Y',
-
-      vesselName: 'MSC Anna',
-      imoNo: '9845312',
-      voyageNo: 'V-045W',
-      portAgent: 'Ocean Agents Ltd',
+      
+      shippingLineName: 'Maersk',
+      vesselName: 'Maersk Sealand',
+      imoNumber: '9123456',
+      voyageNumber: 'V001',
+      portAgentName: 'Agent X',
       vgmSubmitted: 'Y',
       siSubmitted: 'Y',
       siDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
       confirmedDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      shippingBillNo: `SB-${(i + 1).toString().padStart(4, '0')}`,
+      
+      shippingBillNo: `SB-00${(i + 1).toString().padStart(2, '0')}`,
       shippingBillDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      customsHouse: 'INMUN1',
-      iecCode: '0384758392',
-      fobValue: qty * price,
+      customsHouse: 'Mundra Port',
+      iecCode: 'IEC123456',
+      fobValue: 50000,
       drawbackClaim: 'Y',
-      drawbackAmount: 5000,
-      rodtepAmount: 2000,
+      drawbackAmount: 10000,
+      rodtepAmount: 5000,
       leoDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      chaName: 'CHA Services',
+      chaName: 'CHA Partners',
       filedDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      blNumber: `BL-${(i + 1).toString().padStart(4, '0')}`,
+      
+      blNumber: `BL-00${(i + 1).toString().padStart(2, '0')}`,
       blDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
       blType: 'Original',
-      shipperName: 'Rice Mill Ltd',
-      consigneeName: `Global Buyer ${i+1}`,
-      notifyParty1: 'Same as Consignee',
-      noOfPackages: qty * 40,
+      shipper: 'Rice Mill Export',
+      consignee: `Buyer ${i+1}`,
+      notifyParty: 'Bank XYZ',
+      portOfDischarge: 'Jebel Ali',
+      noOfPackages: 1000,
       freightTerms: 'Prepaid',
       originalBlCopies: 3,
-
-      cooNo: `COO-${(i + 1).toString().padStart(4, '0')}`,
+      
+      cooNumber: `COO-00${(i + 1).toString().padStart(2, '0')}`,
       issuingAuthority: 'APEDA',
       certificateType: 'Non-Preferential',
       countryOfOrigin: 'India',
       issueDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
       validityDate: `2026-12-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      issuedBy: 'Auth Officer',
-
-      exportInvoiceNo: `EI-${(i + 1).toString().padStart(4, '0')}`,
+      issuedBy: 'Authority Off',
+      
+      exportInvoiceNo: `EI-00${(i + 1).toString().padStart(2, '0')}`,
       invoiceDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      invoiceAmount: qty * price,
-      inrEquivalent: qty * price * 83.5,
-      insurancePolicyNo: `POL-${(i+1).toString().padStart(5, '0')}`,
-      sumInsured: qty * price * 1.1,
+      invoiceAmount: 50000,
+      inrEquivalent: 4100000,
+      insurancePolicyNo: 'POL123456',
+      sumInsured: 55000,
       portCharges: 15000,
-      customClearance: 5000,
-      bankRefNo: `BRN-${(i+1).toString().padStart(5, '0')}`,
-      swiftCode: 'SBININBB',
-      lcNo: `LC-${(i+1).toString().padStart(5, '0')}`,
-      docSubmissionDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      submittedBy: 'Finance Head',
-
-      outstandingInitial: qty * price,
-
-      paymentId: `EP-${(i + 1).toString().padStart(4, '0')}`,
+      customClearance: 10000,
+      bankRefNo: 'BRN123',
+      swiftCode: 'SWIFT123',
+      lcNo: 'LC123456',
+      docSubmissionDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      submittedBy: 'Finance Dept',
+      
+      paymentId: `EP-00${(i + 1).toString().padStart(2, '0')}`,
       receiptDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      amountReceived: qty * price,
-      forexRate: 83.5,
-      fircNo: `FIRC-${(i+1).toString().padStart(5, '0')}`,
+      amountReceived: 50000,
+      forexRate: 82.5,
+      fircNo: 'FIRC123',
       fircDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
       outstanding: 0,
-      paymentMode: 'TT',
+      paymentMode: 'LC',
       paymentStatus: 'Full',
-      receivedBy: 'Finance Head',
-
+      receivedBy: 'Finance',
+      
       status: 'Completed'
     };
   });
@@ -161,16 +151,16 @@ export const CertificateOfOrigin = () => {
     setSelectedItem(item);
     
     let autoFields = {};
+    if ('CertificateOfOrigin' === 'PackingList') autoFields = { packingListNo: 'PL-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'ContainerBooking') autoFields = { bookingRefNo: 'CB-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'ContainerLoading') autoFields = { loadingId: 'CL-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'ShippingBill') autoFields = { shippingBillNo: 'SB-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'BillOfLading') autoFields = { blNumber: 'BL-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'CertificateOfOrigin') autoFields = { cooNumber: 'COO-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'InsuranceAndInvoice') autoFields = { exportInvoiceNo: 'EI-00' + Math.floor(Math.random()*100) };
+    if ('CertificateOfOrigin' === 'ExportPayment') autoFields = { paymentId: 'EP-00' + Math.floor(Math.random()*100) };
     
-    
-    
-    
-    
-    autoFields = { cooNo: 'COO-' + Math.floor(Math.random()*10000) };
-    
-    
-    
-    const readOnlyFields = ["blNumber","contractNo","cooNo","buyerCountry","buyerName"];
+    const readOnlyFields = ["blNumber","contractNo","cooNumber","buyerCountry","buyerName"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -179,15 +169,6 @@ export const CertificateOfOrigin = () => {
     setFormData({ ...initialFormData, ...autoFields });
     setIsModalOpen(true);
   };
-
-  useEffect(() => {
-    if (isModalOpen && formData) {
-      
-      
-      
-      
-    }
-  }, [formData, isModalOpen, selectedItem]);
 
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
@@ -204,14 +185,14 @@ export const CertificateOfOrigin = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Generate COO
+          Create COO
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"BL Number","accessor":"blNumber"},{"header":"Shipping Bill No","accessor":"shippingBillNo"},{"header":"Contract No","accessor":"contractNo"},{"header":"Buyer Name","accessor":"buyerName"},{"header":"Buyer Country","accessor":"buyerCountry"},{"header":"Vessel Name","accessor":"vesselName"},{"header":"BL Date","accessor":"blDate"},{"header":"No. of Packages","accessor":"noOfPackages"},{"header":"Gross Weight (MT)","accessor":"totalGrossWeight"}];
-  const historyCols = [{"header":"COO No","accessor":"cooNo"},{"header":"BL Number","accessor":"blNumber"},{"header":"Contract No","accessor":"contractNo"},{"header":"Issuing Authority","accessor":"issuingAuthority"},{"header":"Certificate Type","accessor":"certificateType"},{"header":"Country of Origin","accessor":"countryOfOrigin"},{"header":"Buyer Country","accessor":"buyerCountry"},{"header":"Quantity (MT)","accessor":"quantity"},{"header":"FOB Value ($)","accessor":"fobValue"},{"header":"Issue Date","accessor":"issueDate"},{"header":"Validity Date","accessor":"validityDate"},{"header":"Issued By","accessor":"issuedBy"}];
+  const pendingCols = [{"header":"BL Number","accessor":"blNumber"},{"header":"Shipping Bill No","accessor":"shippingBillNo"},{"header":"Contract No","accessor":"contractNo"},{"header":"Buyer Name","accessor":"buyerName"},{"header":"Buyer Country","accessor":"buyerCountry"},{"header":"Vessel Name","accessor":"vesselName"},{"header":"BL Date","accessor":"blDate"},{"header":"No. of Packages","accessor":"noOfPackages"},{"header":"Gross Weight (MT)","accessor":"grossWeight"}];
+  const historyCols = [{"header":"COO No","accessor":"cooNumber"},{"header":"BL Number","accessor":"blNumber"},{"header":"Contract No","accessor":"contractNo"},{"header":"Issuing Authority","accessor":"issuingAuthority"},{"header":"Certificate Type","accessor":"certificateType"},{"header":"Country of Origin","accessor":"countryOfOrigin"},{"header":"Buyer Country","accessor":"buyerCountry"},{"header":"Quantity (MT)","accessor":"quantity"},{"header":"FOB Value ($)","accessor":"fobValue"},{"header":"Issue Date","accessor":"issueDate"},{"header":"Validity Date","accessor":"validityDate"},{"header":"Issued By","accessor":"issuedBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
@@ -281,8 +262,8 @@ export const CertificateOfOrigin = () => {
               <Label>COO Number</Label>
               <Input 
                 type="text"
-                value={formData.cooNo || ''} 
-                onChange={(e) => setFormData({...formData, cooNo: e.target.value})}
+                value={formData.cooNumber || ''} 
+                onChange={(e) => setFormData({...formData, cooNumber: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -355,8 +336,8 @@ export const CertificateOfOrigin = () => {
               <Label>HSN Code</Label>
               <Input 
                 type="text"
-                value={formData.hsCode || ''} 
-                onChange={(e) => setFormData({...formData, hsCode: e.target.value})}
+                value={formData.hsnCode || ''} 
+                onChange={(e) => setFormData({...formData, hsnCode: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
@@ -392,7 +373,7 @@ export const CertificateOfOrigin = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Issued By</Label>
+              <Label>Issued By (Name & Designation)</Label>
               <Input 
                 type="text"
                 value={formData.issuedBy || ''} 
@@ -425,8 +406,8 @@ export const CertificateOfOrigin = () => {
               <Label>Stamp/Seal Reference</Label>
               <Input 
                 type="text"
-                value={formData.stampSealRef || ''} 
-                onChange={(e) => setFormData({...formData, stampSealRef: e.target.value})}
+                value={formData.stampSealReference || ''} 
+                onChange={(e) => setFormData({...formData, stampSealReference: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

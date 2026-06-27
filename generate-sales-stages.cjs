@@ -13,6 +13,7 @@ const stages = [
     ],
     historyCols: [
       { header: 'Quotation No', accessor: 'quotationNo' }, { header: 'Order ID', accessor: 'orderId' },
+      { header: 'Order Type', accessor: 'orderType' },
       { header: 'Quotation Date', accessor: 'quotationDate' }, { header: 'Customer Name', accessor: 'customerName' },
       { header: 'Rice Grade', accessor: 'riceGradeRequired' }, { header: 'Quantity (MT)', accessor: 'quotedQty' },
       { header: 'Quoted Price (₹ or $/MT)', accessor: 'quotedPrice' }, { header: 'Total Value', accessor: 'totalValue' },
@@ -20,6 +21,7 @@ const stages = [
     ],
     fields: [
       { label: 'Order ID', name: 'orderId', type: 'text', readOnly: true },
+      { label: 'Order Type', name: 'orderType', type: 'text', readOnly: true },
       { label: 'Quotation No', name: 'quotationNo', type: 'text', readOnly: true },
       { label: 'Quotation Date', name: 'quotationDate', type: 'date' },
       { label: 'Customer Name', name: 'customerName', type: 'text', readOnly: true },
@@ -38,13 +40,14 @@ const stages = [
     file: 'OrderFollowUp.jsx', name: 'OrderFollowUp', title: 'Stage 3 - Order Follow-up', action: 'Follow Up', modalTitle: 'Follow-up Details',
     pendingCols: [
       { header: 'Quotation No', accessor: 'quotationNo' }, { header: 'Order ID', accessor: 'orderId' },
+      { header: 'Order Type', accessor: 'orderType' },
       { header: 'Customer Name', accessor: 'customerName' }, { header: 'Rice Grade', accessor: 'riceGradeRequired' },
       { header: 'Quantity (MT)', accessor: 'quotedQty' }, { header: 'Quoted Price', accessor: 'quotedPrice' },
       { header: 'Total Value', accessor: 'totalValue' }, { header: 'Valid Till', accessor: 'validTill' }
     ],
     historyCols: [
       { header: 'Follow-up ID', accessor: 'followUpId' }, { header: 'Quotation No', accessor: 'quotationNo' },
-      { header: 'Order ID', accessor: 'orderId' }, { header: 'Customer Name', accessor: 'customerName' },
+      { header: 'Order ID', accessor: 'orderId' }, { header: 'Order Type', accessor: 'orderType' }, { header: 'Customer Name', accessor: 'customerName' },
       { header: 'Follow-up Date', accessor: 'followUpDate' }, { header: 'Customer Decision', accessor: 'customerDecision' },
       { header: 'Counter Offer', accessor: 'counterOffer' }, { header: 'Next Follow-up Date', accessor: 'nextFollowUpDate' },
       { header: 'Handled By', accessor: 'handledBy' }
@@ -52,6 +55,7 @@ const stages = [
     fields: [
       { label: 'Quotation No', name: 'quotationNo', type: 'text', readOnly: true },
       { label: 'Order ID', name: 'orderId', type: 'text', readOnly: true },
+      { label: 'Order Type', name: 'orderType', type: 'text', readOnly: true },
       { label: 'Follow-up ID', name: 'followUpId', type: 'text', readOnly: true },
       { label: 'Follow-up Date', name: 'followUpDate', type: 'date' },
       { label: 'Customer Feedback', name: 'customerFeedback', type: 'text' },
@@ -66,12 +70,14 @@ const stages = [
     file: 'OrderApproval.jsx', name: 'OrderApproval', title: 'Stage 4 - Order Approval', action: 'Approve Order', modalTitle: 'Order Approval Details',
     pendingCols: [
       { header: 'Follow-up ID', accessor: 'followUpId' }, { header: 'Order ID', accessor: 'orderId' },
+      { header: 'Order Type', accessor: 'orderType' },
       { header: 'Quotation No', accessor: 'quotationNo' }, { header: 'Customer Name', accessor: 'customerName' },
       { header: 'Rice Grade', accessor: 'riceGradeRequired' }, { header: 'Customer Decision', accessor: 'customerDecision' },
       { header: 'Counter Offer', accessor: 'counterOffer' }, { header: 'Next Follow-up Date', accessor: 'nextFollowUpDate' }
     ],
     historyCols: [
       { header: 'Order Approval ID', accessor: 'orderApprovalId' }, { header: 'Order ID', accessor: 'orderId' },
+      { header: 'Order Type', accessor: 'orderType' },
       { header: 'Quotation No', accessor: 'quotationNo' }, { header: 'Customer Name', accessor: 'customerName' },
       { header: 'Approved Price (₹/MT)', accessor: 'approvedPrice' }, { header: 'Approved Qty (MT)', accessor: 'approvedQty' },
       { header: 'Special Discount %', accessor: 'specialDiscount' }, { header: 'Payment Advance (₹)', accessor: 'paymentAdvance' },
@@ -80,6 +86,7 @@ const stages = [
     ],
     fields: [
       { label: 'Order ID', name: 'orderId', type: 'text', readOnly: true },
+      { label: 'Order Type', name: 'orderType', type: 'text', readOnly: true },
       { label: 'Quotation No', name: 'quotationNo', type: 'text', readOnly: true },
       { label: 'Follow-up ID', name: 'followUpId', type: 'text', readOnly: true },
       { label: 'Order Approval ID', name: 'orderApprovalId', type: 'text', readOnly: true },
@@ -97,12 +104,14 @@ const stages = [
     file: 'OrderCompletion.jsx', name: 'OrderCompletion', title: 'Stage 5 - Order Completion', action: 'Complete Order', modalTitle: 'Completion Details',
     pendingCols: [
       { header: 'Order Approval ID', accessor: 'orderApprovalId' }, { header: 'Order ID', accessor: 'orderId' },
+      { header: 'Order Type', accessor: 'orderType' },
       { header: 'Customer Name', accessor: 'customerName' }, { header: 'Rice Grade', accessor: 'riceGradeRequired' },
       { header: 'Approved Qty (MT)', accessor: 'approvedQty' }, { header: 'Approved Price (₹/MT)', accessor: 'approvedPrice' },
       { header: 'Approval Date', accessor: 'approvalDate' }
     ],
     historyCols: [
       { header: 'Order Completion ID', accessor: 'orderCompletionId' }, { header: 'Order ID', accessor: 'orderId' },
+      { header: 'Order Type', accessor: 'orderType' },
       { header: 'Customer Name', accessor: 'customerName' }, { header: 'Rice Grade', accessor: 'riceGradeRequired' },
       { header: 'Total Qty Supplied (MT)', accessor: 'totalQtySupplied' }, { header: 'Invoice Ref', accessor: 'invoiceRef' },
       { header: 'Dispatch Ref', accessor: 'dispatchRef' }, { header: 'Total Value (₹)', accessor: 'totalValueSupplied' },
@@ -112,6 +121,7 @@ const stages = [
     ],
     fields: [
       { label: 'Order ID', name: 'orderId', type: 'text', readOnly: true },
+      { label: 'Order Type', name: 'orderType', type: 'text', readOnly: true },
       { label: 'Order Approval ID', name: 'orderApprovalId', type: 'text', readOnly: true },
       { label: 'Order Completion ID', name: 'orderCompletionId', type: 'text', readOnly: true },
       { label: 'Completion Date', name: 'completionDate', type: 'date' },
@@ -546,13 +556,19 @@ export const OrderReceive = () => {
 };
 `;
 
+// Ensure directory exists
+const targetDir = path.join(__dirname, 'src', 'modules', 'sales');
+if (!fs.existsSync(targetDir)) {
+  fs.mkdirSync(targetDir, { recursive: true });
+}
+
 // Write Stage 1
-fs.writeFileSync(path.join('c:/Users/devel/Downloads/Rice Mill/src/modules/sales', 'OrderReceive.jsx'), stage1Template());
+fs.writeFileSync(path.join(targetDir, 'OrderReceive.jsx'), stage1Template());
 console.log('Created OrderReceive.jsx');
 
 // Write Stages 2-5
 stages.forEach(stage => {
-  const filePath = path.join('c:/Users/devel/Downloads/Rice Mill/src/modules/sales', stage.file);
+  const filePath = path.join(targetDir, stage.file);
   fs.writeFileSync(filePath, template(stage));
   console.log('Created ' + stage.file);
 });

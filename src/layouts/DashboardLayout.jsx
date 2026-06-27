@@ -55,14 +55,6 @@ export const DashboardLayout = () => {
 
   const navGroups = [
     {
-      title: "Core System",
-      links: [
-        { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-        { path: '/master', label: 'Master Management', icon: Database },
-        { path: '/targets', label: 'Target Management', icon: Target },
-      ]
-    },
-    {
       title: "Procurement",
       links: [
         { path: '/procurement-planning', label: 'Procurement Planning', icon: LineChart },
@@ -79,14 +71,15 @@ export const DashboardLayout = () => {
     {
       title: "Purchase Execution",
       links: [
-        { path: '/purchase-request', label: 'Purchase Request', icon: ShoppingCart },
-        { path: '/purchase-order', label: 'Purchase Order', icon: Target },
-        { path: '/agent-assignment', label: 'Agent Assignment', icon: User },
-        { path: '/vehicle-assignment', label: 'Vehicle Assignment', icon: Truck },
-        { path: '/mandi-selection-purchase', label: 'Mandi Selection', icon: Map },
-        { path: '/purchase-challan', label: 'Purchase Challan', icon: FileText },
-        { path: '/gate-entry-purchase', label: 'Gate Entry', icon: ShieldCheck },
-        { path: '/gross-weight', label: 'Gross Weight', icon: Scale },
+        { path: '/purchase-indent', label: 'Purchase Indent', icon: ShoppingCart },
+        { path: '/purchase-approval', label: 'Purchase Approval', icon: ShieldCheck },
+        { path: '/create-po', label: 'Create PO', icon: FileText },
+        { path: '/arrange-logistics-purchase', label: 'Arrange Logistics', icon: Truck },
+        { path: '/po-entry', label: 'PO Entry', icon: Target },
+        { path: '/advance-payment', label: 'Advance Payment', icon: Calculator },
+        { path: '/lift', label: 'Lift', icon: Map },
+        { path: '/lab-report', label: 'Lab Report', icon: TestTube },
+        { path: '/full-kitting', label: 'Full Kitting', icon: Package },
         { path: '/purchase-closure', label: 'Purchase Closure', icon: Database },
       ]
     },
@@ -153,17 +146,14 @@ export const DashboardLayout = () => {
       title: "Dispatch",
       links: [
         { path: '/dispatch-order', label: 'Dispatch Order', icon: Truck },
-        { path: '/stock-reservation', label: 'Stock Reservation', icon: Package },
-        { path: '/picking-list', label: 'Picking List', icon: FileText },
-        { path: '/loading', label: 'Loading', icon: Package },
-        { path: '/vehicle-assignment-dispatch', label: 'Vehicle Assignment', icon: Truck },
-        { path: '/dispatch-weight', label: 'Dispatch Weight', icon: Map },
-        { path: '/delivery-challan', label: 'Delivery Challan', icon: FileText },
+        { path: '/dispatch-planning', label: 'Dispatch Planning', icon: FileText },
+        { path: '/arrange-logistics', label: 'Arrange Logistics', icon: Truck },
+        { path: '/picking-list', label: 'Picking List', icon: Package },
+        { path: '/logistics-details', label: 'Logistics Details', icon: Map },
+        { path: '/test-certificate', label: 'Test Certificate', icon: ShieldCheck },
+        { path: '/dispatch-weight', label: 'Dispatch Weight', icon: Database },
         { path: '/invoice', label: 'Invoice', icon: FileText },
-        { path: '/gate-pass', label: 'Gate Pass', icon: ShieldCheck },
-        { path: '/e-way-bill', label: 'E-Way Bill', icon: FileText },
-        { path: '/pod', label: 'POD', icon: ShieldCheck },
-        { path: '/delivery-confirmation', label: 'Delivery Confirmation', icon: Database },
+        { path: '/delivery-confirmation', label: 'Delivery Confirmation', icon: ShieldCheck },
       ]
     },
     {
@@ -189,6 +179,13 @@ export const DashboardLayout = () => {
         { path: '/documents', label: 'Document Management', icon: FileText },
         { path: '/reports', label: 'Reporting', icon: BarChart },
         { path: '/traceability', label: 'Traceability & Audit', icon: ShieldCheck },
+      ]
+    },
+    {
+      title: "Core System",
+      links: [
+        { path: '/master', label: 'Master Management', icon: Database },
+        { path: '/targets', label: 'Target Management', icon: Target },
       ]
     }
   ];
@@ -229,6 +226,16 @@ export const DashboardLayout = () => {
         </div>
 
         <nav className="flex-1 overflow-y-auto py-3 space-y-4">
+          <div className="mb-4">
+            <SidebarLink 
+              to="/"
+              icon={LayoutDashboard}
+              label="Dashboard"
+              isActive={location.pathname === '/'}
+              isSidebarOpen={isSidebarOpen}
+            />
+          </div>
+
           {visibleGroups.map((group, idx) => {
             const isExpanded = expandedGroup === group.title;
             return (

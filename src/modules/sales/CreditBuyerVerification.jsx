@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play } from 'lucide-react';
+import { Search, Play, Plus } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -10,66 +10,50 @@ import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => {
-    const qty = Math.floor(Math.random() * 50) + 10;
-    const price = Math.floor(Math.random() * 50000) + 40000;
-    
+    const isExport = i % 2 === 0;
     return {
       id: i + 1,
-      orderId: `SO-2026-${(i + 1).toString().padStart(4, '0')}`,
-      orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      orderType: ['Domestic', 'Export'][Math.floor(Math.random() * 2)],
+      orderId: `SO-00${(i + 1).toString().padStart(2, '0')}`,
+      orderType: isExport ? 'Export' : 'Domestic',
       customerName: `Customer ${i+1}`,
-      customerPhone: `+91 9876543${(i+1).toString().padStart(3, '0')}`,
-      customerEmail: `contact@customer${i+1}.com`,
-      customerAddress: 'Mumbai, India',
-      riceGradeRequired: ['Grade A', 'Grade B', 'Premium'][Math.floor(Math.random() * 3)],
-      qtyRequired: qty,
-      bagSizePreference: ['25kg', '50kg'][Math.floor(Math.random() * 2)],
-      deliveryLocation: 'Warehouse 1',
-      expectedDeliveryDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      receivedBy: 'Sales Rep',
+      riceGrade: ['Basmati', 'Non-Basmati', 'Sona Masoori'][Math.floor(Math.random() * 3)],
+      quantity: Math.floor(Math.random() * 50) + 10,
+      totalOrderValue: Math.floor(Math.random() * 500000) + 100000,
+      requiredDeliveryDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
       
-      quotationNo: `QT-${(i + 1).toString().padStart(4, '0')}`,
-      quotationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      quotedQty: qty,
-      quotedPrice: price,
-      totalValue: qty * price,
-      validTill: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      quotationBy: 'Sales Manager',
-
-      followUpId: `FU-${(i + 1).toString().padStart(4, '0')}`,
-      followUpDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      customerDecision: ['Accepted', 'Negotiating', 'Rejected'][Math.floor(Math.random() * 3)],
-      counterOffer: price - 500,
-      nextFollowUpDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      handledBy: 'Sales Rep',
-
-      orderApprovalId: `OA-${(i + 1).toString().padStart(4, '0')}`,
-      approvedPrice: price - 200,
-      approvedQty: qty,
-      specialDiscount: 2,
-      paymentAdvance: 50000,
-      creditDays: 30,
-      orderApprovedBy: 'Sales Director',
-      approvalDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      orderCompletionId: `OC-${(i + 1).toString().padStart(4, '0')}`,
-      totalQtySupplied: qty,
-      invoiceRef: `INV-${(i + 1).toString().padStart(4, '0')}`,
-      dispatchRef: `DISP-${(i + 1).toString().padStart(4, '0')}`,
-      totalValueSupplied: qty * (price - 200),
-      balancePayment: 0,
-      paymentReceived: 'Yes',
-      orderStatus: 'Completed',
-      closedBy: 'Finance Head',
+      verificationId: `CV-00${(i + 1).toString().padStart(2, '0')}`,
+      creditLimit: isExport ? 'A+' : '500000',
+      availableCredit: 250000,
+      verificationStatus: ['Approved', 'Hold', 'Rejected'][Math.floor(Math.random() * 3)],
+      verificationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      verifiedBy: 'Finance Mgr',
+      
+      confirmationId: `OC-00${(i + 1).toString().padStart(2, '0')}`,
+      finalQuantity: Math.floor(Math.random() * 50) + 10,
+      finalRate: 45000,
+      advanceReceived: 50000,
+      confirmedDeliveryDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      confirmedBy: 'Sales Rep',
+      
+      allocationId: `AL-00${(i + 1).toString().padStart(2, '0')}`,
+      quantityAllocated: Math.floor(Math.random() * 50) + 10,
+      allocationStatus: ['Full', 'Partial', 'Backorder'][Math.floor(Math.random() * 3)],
+      stockCheckDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      allocatedBy: 'Prod Mgr',
+      
+      completionId: `OCM-00${(i + 1).toString().padStart(2, '0')}`,
+      totalQtySupplied: Math.floor(Math.random() * 50) + 10,
+      totalValue: Math.floor(Math.random() * 500000) + 100000,
       completionDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
+      closedBy: 'Sales Admin',
+      completionStatus: isExport ? 'Ready for Export Process' : 'Ready for Dispatch',
+      
       status: 'Completed'
     };
   });
 };
 
-export const OrderApproval = () => {
+export const CreditBuyerVerification = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -94,12 +78,12 @@ export const OrderApproval = () => {
     setSelectedItem(item);
     
     let autoFields = {};
+    if ('CreditBuyerVerification' === 'CreditBuyerVerification') autoFields = { verificationId: 'CV-00' + Math.floor(Math.random()*100) };
+    if ('CreditBuyerVerification' === 'OrderConfirmation') autoFields = { confirmationId: 'OC-00' + Math.floor(Math.random()*100) };
+    if ('CreditBuyerVerification' === 'ProductionAllocationCheck') autoFields = { allocationId: 'AL-00' + Math.floor(Math.random()*100) };
+    if ('CreditBuyerVerification' === 'OrderCompletion') autoFields = { completionId: 'OCM-00' + Math.floor(Math.random()*100) };
     
-    
-    autoFields = { orderApprovalId: 'OA-' + Math.floor(Math.random()*10000) };
-    
-    
-    const readOnlyFields = ["orderId","orderType","quotationNo","followUpId","orderApprovalId"];
+    const readOnlyFields = ["orderId","orderType","verificationId","availableCredit"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -108,12 +92,6 @@ export const OrderApproval = () => {
     setFormData({ ...initialFormData, ...autoFields });
     setIsModalOpen(true);
   };
-
-  useEffect(() => {
-    if (isModalOpen && formData) {
-      
-    }
-  }, [formData, isModalOpen, selectedItem]);
 
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
@@ -130,21 +108,21 @@ export const OrderApproval = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Approve Order
+          Verify
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Follow-up ID","accessor":"followUpId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Quotation No","accessor":"quotationNo"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Customer Decision","accessor":"customerDecision"},{"header":"Counter Offer","accessor":"counterOffer"},{"header":"Next Follow-up Date","accessor":"nextFollowUpDate"}];
-  const historyCols = [{"header":"Order Approval ID","accessor":"orderApprovalId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Quotation No","accessor":"quotationNo"},{"header":"Customer Name","accessor":"customerName"},{"header":"Approved Price (₹/MT)","accessor":"approvedPrice"},{"header":"Approved Qty (MT)","accessor":"approvedQty"},{"header":"Special Discount %","accessor":"specialDiscount"},{"header":"Payment Advance (₹)","accessor":"paymentAdvance"},{"header":"Credit Days","accessor":"creditDays"},{"header":"Approved By","accessor":"orderApprovedBy"},{"header":"Approval Date","accessor":"approvalDate"}];
+  const pendingCols = [{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer/Buyer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Quantity (MT)","accessor":"quantity"},{"header":"Total Order Value","accessor":"totalOrderValue"},{"header":"Required Delivery Date","accessor":"requiredDeliveryDate"}];
+  const historyCols = [{"header":"Verification ID","accessor":"verificationId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer/Buyer Name","accessor":"customerName"},{"header":"Credit Limit","accessor":"creditLimit"},{"header":"Available Credit","accessor":"availableCredit"},{"header":"Verification Status","accessor":"verificationStatus"},{"header":"Verification Date","accessor":"verificationDate"},{"header":"Verified By","accessor":"verifiedBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 4 - Order Approval</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 2 - Credit / Buyer Verification</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -178,7 +156,7 @@ export const OrderApproval = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Order Approval Details"
+        title="Verification Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
@@ -204,101 +182,95 @@ export const OrderApproval = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Quotation No</Label>
+              <Label>Verification ID</Label>
               <Input 
                 type="text"
-                value={formData.quotationNo || ''} 
-                onChange={(e) => setFormData({...formData, quotationNo: e.target.value})}
+                value={formData.verificationId || ''} 
+                onChange={(e) => setFormData({...formData, verificationId: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Follow-up ID</Label>
-              <Input 
-                type="text"
-                value={formData.followUpId || ''} 
-                onChange={(e) => setFormData({...formData, followUpId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Order Approval ID</Label>
-              <Input 
-                type="text"
-                value={formData.orderApprovalId || ''} 
-                onChange={(e) => setFormData({...formData, orderApprovalId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Approved Price (₹/MT)</Label>
-              <Input 
-                type="number"
-                value={formData.approvedPrice || ''} 
-                onChange={(e) => setFormData({...formData, approvedPrice: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Approved Quantity (MT)</Label>
-              <Input 
-                type="number"
-                value={formData.approvedQty || ''} 
-                onChange={(e) => setFormData({...formData, approvedQty: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Special Discount (%)</Label>
-              <Input 
-                type="number"
-                value={formData.specialDiscount || ''} 
-                onChange={(e) => setFormData({...formData, specialDiscount: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Payment Advance (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.paymentAdvance || ''} 
-                onChange={(e) => setFormData({...formData, paymentAdvance: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Credit Days</Label>
-              <Input 
-                type="number"
-                value={formData.creditDays || ''} 
-                onChange={(e) => setFormData({...formData, creditDays: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Approved By</Label>
-              <Input 
-                type="text"
-                value={formData.orderApprovedBy || ''} 
-                onChange={(e) => setFormData({...formData, orderApprovedBy: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Approval Date</Label>
+              <Label>Verification Date</Label>
               <Input 
                 type="date"
-                value={formData.approvalDate || ''} 
-                onChange={(e) => setFormData({...formData, approvalDate: e.target.value})}
+                value={formData.verificationDate || ''} 
+                onChange={(e) => setFormData({...formData, verificationDate: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Credit Limit / Buyer Credit Rating</Label>
+              <Input 
+                type="text"
+                value={formData.creditLimit || ''} 
+                onChange={(e) => setFormData({...formData, creditLimit: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Existing Outstanding (₹)</Label>
+              <Input 
+                type="number"
+                value={formData.existingOutstanding || ''} 
+                onChange={(e) => setFormData({...formData, existingOutstanding: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Available Credit (₹)</Label>
+              <Input 
+                type="number"
+                value={formData.availableCredit || ''} 
+                onChange={(e) => setFormData({...formData, availableCredit: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>KYC Verified (Y/N)</Label>
+              <Select 
+                value={formData.kycVerified || ''} 
+                onChange={(e) => setFormData({...formData, kycVerified: e.target.value})}
+                disabled={false}
+                className={false ? 'bg-slate-100' : ''}
+              >
+                <option value="">Select KYC Verified (Y/N)</option>
+                <option value="Y">Y</option><option value="N">N</option>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Bank Guarantee/LC Status</Label>
+              <Input 
+                type="text"
+                value={formData.bgLcStatus || ''} 
+                onChange={(e) => setFormData({...formData, bgLcStatus: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Verification Status</Label>
+              <Select 
+                value={formData.verificationStatus || ''} 
+                onChange={(e) => setFormData({...formData, verificationStatus: e.target.value})}
+                disabled={false}
+                className={false ? 'bg-slate-100' : ''}
+              >
+                <option value="">Select Verification Status</option>
+                <option value="Approved">Approved</option><option value="Hold">Hold</option><option value="Rejected">Rejected</option>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Verified By</Label>
+              <Input 
+                type="text"
+                value={formData.verifiedBy || ''} 
+                onChange={(e) => setFormData({...formData, verifiedBy: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

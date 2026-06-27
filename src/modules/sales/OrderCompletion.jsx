@@ -99,7 +99,7 @@ export const OrderCompletion = () => {
     
     autoFields = { orderCompletionId: 'OC-' + Math.floor(Math.random()*10000) };
     
-    const readOnlyFields = ["orderId","orderApprovalId","orderCompletionId"];
+    const readOnlyFields = ["orderId","orderType","orderApprovalId","orderCompletionId"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -136,8 +136,8 @@ export const OrderCompletion = () => {
     )
   };
 
-  const pendingCols = [{"header":"Order Approval ID","accessor":"orderApprovalId"},{"header":"Order ID","accessor":"orderId"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Approved Qty (MT)","accessor":"approvedQty"},{"header":"Approved Price (₹/MT)","accessor":"approvedPrice"},{"header":"Approval Date","accessor":"approvalDate"}];
-  const historyCols = [{"header":"Order Completion ID","accessor":"orderCompletionId"},{"header":"Order ID","accessor":"orderId"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Total Qty Supplied (MT)","accessor":"totalQtySupplied"},{"header":"Invoice Ref","accessor":"invoiceRef"},{"header":"Dispatch Ref","accessor":"dispatchRef"},{"header":"Total Value (₹)","accessor":"totalValueSupplied"},{"header":"Balance Payment (₹)","accessor":"balancePayment"},{"header":"Payment Received","accessor":"paymentReceived"},{"header":"Order Status","accessor":"orderStatus"},{"header":"Closed By","accessor":"closedBy"},{"header":"Completion Date","accessor":"completionDate"}];
+  const pendingCols = [{"header":"Order Approval ID","accessor":"orderApprovalId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Approved Qty (MT)","accessor":"approvedQty"},{"header":"Approved Price (₹/MT)","accessor":"approvedPrice"},{"header":"Approval Date","accessor":"approvalDate"}];
+  const historyCols = [{"header":"Order Completion ID","accessor":"orderCompletionId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Total Qty Supplied (MT)","accessor":"totalQtySupplied"},{"header":"Invoice Ref","accessor":"invoiceRef"},{"header":"Dispatch Ref","accessor":"dispatchRef"},{"header":"Total Value (₹)","accessor":"totalValueSupplied"},{"header":"Balance Payment (₹)","accessor":"balancePayment"},{"header":"Payment Received","accessor":"paymentReceived"},{"header":"Order Status","accessor":"orderStatus"},{"header":"Closed By","accessor":"closedBy"},{"header":"Completion Date","accessor":"completionDate"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
@@ -189,6 +189,16 @@ export const OrderCompletion = () => {
                 type="text"
                 value={formData.orderId || ''} 
                 onChange={(e) => setFormData({...formData, orderId: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Order Type</Label>
+              <Input 
+                type="text"
+                value={formData.orderType || ''} 
+                onChange={(e) => setFormData({...formData, orderType: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />

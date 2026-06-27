@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play } from 'lucide-react';
+import { Search, Play, Plus } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -10,133 +10,88 @@ import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => {
-    const qty = Math.floor(Math.random() * 50) + 10;
-    const bags = qty * 40;
-    const rate = 45000;
-    const freight = qty * 1500;
-    const basic = qty * rate;
-    const tax = basic * 0.05;
-    
+    const orderType = i % 2 === 0 ? 'Export' : 'Domestic';
     return {
       id: i + 1,
-      dispatchOrderNo: `DO-${(i + 1).toString().padStart(4, '0')}`,
-      orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      orderType: 'Domestic',
+      sourceRef: orderType === 'Export' ? `EC-00${(i + 1).toString().padStart(2, '0')}` : `SO-00${(i + 1).toString().padStart(2, '0')}`,
+      dispatchOrderNo: `DO-00${(i + 1).toString().padStart(2, '0')}`,
+      orderType: orderType,
       customerName: `Customer ${i+1}`,
-      customerGst: `27AAAC${i}1234K1Z1`,
-      riceGrade: 'Premium Basmati',
-      quantity: qty,
-      noOfBags: bags,
-      reqDispatchDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      priority: 'Normal',
+      riceGrade: ['Basmati', 'Non-Basmati'][Math.floor(Math.random() * 2)],
+      quantity: Math.floor(Math.random() * 50) + 10,
+      requiredDispatchDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      priority: ['Normal', 'Urgent'][Math.floor(Math.random() * 2)],
       
-      reservationId: `SR-${(i + 1).toString().padStart(4, '0')}`,
-      fgStockId: `FG-${(i + 1).toString().padStart(4, '0')}`,
-      lotNo: `LT-${i+1}`,
-      batchNo: `BT-${i+1}`,
-      reservedQty: qty,
-      reservedBags: bags,
-      warehouse: 'Main WH',
-      godown: 'Godown 1',
-      rackBin: 'R1-B2',
-      reservationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      reservedBy: 'WH Manager',
-
-      pickListNo: `PK-${(i + 1).toString().padStart(4, '0')}`,
-      pickedQty: qty,
-      pickedBags: bags,
+      planId: `DP-00${(i + 1).toString().padStart(2, '0')}`,
+      plannedDispatchDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      allocatedQty: Math.floor(Math.random() * 50) + 10,
+      allocationStatus: 'Full',
+      planningDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      plannedBy: 'Planner',
+      
+      logisticsArrangementId: `LA-00${(i + 1).toString().padStart(2, '0')}`,
+      modeRequired: orderType === 'Export' ? 'Sea' : 'Road',
+      vehicleType: orderType === 'Export' ? 'Container' : 'Truck',
+      noOfVehicles: 2,
+      transporterShortlisted: 'Transporter X',
+      estimatedFreight: 20000,
+      arrangementStatus: 'Confirmed',
+      arrangedBy: 'Logistics',
+      
+      pickListNo: `PK-00${(i + 1).toString().padStart(2, '0')}`,
+      lotNo: 'LOT123',
+      batchNo: 'B123',
+      pickedQty: 20,
+      pickedBags: 800,
       pickDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      pickedBy: 'Picker 1',
-      supervisor: 'Super 1',
-
-      loadingId: `LD-${(i + 1).toString().padStart(4, '0')}`,
-      vehicleNumber: `MH 43 AB ${(1000 + i)}`,
-      bagsLoaded: bags,
-      weightLoaded: qty,
-      shortage: 0,
-      loadingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T10:00`,
-      loadingSupervisor: 'Super 1',
-
-      vehicleType: 'Truck',
-      driverName: 'Ramu',
-      driverPhone: '9876543210',
-      transporterName: 'ABC Logistics',
-      vehicleCapacity: 25,
-      route: 'Mill -> Mumbai',
-      freightRate: 1500,
-      totalFreight: freight,
-      expectedDeparture: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T12:00`,
-      expectedDelivery: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      assignedDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      weightSlipNo: `DW-${(i + 1).toString().padStart(4, '0')}`,
-      grossWeight: qty * 1000 + 8000,
-      tareWeight: 8000,
-      netWeight: qty * 1000,
+      pickedBy: 'Picker',
+      supervisor: 'Supervisor',
+      
+      logisticsId: `LG-00${(i + 1).toString().padStart(2, '0')}`,
+      vehicleNumber: 'MH01AB1234',
+      driverName: 'Driver Y',
+      transporterName: 'Transporter X',
+      route: 'Mill to Port',
+      totalFreightAmount: 20000,
+      expectedDeparture: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      expectedDeliveryDate: `2026-06-${(i % 28 + 5).toString().padStart(2, '0')}`,
+      
+      certificateNo: `TC-00${(i + 1).toString().padStart(2, '0')}`,
+      testDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      qualityGradeConfirmed: 'Premium',
+      moisture: 12.5,
+      phytoCertNo: 'PHYTO123',
+      result: 'Pass',
+      testedBy: 'Lab Off',
+      
+      weightSlipNo: `DW-00${(i + 1).toString().padStart(2, '0')}`,
+      grossWeight: 25000,
+      tareWeight: 5000,
+      netWeight: 20000,
       variance: 0,
-      weighbridgeId: 'WB-01',
-      operator: 'WB Op',
+      weighbridgeId: 'WB1',
+      operatorName: 'Operator',
       weighDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      challanNo: `DC-${(i + 1).toString().padStart(4, '0')}`,
-      challanDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      destination: 'Mumbai',
-      purpose: 'Sale',
-      createdBy: 'Dispatch Clerk',
-
-      invoiceNo: `INV-${(i + 1).toString().padStart(4, '0')}`,
+      
+      invoiceNo: `INV-00${(i + 1).toString().padStart(2, '0')}`,
       invoiceDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      invoiceType: 'Tax Invoice',
-      rate: rate,
-      basicAmount: basic,
-      cgst: tax / 2,
-      sgst: tax / 2,
-      igst: 0,
-      grandTotal: basic + tax,
-      paymentDueDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      gatePassNo: `GP-${(i + 1).toString().padStart(4, '0')}`,
-      issueDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T14:00`,
-      gateNo: 'Gate 2',
-      guardName: 'Security 1',
-      issuedBy: 'Dispatch Head',
-
-      ewbNo: `EWB-${(i + 1).toString().padStart(4, '0')}`,
-      ewbDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T14:00`,
-      validTill: `2026-06-${(i % 28 + 3).toString().padStart(2, '0')}`,
-      totalValue: basic + tax,
-      distance: 350,
-      modeOfTransport: 'Road',
-      transporterId: '27AABCT1234L1Z',
-      generatedBy: 'Finance Exec',
-
-      podId: `POD-${(i + 1).toString().padStart(4, '0')}`,
-      actualDeliveryDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
-      receivedBy: 'Cust Store',
-      bagsReceived: bags,
-      weightReceived: qty * 1000,
-      condition: 'Good',
-      shortageBags: 0,
-      shortageKg: 0,
-      driverConfirmation: 'Y',
-
-      confirmationId: `CF-${(i + 1).toString().padStart(4, '0')}`,
-      confirmationDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
+      qtyMt: 20,
+      grandTotal: 1000000,
+      paymentTerms: 'Advance',
+      createdBy: 'Finance',
+      
+      confirmationId: `CF-00${(i + 1).toString().padStart(2, '0')}`,
+      confirmationDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
       deliveryStatus: 'Complete',
-      customerRating: 5,
-      invoiceAmount: basic + tax,
-      outstanding: basic + tax,
-      disputedAmount: 0,
-      disputeReason: '',
-      resolved: 'Y',
-      closedBy: 'Sales Exec',
-
+      outstandingAmount: 0,
+      closedBy: 'Admin',
+      
       status: 'Completed'
     };
   });
 };
 
-export const VehicleAssignment = () => {
+export const LogisticsDetails = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -161,18 +116,16 @@ export const VehicleAssignment = () => {
     setSelectedItem(item);
     
     let autoFields = {};
+    if ('LogisticsDetails' === 'DispatchPlanning') autoFields = { planId: 'DP-00' + Math.floor(Math.random()*100) };
+    if ('LogisticsDetails' === 'ArrangeLogistics') autoFields = { logisticsArrangementId: 'LA-00' + Math.floor(Math.random()*100) };
+    if ('LogisticsDetails' === 'PickingList') autoFields = { pickListNo: 'PK-00' + Math.floor(Math.random()*100) };
+    if ('LogisticsDetails' === 'LogisticsDetails') autoFields = { logisticsId: 'LG-00' + Math.floor(Math.random()*100) };
+    if ('LogisticsDetails' === 'TestCertificate') autoFields = { certificateNo: 'TC-00' + Math.floor(Math.random()*100) };
+    if ('LogisticsDetails' === 'DispatchWeight') autoFields = { weightSlipNo: 'DW-00' + Math.floor(Math.random()*100) };
+    if ('LogisticsDetails' === 'Invoice') autoFields = { invoiceNo: 'INV-00' + Math.floor(Math.random()*100), invoiceType: item.orderType === 'Export' ? 'Export Invoice' : 'Tax Invoice' };
+    if ('LogisticsDetails' === 'DeliveryConfirmation') autoFields = { confirmationId: 'CF-00' + Math.floor(Math.random()*100) };
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    const readOnlyFields = ["loadingId","dispatchOrderNo","totalFreight"];
+    const readOnlyFields = ["pickListNo","dispatchOrderNo","orderType","sourceRef","logisticsId","totalFreightAmount"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -181,22 +134,6 @@ export const VehicleAssignment = () => {
     setFormData({ ...initialFormData, ...autoFields });
     setIsModalOpen(true);
   };
-
-  useEffect(() => {
-    if (isModalOpen && formData) {
-      
-      const qty = parseFloat(selectedItem.weightLoaded) || 0;
-      const rate = parseFloat(formData.freightRate) || 0;
-      const total = qty * rate;
-      if (formData.totalFreight !== total) {
-        setFormData(prev => ({ ...prev, totalFreight: total }));
-      }
-      
-      
-      
-      
-    }
-  }, [formData, isModalOpen, selectedItem]);
 
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
@@ -213,21 +150,21 @@ export const VehicleAssignment = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Assign Vehicle
+          Update Details
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Loading ID","accessor":"loadingId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Customer Name","accessor":"customerName"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"No. of Bags Loaded","accessor":"bagsLoaded"},{"header":"Total Loaded Weight (MT)","accessor":"weightLoaded"},{"header":"Loading Date","accessor":"loadingDate"},{"header":"Loading Supervisor","accessor":"loadingSupervisor"}];
-  const historyCols = [{"header":"Loading ID","accessor":"loadingId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"Vehicle Type","accessor":"vehicleType"},{"header":"Driver Name","accessor":"driverName"},{"header":"Driver Phone","accessor":"driverPhone"},{"header":"Transporter Name","accessor":"transporterName"},{"header":"Vehicle Capacity (MT)","accessor":"vehicleCapacity"},{"header":"Route","accessor":"route"},{"header":"Freight Rate (₹/MT)","accessor":"freightRate"},{"header":"Total Freight (₹)","accessor":"totalFreight"},{"header":"Expected Departure","accessor":"expectedDeparture"},{"header":"Expected Delivery Date","accessor":"expectedDelivery"},{"header":"Assigned Date","accessor":"assignedDate"}];
+  const pendingCols = [{"header":"Pick List No","accessor":"pickListNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Picked Qty (MT)","accessor":"pickedQty"},{"header":"No. of Bags","accessor":"pickedBags"},{"header":"Pick Date","accessor":"pickDate"}];
+  const historyCols = [{"header":"Logistics ID","accessor":"logisticsId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"Driver Name","accessor":"driverName"},{"header":"Transporter Name","accessor":"transporterName"},{"header":"Route","accessor":"route"},{"header":"Total Freight (₹)","accessor":"totalFreightAmount"},{"header":"Expected Departure","accessor":"expectedDeparture"},{"header":"Expected Delivery Date","accessor":"expectedDeliveryDate"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 5 - Vehicle Assignment</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 5 - Logistics (Transporter & Driver Details)</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -261,17 +198,17 @@ export const VehicleAssignment = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Vehicle Details"
+        title="Logistics Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <Label>Loading ID</Label>
+              <Label>Pick List No</Label>
               <Input 
                 type="text"
-                value={formData.loadingId || ''} 
-                onChange={(e) => setFormData({...formData, loadingId: e.target.value})}
+                value={formData.pickListNo || ''} 
+                onChange={(e) => setFormData({...formData, pickListNo: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -282,6 +219,36 @@ export const VehicleAssignment = () => {
                 type="text"
                 value={formData.dispatchOrderNo || ''} 
                 onChange={(e) => setFormData({...formData, dispatchOrderNo: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Order Type</Label>
+              <Input 
+                type="text"
+                value={formData.orderType || ''} 
+                onChange={(e) => setFormData({...formData, orderType: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Source Reference</Label>
+              <Input 
+                type="text"
+                value={formData.sourceRef || ''} 
+                onChange={(e) => setFormData({...formData, sourceRef: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Logistics ID</Label>
+              <Input 
+                type="text"
+                value={formData.logisticsId || ''} 
+                onChange={(e) => setFormData({...formData, logisticsId: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -309,16 +276,6 @@ export const VehicleAssignment = () => {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Vehicle Make/Model</Label>
-              <Input 
-                type="text"
-                value={formData.vehicleMake || ''} 
-                onChange={(e) => setFormData({...formData, vehicleMake: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
               <Label>Driver Name</Label>
               <Input 
                 type="text"
@@ -342,8 +299,8 @@ export const VehicleAssignment = () => {
               <Label>Driver License No</Label>
               <Input 
                 type="text"
-                value={formData.driverLicense || ''} 
-                onChange={(e) => setFormData({...formData, driverLicense: e.target.value})}
+                value={formData.driverLicenseNo || ''} 
+                onChange={(e) => setFormData({...formData, driverLicenseNo: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
@@ -382,8 +339,8 @@ export const VehicleAssignment = () => {
               <Label>Transporter GSTIN</Label>
               <Input 
                 type="text"
-                value={formData.transporterGst || ''} 
-                onChange={(e) => setFormData({...formData, transporterGst: e.target.value})}
+                value={formData.transporterGstin || ''} 
+                onChange={(e) => setFormData({...formData, transporterGstin: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
@@ -399,31 +356,11 @@ export const VehicleAssignment = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Route (Mill → Dest)</Label>
+              <Label>Route (Mill → Destination/Port)</Label>
               <Input 
                 type="text"
                 value={formData.route || ''} 
                 onChange={(e) => setFormData({...formData, route: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Expected Departure Date</Label>
-              <Input 
-                type="datetime-local"
-                value={formData.expectedDeparture || ''} 
-                onChange={(e) => setFormData({...formData, expectedDeparture: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Expected Delivery Date</Label>
-              <Input 
-                type="date"
-                value={formData.expectedDelivery || ''} 
-                onChange={(e) => setFormData({...formData, expectedDelivery: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
@@ -442,8 +379,8 @@ export const VehicleAssignment = () => {
               <Label>Total Freight Amount (₹)</Label>
               <Input 
                 type="number"
-                value={formData.totalFreight || ''} 
-                onChange={(e) => setFormData({...formData, totalFreight: e.target.value})}
+                value={formData.totalFreightAmount || ''} 
+                onChange={(e) => setFormData({...formData, totalFreightAmount: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -452,8 +389,28 @@ export const VehicleAssignment = () => {
               <Label>Advance to Driver (₹)</Label>
               <Input 
                 type="number"
-                value={formData.advanceDriver || ''} 
-                onChange={(e) => setFormData({...formData, advanceDriver: e.target.value})}
+                value={formData.advanceToDriver || ''} 
+                onChange={(e) => setFormData({...formData, advanceToDriver: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Expected Departure Date & Time</Label>
+              <Input 
+                type="datetime-local"
+                value={formData.expectedDeparture || ''} 
+                onChange={(e) => setFormData({...formData, expectedDeparture: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Expected Delivery Date</Label>
+              <Input 
+                type="date"
+                value={formData.expectedDeliveryDate || ''} 
+                onChange={(e) => setFormData({...formData, expectedDeliveryDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

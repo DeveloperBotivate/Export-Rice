@@ -91,7 +91,7 @@ const generateDummyData = () => {
   });
 };
 
-export const PickingList = () => {
+export const DispatchPlanning = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -116,16 +116,16 @@ export const PickingList = () => {
     setSelectedItem(item);
     
     let autoFields = {};
-    if ('PickingList' === 'DispatchPlanning') autoFields = { planId: 'DP-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'ArrangeLogistics') autoFields = { logisticsArrangementId: 'LA-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'PickingList') autoFields = { pickListNo: 'PK-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'LogisticsDetails') autoFields = { logisticsId: 'LG-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'TestCertificate') autoFields = { certificateNo: 'TC-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'DispatchWeight') autoFields = { weightSlipNo: 'DW-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'Invoice') autoFields = { invoiceNo: 'INV-00' + Math.floor(Math.random()*100), invoiceType: item.orderType === 'Export' ? 'Export Invoice' : 'Tax Invoice' };
-    if ('PickingList' === 'DeliveryConfirmation') autoFields = { confirmationId: 'CF-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'DispatchPlanning') autoFields = { planId: 'DP-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'ArrangeLogistics') autoFields = { logisticsArrangementId: 'LA-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'PickingList') autoFields = { pickListNo: 'PK-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'LogisticsDetails') autoFields = { logisticsId: 'LG-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'TestCertificate') autoFields = { certificateNo: 'TC-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'DispatchWeight') autoFields = { weightSlipNo: 'DW-00' + Math.floor(Math.random()*100) };
+    if ('DispatchPlanning' === 'Invoice') autoFields = { invoiceNo: 'INV-00' + Math.floor(Math.random()*100), invoiceType: item.orderType === 'Export' ? 'Export Invoice' : 'Tax Invoice' };
+    if ('DispatchPlanning' === 'DeliveryConfirmation') autoFields = { confirmationId: 'CF-00' + Math.floor(Math.random()*100) };
     
-    const readOnlyFields = ["logisticsArrangementId","dispatchOrderNo","orderType","sourceRef","pickListNo","riceGrade"];
+    const readOnlyFields = ["dispatchOrderNo","orderType","sourceRef","planId"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -150,21 +150,21 @@ export const PickingList = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Create Picking List
+          Plan Dispatch
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Logistics Arrangement ID","accessor":"logisticsArrangementId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Allocated Qty (MT)","accessor":"allocatedQty"},{"header":"Transporter Shortlisted","accessor":"transporterShortlisted"},{"header":"Arrangement Status","accessor":"arrangementStatus"}];
-  const historyCols = [{"header":"Pick List No","accessor":"pickListNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Lot No","accessor":"lotNo"},{"header":"Batch No","accessor":"batchNo"},{"header":"Picked Qty (MT)","accessor":"pickedQty"},{"header":"No. of Bags","accessor":"pickedBags"},{"header":"Pick Date","accessor":"pickDate"},{"header":"Picked By","accessor":"pickedBy"},{"header":"Supervisor","accessor":"supervisor"}];
+  const pendingCols = [{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Customer/Buyer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Quantity (MT)","accessor":"quantity"},{"header":"Required Dispatch Date","accessor":"requiredDispatchDate"},{"header":"Priority","accessor":"priority"}];
+  const historyCols = [{"header":"Plan ID","accessor":"planId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Planned Dispatch Date","accessor":"plannedDispatchDate"},{"header":"Allocated Qty (MT)","accessor":"allocatedQty"},{"header":"Allocation Status","accessor":"allocationStatus"},{"header":"Planning Date","accessor":"planningDate"},{"header":"Planned By","accessor":"plannedBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 4 - Picking List</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 2 - Dispatch Planning</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -198,21 +198,11 @@ export const PickingList = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Picking List Details"
+        title="Planning Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
-            <div className="space-y-1.5">
-              <Label>Logistics Arrangement ID</Label>
-              <Input 
-                type="text"
-                value={formData.logisticsArrangementId || ''} 
-                onChange={(e) => setFormData({...formData, logisticsArrangementId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
             <div className="space-y-1.5">
               <Label>Dispatch Order No</Label>
               <Input 
@@ -244,111 +234,85 @@ export const PickingList = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Pick List No</Label>
+              <Label>Plan ID</Label>
               <Input 
                 type="text"
-                value={formData.pickListNo || ''} 
-                onChange={(e) => setFormData({...formData, pickListNo: e.target.value})}
+                value={formData.planId || ''} 
+                onChange={(e) => setFormData({...formData, planId: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Pick Date</Label>
+              <Label>Planning Date</Label>
               <Input 
                 type="date"
-                value={formData.pickDate || ''} 
-                onChange={(e) => setFormData({...formData, pickDate: e.target.value})}
+                value={formData.planningDate || ''} 
+                onChange={(e) => setFormData({...formData, planningDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Warehouse</Label>
+              <Label>Planned Dispatch Date</Label>
               <Input 
-                type="text"
-                value={formData.warehouse || ''} 
-                onChange={(e) => setFormData({...formData, warehouse: e.target.value})}
+                type="date"
+                value={formData.plannedDispatchDate || ''} 
+                onChange={(e) => setFormData({...formData, plannedDispatchDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Go-down/Rack/Bin</Label>
+              <Label>Warehouse/Go-down Source</Label>
               <Input 
                 type="text"
-                value={formData.rackBin || ''} 
-                onChange={(e) => setFormData({...formData, rackBin: e.target.value})}
+                value={formData.warehouseSource || ''} 
+                onChange={(e) => setFormData({...formData, warehouseSource: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Rice Grade</Label>
-              <Input 
-                type="text"
-                value={formData.riceGrade || ''} 
-                onChange={(e) => setFormData({...formData, riceGrade: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Lot No</Label>
-              <Input 
-                type="text"
-                value={formData.lotNo || ''} 
-                onChange={(e) => setFormData({...formData, lotNo: e.target.value})}
-                readOnly={false}
+              <Label>Stock Availability Check</Label>
+              <Select 
+                value={formData.stockAvailability || ''} 
+                onChange={(e) => setFormData({...formData, stockAvailability: e.target.value})}
+                disabled={false}
                 className={false ? 'bg-slate-100' : ''}
-              />
+              >
+                <option value="">Select Stock Availability Check</option>
+                <option value="Available">Available</option><option value="Shortfall">Shortfall</option>
+              </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Batch No</Label>
-              <Input 
-                type="text"
-                value={formData.batchNo || ''} 
-                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Quantity to Pick (MT)</Label>
+              <Label>Allocated Quantity (MT)</Label>
               <Input 
                 type="number"
-                value={formData.pickedQty || ''} 
-                onChange={(e) => setFormData({...formData, pickedQty: e.target.value})}
+                value={formData.allocatedQty || ''} 
+                onChange={(e) => setFormData({...formData, allocatedQty: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>No. of Bags</Label>
-              <Input 
-                type="number"
-                value={formData.pickedBags || ''} 
-                onChange={(e) => setFormData({...formData, pickedBags: e.target.value})}
-                readOnly={false}
+              <Label>Allocation Status</Label>
+              <Select 
+                value={formData.allocationStatus || ''} 
+                onChange={(e) => setFormData({...formData, allocationStatus: e.target.value})}
+                disabled={false}
                 className={false ? 'bg-slate-100' : ''}
-              />
+              >
+                <option value="">Select Allocation Status</option>
+                <option value="Full">Full</option><option value="Partial">Partial</option>
+              </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Picked By</Label>
-              <Input 
-                type="text"
-                value={formData.pickedBy || ''} 
-                onChange={(e) => setFormData({...formData, pickedBy: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Supervisor Name</Label>
+              <Label>Planned By</Label>
               <Input 
                 type="text"
-                value={formData.supervisor || ''} 
-                onChange={(e) => setFormData({...formData, supervisor: e.target.value})}
+                value={formData.plannedBy || ''} 
+                onChange={(e) => setFormData({...formData, plannedBy: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

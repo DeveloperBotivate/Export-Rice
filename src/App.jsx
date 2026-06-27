@@ -42,16 +42,13 @@ import { ExportDocumentation } from './modules/export/ExportDocumentation';
 import { ExportPayment } from './modules/export/ExportPayment';
 
 import { DispatchOrder } from './modules/dispatch/DispatchOrder';
-import { StockReservation } from './modules/dispatch/StockReservation';
+import { DispatchPlanning } from './modules/dispatch/DispatchPlanning';
+import { ArrangeLogistics } from './modules/dispatch/ArrangeLogistics';
 import { PickingList } from './modules/dispatch/PickingList';
-import { Loading } from './modules/dispatch/Loading';
-import { VehicleAssignment as DispatchVehicleAssignment } from './modules/dispatch/VehicleAssignment';
+import { LogisticsDetails } from './modules/dispatch/LogisticsDetails';
+import { TestCertificate } from './modules/dispatch/TestCertificate';
 import { DispatchWeight } from './modules/dispatch/DispatchWeight';
-import { DeliveryChallan } from './modules/dispatch/DeliveryChallan';
 import { Invoice } from './modules/dispatch/Invoice';
-import { GatePass } from './modules/dispatch/GatePass';
-import { EWayBill } from './modules/dispatch/EWayBill';
-import { POD } from './modules/dispatch/POD';
 import { DeliveryConfirmation } from './modules/dispatch/DeliveryConfirmation';
 
 import { AccountsReceivable } from './modules/finance/AccountsReceivable';
@@ -91,14 +88,15 @@ import { LotNumber } from './modules/packing/LotNumber';
 import { WeightVerification } from './modules/packing/WeightVerification';
 import { PackingQC } from './modules/packing/PackingQC';
 import { FinishedGoodsInventory } from './modules/packing/FinishedGoodsInventory';
-import { PurchaseRequest } from './modules/purchase/PurchaseRequest';
-import { PurchaseOrder } from './modules/purchase/PurchaseOrder';
-import { AgentAssignment } from './modules/purchase/AgentAssignment';
-import { VehicleAssignment } from './modules/purchase/VehicleAssignment';
-import { MandiSelectionPurchase } from './modules/purchase/MandiSelectionPurchase';
-import { PurchaseChallan } from './modules/purchase/PurchaseChallan';
-import { GateEntryPurchase } from './modules/purchase/GateEntryPurchase';
-import { GrossWeight } from './modules/purchase/GrossWeight';
+import { PurchaseIndent } from './modules/purchase/PurchaseIndent';
+import { PurchaseApproval } from './modules/purchase/PurchaseApproval';
+import { CreatePO } from './modules/purchase/CreatePO';
+import { ArrangeLogistics as PurchaseArrangeLogistics } from './modules/purchase/ArrangeLogistics';
+import { POEntry } from './modules/purchase/POEntry';
+import { AdvancePayment } from './modules/purchase/AdvancePayment';
+import { Lift } from './modules/purchase/Lift';
+import { LabReport } from './modules/purchase/LabReport';
+import { FullKitting } from './modules/purchase/FullKitting';
 import { PurchaseClosure } from './modules/purchase/PurchaseClosure';
 
 function App() {
@@ -155,14 +153,15 @@ function App() {
           <Route path="packing-qc" element={<PackingQC />} />
           <Route path="finished-goods" element={<FinishedGoodsInventory />} />
           
-          <Route path="purchase-request" element={<PurchaseRequest />} />
-          <Route path="purchase-order" element={<PurchaseOrder />} />
-          <Route path="agent-assignment" element={<AgentAssignment />} />
-          <Route path="vehicle-assignment" element={<VehicleAssignment />} />
-          <Route path="mandi-selection-purchase" element={<MandiSelectionPurchase />} />
-          <Route path="purchase-challan" element={<PurchaseChallan />} />
-          <Route path="gate-entry-purchase" element={<GateEntryPurchase />} />
-          <Route path="gross-weight" element={<GrossWeight />} />
+          <Route path="purchase-indent" element={<PurchaseIndent />} />
+          <Route path="purchase-approval" element={<PurchaseApproval />} />
+          <Route path="create-po" element={<CreatePO />} />
+          <Route path="arrange-logistics-purchase" element={<PurchaseArrangeLogistics />} />
+          <Route path="po-entry" element={<POEntry />} />
+          <Route path="advance-payment" element={<AdvancePayment />} />
+          <Route path="lift" element={<Lift />} />
+          <Route path="lab-report" element={<LabReport />} />
+          <Route path="full-kitting" element={<FullKitting />} />
           <Route path="purchase-closure" element={<PurchaseClosure />} />
           <Route path="order-receive" element={<OrderReceive />} />
           <Route path="sent-quotation" element={<SentQuotation />} />
@@ -182,16 +181,13 @@ function App() {
           <Route path="export-payment" element={<ExportPayment />} />
           
           <Route path="dispatch-order" element={<DispatchOrder />} />
-          <Route path="stock-reservation" element={<StockReservation />} />
+          <Route path="dispatch-planning" element={<DispatchPlanning />} />
+          <Route path="arrange-logistics" element={<ArrangeLogistics />} />
           <Route path="picking-list" element={<PickingList />} />
-          <Route path="loading" element={<Loading />} />
-          <Route path="vehicle-assignment-dispatch" element={<DispatchVehicleAssignment />} />
+          <Route path="logistics-details" element={<LogisticsDetails />} />
+          <Route path="test-certificate" element={<TestCertificate />} />
           <Route path="dispatch-weight" element={<DispatchWeight />} />
-          <Route path="delivery-challan" element={<DeliveryChallan />} />
           <Route path="invoice" element={<Invoice />} />
-          <Route path="gate-pass" element={<GatePass />} />
-          <Route path="e-way-bill" element={<EWayBill />} />
-          <Route path="pod" element={<POD />} />
           <Route path="delivery-confirmation" element={<DeliveryConfirmation />} />
 
           <Route path="accounts-receivable" element={<AccountsReceivable />} />

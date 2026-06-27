@@ -118,7 +118,7 @@ const generateDummyData = () => {
   });
 };
 
-export const PurchaseClosure = () => {
+export const Lift = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -140,7 +140,7 @@ export const PurchaseClosure = () => {
   const pagination = usePagination(filteredData, 10);
 
   const handleActionClick = (item) => {
-    if ("PurchaseClosure" === "FullKitting" && item.approved === 'No') {
+    if ("Lift" === "FullKitting" && item.approved === 'No') {
       alert("Cannot process kitting for rejected lab reports.");
       return;
     }
@@ -148,17 +148,17 @@ export const PurchaseClosure = () => {
     setSelectedItem(item);
     
     let autoFields = {};
-    if ("PurchaseClosure" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
+    if ("Lift" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
     
-    const readOnlyFields = ["kittingId","challanNo","poNumber","indentNo","closureId","lotNo","batchNo","qualityGrade","moisture","purchaseType","agencyVendorName","totalPurchaseValue","freightCost","totalLandedCost","valuationRate"];
+    const readOnlyFields = ["poNumber","indentNo","logisticsId","advanceId","liftId","vehicleNumber","driverName","netWeight","paddyGrade"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -180,7 +180,7 @@ export const PurchaseClosure = () => {
     header: "Action",
     className: "text-right",
     cell: (row) => {
-      if ("PurchaseClosure" === "FullKitting" && row.approved === 'No') {
+      if ("Lift" === "FullKitting" && row.approved === 'No') {
         return (
           <div className="flex justify-end">
             <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded font-medium">
@@ -193,15 +193,15 @@ export const PurchaseClosure = () => {
         <div className="flex justify-end">
           <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
             <Play size={14} />
-            Close & Update
+            Record Lift
           </Button>
         </div>
       );
     }
   };
 
-  const pendingCols = [{"header":"Full Kitting ID","accessor":"kittingId"},{"header":"Challan No","accessor":"challanNo"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Farmer / Agency Name","accessor":"agencyVendorName"},{"header":"Net Weight Kg","accessor":"netWeight"},{"header":"Rate ₹/Qt","accessor":"rate"},{"header":"Net Payable ₹","accessor":"netPayable"},{"header":"Kitting Date","accessor":"kittingDate"}].map(col => {
-    if (col.accessor === 'approved' && "PurchaseClosure" === "FullKitting") {
+  const pendingCols = [{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Advance Payment ID","accessor":"advanceId"},{"header":"Logistics ID","accessor":"logisticsId"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"Driver Name","accessor":"driverName"},{"header":"Agency / Vendor Name","accessor":"agencyVendorName"},{"header":"Paddy Grade","accessor":"paddyGrade"},{"header":"Quantity MT","accessor":"qtyMt"},{"header":"Entry Date","accessor":"entryDate"},{"header":"Advance Paid ₹","accessor":"advancePaid"}].map(col => {
+    if (col.accessor === 'approved' && "Lift" === "FullKitting") {
       return {
         ...col,
         cell: (row) => (
@@ -214,14 +214,14 @@ export const PurchaseClosure = () => {
     return col;
   });
   
-  const historyCols = [{"header":"Purchase Closure ID","accessor":"closureId"},{"header":"Full Kitting ID","accessor":"kittingId"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Closure Date","accessor":"closureDate"},{"header":"Purchase Type","accessor":"purchaseType"},{"header":"Agency / Vendor Name","accessor":"agencyVendorName"},{"header":"Lot Number","accessor":"lotNo"},{"header":"Batch Number","accessor":"batchNo"},{"header":"Net Qty Added MT","accessor":"netQtyMt"},{"header":"Warehouse","accessor":"warehouse"},{"header":"Go-down","accessor":"godown"},{"header":"Bin / Rack","accessor":"binRack"},{"header":"Quality Grade","accessor":"qualityGrade"},{"header":"Moisture %","accessor":"moisture"},{"header":"Total Purchase Value ₹","accessor":"totalPurchaseValue"},{"header":"Freight Cost ₹","accessor":"freightCost"},{"header":"Total Landed Cost ₹","accessor":"totalLandedCost"},{"header":"Valuation Rate ₹/MT","accessor":"valuationRate"},{"header":"Inventory Updated By","accessor":"updatedBy"}];
+  const historyCols = [{"header":"Lift ID","accessor":"liftId"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Lift Date","accessor":"liftDate"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"Driver Name","accessor":"driverName"},{"header":"No. of Bags","accessor":"noOfBags"},{"header":"Gross Weight Kg","accessor":"grossWeight"},{"header":"Net Weight Lifted Kg","accessor":"netWeight"},{"header":"Moisture at Lift %","accessor":"moisture"},{"header":"Lifted From","accessor":"liftedFrom"},{"header":"Supervisor","accessor":"supervisor"}];
 
   const columns = activeTab === "pending" ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 10 - Purchase Closure → Inventory</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 7 - Lift</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -255,31 +255,11 @@ export const PurchaseClosure = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Purchase Closure Details"
+        title="Lift Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
-            <div className="space-y-1.5">
-              <Label>Full Kitting ID</Label>
-              <Input 
-                type="text"
-                value={formData.kittingId || ""} 
-                onChange={(e) => setFormData({...formData, kittingId: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Challan No</Label>
-              <Input 
-                type="text"
-                value={formData.challanNo || ""} 
-                onChange={(e) => setFormData({...formData, challanNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
             <div className="space-y-1.5">
               <Label>PO Number</Label>
               <Input 
@@ -301,177 +281,157 @@ export const PurchaseClosure = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Purchase Closure ID</Label>
+              <Label>Logistics ID</Label>
               <Input 
                 type="text"
-                value={formData.closureId || ""} 
-                onChange={(e) => setFormData({...formData, closureId: e.target.value})}
+                value={formData.logisticsId || ""} 
+                onChange={(e) => setFormData({...formData, logisticsId: e.target.value})}
                 readOnly={true}
                 className={true ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Closure Date</Label>
+              <Label>Advance Payment ID</Label>
               <Input 
-                type="date"
-                value={formData.closureDate || ""} 
-                onChange={(e) => setFormData({...formData, closureDate: e.target.value})}
+                type="text"
+                value={formData.advanceId || ""} 
+                onChange={(e) => setFormData({...formData, advanceId: e.target.value})}
+                readOnly={true}
+                className={true ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Lift ID</Label>
+              <Input 
+                type="text"
+                value={formData.liftId || ""} 
+                onChange={(e) => setFormData({...formData, liftId: e.target.value})}
+                readOnly={true}
+                className={true ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Lift Date & Time</Label>
+              <Input 
+                type="datetime-local"
+                value={formData.liftDate || ""} 
+                onChange={(e) => setFormData({...formData, liftDate: e.target.value})}
                 readOnly={false}
                 className={false ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Net Quantity MT</Label>
+              <Label>Vehicle Number</Label>
+              <Input 
+                type="text"
+                value={formData.vehicleNumber || ""} 
+                onChange={(e) => setFormData({...formData, vehicleNumber: e.target.value})}
+                readOnly={true}
+                className={true ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Driver Name</Label>
+              <Input 
+                type="text"
+                value={formData.driverName || ""} 
+                onChange={(e) => setFormData({...formData, driverName: e.target.value})}
+                readOnly={true}
+                className={true ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>No. of Bags Loaded</Label>
               <Input 
                 type="number"
-                value={formData.netQtyMt || ""} 
-                onChange={(e) => setFormData({...formData, netQtyMt: e.target.value})}
+                value={formData.noOfBags || ""} 
+                onChange={(e) => setFormData({...formData, noOfBags: e.target.value})}
                 readOnly={false}
                 className={false ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Warehouse Location</Label>
+              <Label>Gross Weight Loaded Kg</Label>
               <Input 
-                type="text"
-                value={formData.warehouse || ""} 
-                onChange={(e) => setFormData({...formData, warehouse: e.target.value})}
+                type="number"
+                value={formData.grossWeight || ""} 
+                onChange={(e) => setFormData({...formData, grossWeight: e.target.value})}
                 readOnly={false}
                 className={false ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Go-down</Label>
+              <Label>Tare Weight Kg</Label>
               <Input 
-                type="text"
-                value={formData.godown || ""} 
-                onChange={(e) => setFormData({...formData, godown: e.target.value})}
+                type="number"
+                value={formData.tareWeight || ""} 
+                onChange={(e) => setFormData({...formData, tareWeight: e.target.value})}
                 readOnly={false}
                 className={false ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Bin / Rack</Label>
+              <Label>Net Weight Lifted Kg</Label>
               <Input 
-                type="text"
-                value={formData.binRack || ""} 
-                onChange={(e) => setFormData({...formData, binRack: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Lot Number</Label>
-              <Input 
-                type="text"
-                value={formData.lotNo || ""} 
-                onChange={(e) => setFormData({...formData, lotNo: e.target.value})}
+                type="number"
+                value={formData.netWeight || ""} 
+                onChange={(e) => setFormData({...formData, netWeight: e.target.value})}
                 readOnly={true}
                 className={true ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Batch Number</Label>
+              <Label>Paddy Grade</Label>
               <Input 
                 type="text"
-                value={formData.batchNo || ""} 
-                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
+                value={formData.paddyGrade || ""} 
+                onChange={(e) => setFormData({...formData, paddyGrade: e.target.value})}
                 readOnly={true}
                 className={true ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Quality Grade</Label>
-              <Input 
-                type="text"
-                value={formData.qualityGrade || ""} 
-                onChange={(e) => setFormData({...formData, qualityGrade: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Moisture at Receipt %</Label>
+              <Label>Moisture at Lift %</Label>
               <Input 
                 type="number"
                 value={formData.moisture || ""} 
                 onChange={(e) => setFormData({...formData, moisture: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Purchase Type</Label>
-              <Input 
-                type="text"
-                value={formData.purchaseType || ""} 
-                onChange={(e) => setFormData({...formData, purchaseType: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Agency / Vendor Name</Label>
-              <Input 
-                type="text"
-                value={formData.agencyVendorName || ""} 
-                onChange={(e) => setFormData({...formData, agencyVendorName: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Purchase Value ₹</Label>
-              <Input 
-                type="number"
-                value={formData.totalPurchaseValue || ""} 
-                onChange={(e) => setFormData({...formData, totalPurchaseValue: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Freight Cost ₹</Label>
-              <Input 
-                type="number"
-                value={formData.freightCost || ""} 
-                onChange={(e) => setFormData({...formData, freightCost: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Landed Cost ₹</Label>
-              <Input 
-                type="number"
-                value={formData.totalLandedCost || ""} 
-                onChange={(e) => setFormData({...formData, totalLandedCost: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Valuation Rate ₹/MT</Label>
-              <Input 
-                type="number"
-                value={formData.valuationRate || ""} 
-                onChange={(e) => setFormData({...formData, valuationRate: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Inventory Updated By</Label>
-              <Input 
-                type="text"
-                value={formData.updatedBy || ""} 
-                onChange={(e) => setFormData({...formData, updatedBy: e.target.value})}
                 readOnly={false}
                 className={false ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Storage Remarks</Label>
+              <Label>Lifted From (Mandi / Agency Name)</Label>
+              <Input 
+                type="text"
+                value={formData.liftedFrom || ""} 
+                onChange={(e) => setFormData({...formData, liftedFrom: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Supervisor Name</Label>
+              <Input 
+                type="text"
+                value={formData.supervisor || ""} 
+                onChange={(e) => setFormData({...formData, supervisor: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Seal No</Label>
+              <Input 
+                type="text"
+                value={formData.sealNo || ""} 
+                onChange={(e) => setFormData({...formData, sealNo: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Loading Remarks</Label>
               <Input 
                 type="text"
                 value={formData.remarks || ""} 

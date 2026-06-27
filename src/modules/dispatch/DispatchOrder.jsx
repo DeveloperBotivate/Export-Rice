@@ -1,39 +1,49 @@
 import React, { useState } from 'react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Play } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
 import DataTable from '../../components/DataTable';
 import { usePagination } from '../../hooks/usePagination';
 import { Modal } from '../../components/ui/Modal';
+import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
-  return Array.from({ length: 40 }, (_, i) => ({
-    id: i + 1,
-    dispatchOrderNo: `DO-${(i + 1).toString().padStart(4, '0')}`,
-    orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    orderType: 'Domestic',
-    salesOrderRef: `SO-${(i + 1).toString().padStart(4, '0')}`,
-    customerName: `Customer ${i+1}`,
-    customerGst: `27AAAC${i}1234K1Z1`,
-    riceGrade: 'Premium Basmati',
-    quantity: Math.floor(Math.random() * 50) + 10,
-    noOfBags: (Math.floor(Math.random() * 50) + 10) * 40,
-    reqDispatchDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    priority: 'Normal',
-    createdBy: 'Sales Exec',
-    status: 'Active'
-  }));
+  return Array.from({ length: 40 }, (_, i) => {
+    const orderType = i % 2 === 0 ? 'Export' : 'Domestic';
+    return {
+      id: i + 1,
+      sourceRef: orderType === 'Export' ? `EC-00${(i + 1).toString().padStart(2, '0')}` : `SO-00${(i + 1).toString().padStart(2, '0')}`,
+      dispatchOrderNo: `DO-00${(i + 1).toString().padStart(2, '0')}`,
+      orderType: orderType,
+      customerName: `Customer ${i+1}`,
+      riceGrade: ['Basmati', 'Non-Basmati'][Math.floor(Math.random() * 2)],
+      quantity: Math.floor(Math.random() * 50) + 10,
+      requiredDispatchDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      priority: ['Normal', 'Urgent'][Math.floor(Math.random() * 2)],
+      orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      customerPhone: '+1234567890',
+      noOfBags: 500,
+      bagSize: '50kg',
+      createdBy: 'Dispatcher',
+      status: 'Completed'
+    };
+  });
 };
 
 export const DispatchOrder = () => {
-  const [historyItems, setHistoryItems] = useState(generateDummyData());
+  const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
+  const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
+  const [activeTab, setActiveTab] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({});
 
-  const filteredData = historyItems.filter(item => 
+  const displayData = activeTab === 'pending' ? pendingItems : historyItems;
+
+  const filteredData = displayData.filter(item => 
     Object.values(item).some(val => 
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -41,41 +51,87 @@ export const DispatchOrder = () => {
 
   const pagination = usePagination(filteredData, 10);
 
-  const handleCreateNew = () => {
-    setFormData({ dispatchOrderNo: 'DO-' + Math.floor(Math.random()*10000) });
+  const handleActionClick = (item) => {
+    setSelectedItem(item);
+    setFormData({
+      sourceRef: item.sourceRef,
+      orderType: item.orderType,
+      customerName: item.customerName,
+      riceGrade: item.riceGrade,
+      quantity: item.quantity,
+      dispatchOrderNo: 'DO-00' + Math.floor(Math.random()*100)
+    });
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    const newItem = { ...formData, id: Date.now(), status: 'Active' };
+    const newItem = { ...selectedItem, ...formData, status: 'Completed' };
     setHistoryItems([newItem, ...historyItems]);
+    setPendingItems(pendingItems.filter(p => p.id !== selectedItem.id));
     setIsModalOpen(false);
   };
 
-  const columns = [
+  const pendingCols = [
+    {
+      header: 'Action',
+      className: 'text-right',
+      cell: (row) => (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
+            <Play size={14} /> Dispatch
+          </Button>
+        </div>
+      )
+    },
+    { header: 'Order Type', accessor: 'orderType', cell: (row) => (
+      <span className={`px-2 py-1 rounded text-xs font-semibold ${row.orderType === 'Export' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+        {row.orderType}
+      </span>
+    )},
+    { header: 'Source Ref', accessor: 'sourceRef' },
+    { header: 'Customer/Buyer Name', accessor: 'customerName' },
+    { header: 'Rice Grade', accessor: 'riceGrade' },
+    { header: 'Quantity (MT)', accessor: 'quantity' },
+    { header: 'Required Dispatch Date', accessor: 'requiredDispatchDate' },
+    { header: 'Priority', accessor: 'priority' }
+  ];
+
+  const historyCols = [
     { header: 'Dispatch Order No', accessor: 'dispatchOrderNo' },
-    { header: 'Order Date', accessor: 'orderDate' },
-    { header: 'Order Type', accessor: 'orderType' },
-    { header: 'Sales Order Ref', accessor: 'salesOrderRef' },
-    { header: 'Customer Name', accessor: 'customerName' },
-    { header: 'Customer GSTIN', accessor: 'customerGst' },
+    { header: 'Order Type', accessor: 'orderType', cell: (row) => (
+      <span className={`px-2 py-1 rounded text-xs font-semibold ${row.orderType === 'Export' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+        {row.orderType}
+      </span>
+    )},
+    { header: 'Source Ref', accessor: 'sourceRef' },
+    { header: 'Customer/Buyer Name', accessor: 'customerName' },
     { header: 'Rice Grade', accessor: 'riceGrade' },
     { header: 'Quantity (MT)', accessor: 'quantity' },
     { header: 'No. of Bags', accessor: 'noOfBags' },
-    { header: 'Req Dispatch Date', accessor: 'reqDispatchDate' },
+    { header: 'Required Dispatch Date', accessor: 'requiredDispatchDate' },
     { header: 'Priority', accessor: 'priority' },
     { header: 'Created By', accessor: 'createdBy' },
     { header: 'Status', accessor: 'status' }
   ];
 
+  const columns = activeTab === 'pending' ? pendingCols : historyCols;
+
+  const domesticPending = pendingItems.filter(i => i.orderType === 'Domestic').length;
+  const exportPending = pendingItems.filter(i => i.orderType === 'Export').length;
+  const totalPending = pendingItems.length;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-800">Stage 1 - Dispatch Order</h2>
-        <Button onClick={handleCreateNew} className="flex items-center gap-2">
-          <Plus size={16} /> Receive Order
-        </Button>
+        <div className="flex gap-4">
+          <div className="bg-slate-100 px-3 py-1.5 rounded-md text-sm">Total Pending: <span className="font-bold">{totalPending}</span></div>
+          <div className="bg-green-50 text-green-700 px-3 py-1.5 rounded-md text-sm border border-green-200">Domestic: <span className="font-bold">{domesticPending}</span></div>
+          <div className="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-md text-sm border border-blue-200">Export: <span className="font-bold">{exportPending}</span></div>
+        </div>
       </div>
+      
+      <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <Card>
         <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
@@ -106,7 +162,7 @@ export const DispatchOrder = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Receive Dispatch Order"
+        title="Create Dispatch Order"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
@@ -115,44 +171,28 @@ export const DispatchOrder = () => {
               <Input type="text" value={formData.dispatchOrderNo || ''} readOnly className="bg-slate-100" />
             </div>
             <div className="space-y-1.5">
+              <Label>Order Type</Label>
+              <Input type="text" value={formData.orderType || ''} readOnly className="bg-slate-100" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Source Reference</Label>
+              <Input type="text" value={formData.sourceRef || ''} readOnly className="bg-slate-100" />
+            </div>
+            <div className="space-y-1.5">
               <Label>Order Date</Label>
               <Input type="date" value={formData.orderDate || ''} onChange={(e) => setFormData({...formData, orderDate: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Order Type</Label>
-              <Select value={formData.orderType || ''} onChange={(e) => setFormData({...formData, orderType: e.target.value})}>
-                <option value="">Select Type</option>
-                <option value="Domestic">Domestic</option>
-                <option value="Export">Export</option>
-              </Select>
+              <Label>Customer/Buyer Name</Label>
+              <Input type="text" value={formData.customerName || ''} readOnly className="bg-slate-100" />
             </div>
             <div className="space-y-1.5">
-              <Label>Sales Order Ref</Label>
-              <Input type="text" value={formData.salesOrderRef || ''} onChange={(e) => setFormData({...formData, salesOrderRef: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Customer Name</Label>
-              <Input type="text" value={formData.customerName || ''} onChange={(e) => setFormData({...formData, customerName: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Customer Phone</Label>
+              <Label>Customer Phone / Buyer Country</Label>
               <Input type="text" value={formData.customerPhone || ''} onChange={(e) => setFormData({...formData, customerPhone: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Customer GSTIN</Label>
-              <Input type="text" value={formData.customerGst || ''} onChange={(e) => setFormData({...formData, customerGst: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Delivery Address</Label>
+              <Label>Delivery Address / Port of Loading</Label>
               <Input type="text" value={formData.deliveryAddress || ''} onChange={(e) => setFormData({...formData, deliveryAddress: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Delivery State</Label>
-              <Input type="text" value={formData.deliveryState || ''} onChange={(e) => setFormData({...formData, deliveryState: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Delivery Pin Code</Label>
-              <Input type="text" value={formData.deliveryPinCode || ''} onChange={(e) => setFormData({...formData, deliveryPinCode: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Rice Grade</Label>
@@ -172,11 +212,12 @@ export const DispatchOrder = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Required Dispatch Date</Label>
-              <Input type="date" value={formData.reqDispatchDate || ''} onChange={(e) => setFormData({...formData, reqDispatchDate: e.target.value})} />
+              <Input type="date" value={formData.requiredDispatchDate || ''} onChange={(e) => setFormData({...formData, requiredDispatchDate: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Priority</Label>
               <Select value={formData.priority || ''} onChange={(e) => setFormData({...formData, priority: e.target.value})}>
+                <option value="">Select Priority</option>
                 <option value="Normal">Normal</option>
                 <option value="Urgent">Urgent</option>
               </Select>

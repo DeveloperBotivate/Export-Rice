@@ -91,7 +91,7 @@ const generateDummyData = () => {
   });
 };
 
-export const PickingList = () => {
+export const TestCertificate = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -116,16 +116,16 @@ export const PickingList = () => {
     setSelectedItem(item);
     
     let autoFields = {};
-    if ('PickingList' === 'DispatchPlanning') autoFields = { planId: 'DP-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'ArrangeLogistics') autoFields = { logisticsArrangementId: 'LA-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'PickingList') autoFields = { pickListNo: 'PK-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'LogisticsDetails') autoFields = { logisticsId: 'LG-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'TestCertificate') autoFields = { certificateNo: 'TC-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'DispatchWeight') autoFields = { weightSlipNo: 'DW-00' + Math.floor(Math.random()*100) };
-    if ('PickingList' === 'Invoice') autoFields = { invoiceNo: 'INV-00' + Math.floor(Math.random()*100), invoiceType: item.orderType === 'Export' ? 'Export Invoice' : 'Tax Invoice' };
-    if ('PickingList' === 'DeliveryConfirmation') autoFields = { confirmationId: 'CF-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'DispatchPlanning') autoFields = { planId: 'DP-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'ArrangeLogistics') autoFields = { logisticsArrangementId: 'LA-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'PickingList') autoFields = { pickListNo: 'PK-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'LogisticsDetails') autoFields = { logisticsId: 'LG-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'TestCertificate') autoFields = { certificateNo: 'TC-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'DispatchWeight') autoFields = { weightSlipNo: 'DW-00' + Math.floor(Math.random()*100) };
+    if ('TestCertificate' === 'Invoice') autoFields = { invoiceNo: 'INV-00' + Math.floor(Math.random()*100), invoiceType: item.orderType === 'Export' ? 'Export Invoice' : 'Tax Invoice' };
+    if ('TestCertificate' === 'DeliveryConfirmation') autoFields = { confirmationId: 'CF-00' + Math.floor(Math.random()*100) };
     
-    const readOnlyFields = ["logisticsArrangementId","dispatchOrderNo","orderType","sourceRef","pickListNo","riceGrade"];
+    const readOnlyFields = ["logisticsId","dispatchOrderNo","orderType","sourceRef","certificateNo"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -150,21 +150,21 @@ export const PickingList = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Create Picking List
+          Issue Certificate
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Logistics Arrangement ID","accessor":"logisticsArrangementId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Allocated Qty (MT)","accessor":"allocatedQty"},{"header":"Transporter Shortlisted","accessor":"transporterShortlisted"},{"header":"Arrangement Status","accessor":"arrangementStatus"}];
-  const historyCols = [{"header":"Pick List No","accessor":"pickListNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Lot No","accessor":"lotNo"},{"header":"Batch No","accessor":"batchNo"},{"header":"Picked Qty (MT)","accessor":"pickedQty"},{"header":"No. of Bags","accessor":"pickedBags"},{"header":"Pick Date","accessor":"pickDate"},{"header":"Picked By","accessor":"pickedBy"},{"header":"Supervisor","accessor":"supervisor"}];
+  const pendingCols = [{"header":"Logistics ID","accessor":"logisticsId"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"Expected Departure","accessor":"expectedDeparture"}];
+  const historyCols = [{"header":"Certificate No","accessor":"certificateNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Test Date","accessor":"testDate"},{"header":"Quality Grade Confirmed","accessor":"qualityGradeConfirmed"},{"header":"Moisture %","accessor":"moisture"},{"header":"Phytosanitary Cert No","accessor":"phytoCertNo"},{"header":"Result","accessor":"result"},{"header":"Tested By","accessor":"testedBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 4 - Picking List</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 6 - Test Certificate</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -198,17 +198,17 @@ export const PickingList = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Picking List Details"
+        title="Test Certificate Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <Label>Logistics Arrangement ID</Label>
+              <Label>Logistics ID</Label>
               <Input 
                 type="text"
-                value={formData.logisticsArrangementId || ''} 
-                onChange={(e) => setFormData({...formData, logisticsArrangementId: e.target.value})}
+                value={formData.logisticsId || ''} 
+                onChange={(e) => setFormData({...formData, logisticsId: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -244,114 +244,118 @@ export const PickingList = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Pick List No</Label>
+              <Label>Certificate No</Label>
               <Input 
                 type="text"
-                value={formData.pickListNo || ''} 
-                onChange={(e) => setFormData({...formData, pickListNo: e.target.value})}
+                value={formData.certificateNo || ''} 
+                onChange={(e) => setFormData({...formData, certificateNo: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Pick Date</Label>
+              <Label>Test Date</Label>
               <Input 
                 type="date"
-                value={formData.pickDate || ''} 
-                onChange={(e) => setFormData({...formData, pickDate: e.target.value})}
+                value={formData.testDate || ''} 
+                onChange={(e) => setFormData({...formData, testDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Warehouse</Label>
+              <Label>Lab/Quality Officer Name</Label>
               <Input 
                 type="text"
-                value={formData.warehouse || ''} 
-                onChange={(e) => setFormData({...formData, warehouse: e.target.value})}
+                value={formData.testedBy || ''} 
+                onChange={(e) => setFormData({...formData, testedBy: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Go-down/Rack/Bin</Label>
-              <Input 
-                type="text"
-                value={formData.rackBin || ''} 
-                onChange={(e) => setFormData({...formData, rackBin: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Rice Grade</Label>
-              <Input 
-                type="text"
-                value={formData.riceGrade || ''} 
-                onChange={(e) => setFormData({...formData, riceGrade: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Lot No</Label>
-              <Input 
-                type="text"
-                value={formData.lotNo || ''} 
-                onChange={(e) => setFormData({...formData, lotNo: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Batch No</Label>
-              <Input 
-                type="text"
-                value={formData.batchNo || ''} 
-                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Quantity to Pick (MT)</Label>
+              <Label>Moisture %</Label>
               <Input 
                 type="number"
-                value={formData.pickedQty || ''} 
-                onChange={(e) => setFormData({...formData, pickedQty: e.target.value})}
+                value={formData.moisture || ''} 
+                onChange={(e) => setFormData({...formData, moisture: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>No. of Bags</Label>
+              <Label>Broken Grain %</Label>
               <Input 
                 type="number"
-                value={formData.pickedBags || ''} 
-                onChange={(e) => setFormData({...formData, pickedBags: e.target.value})}
+                value={formData.brokenGrain || ''} 
+                onChange={(e) => setFormData({...formData, brokenGrain: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Picked By</Label>
+              <Label>Foreign Matter %</Label>
               <Input 
-                type="text"
-                value={formData.pickedBy || ''} 
-                onChange={(e) => setFormData({...formData, pickedBy: e.target.value})}
+                type="number"
+                value={formData.foreignMatter || ''} 
+                onChange={(e) => setFormData({...formData, foreignMatter: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Supervisor Name</Label>
+              <Label>Quality Grade Confirmed</Label>
               <Input 
                 type="text"
-                value={formData.supervisor || ''} 
-                onChange={(e) => setFormData({...formData, supervisor: e.target.value})}
+                value={formData.qualityGradeConfirmed || ''} 
+                onChange={(e) => setFormData({...formData, qualityGradeConfirmed: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Phytosanitary Required (Y/N)</Label>
+              <Select 
+                value={formData.phytoRequired || ''} 
+                onChange={(e) => setFormData({...formData, phytoRequired: e.target.value})}
+                disabled={false}
+                className={false ? 'bg-slate-100' : ''}
+              >
+                <option value="">Select Phytosanitary Required (Y/N)</option>
+                <option value="Y">Y</option><option value="N">N</option>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Phytosanitary Cert No</Label>
+              <Input 
+                type="text"
+                value={formData.phytoCertNo || ''} 
+                onChange={(e) => setFormData({...formData, phytoCertNo: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Fumigation Cert No (if Export)</Label>
+              <Input 
+                type="text"
+                value={formData.fumigationCertNo || ''} 
+                onChange={(e) => setFormData({...formData, fumigationCertNo: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Result</Label>
+              <Select 
+                value={formData.result || ''} 
+                onChange={(e) => setFormData({...formData, result: e.target.value})}
+                disabled={false}
+                className={false ? 'bg-slate-100' : ''}
+              >
+                <option value="">Select Result</option>
+                <option value="Pass">Pass</option><option value="Fail">Fail</option>
+              </Select>
             </div>
             <div className="space-y-1.5">
               <Label>Remarks</Label>

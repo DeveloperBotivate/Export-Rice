@@ -126,7 +126,7 @@ const generateDummyData = () => {
   });
 };
 
-export const ExportPayment = () => {
+export const InsuranceAndInvoice = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -151,16 +151,16 @@ export const ExportPayment = () => {
     setSelectedItem(item);
     
     let autoFields = {};
-    if ('ExportPayment' === 'PackingList') autoFields = { packingListNo: 'PL-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'ContainerBooking') autoFields = { bookingRefNo: 'CB-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'ContainerLoading') autoFields = { loadingId: 'CL-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'ShippingBill') autoFields = { shippingBillNo: 'SB-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'BillOfLading') autoFields = { blNumber: 'BL-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'CertificateOfOrigin') autoFields = { cooNumber: 'COO-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'InsuranceAndInvoice') autoFields = { exportInvoiceNo: 'EI-00' + Math.floor(Math.random()*100) };
-    if ('ExportPayment' === 'ExportPayment') autoFields = { paymentId: 'EP-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'PackingList') autoFields = { packingListNo: 'PL-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'ContainerBooking') autoFields = { bookingRefNo: 'CB-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'ContainerLoading') autoFields = { loadingId: 'CL-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'ShippingBill') autoFields = { shippingBillNo: 'SB-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'BillOfLading') autoFields = { blNumber: 'BL-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'CertificateOfOrigin') autoFields = { cooNumber: 'COO-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'InsuranceAndInvoice') autoFields = { exportInvoiceNo: 'EI-00' + Math.floor(Math.random()*100) };
+    if ('InsuranceAndInvoice' === 'ExportPayment') autoFields = { paymentId: 'EP-00' + Math.floor(Math.random()*100) };
     
-    const readOnlyFields = ["exportInvoiceNo","contractNo","buyerName","paymentId","inrEquivalent","outstanding"];
+    const readOnlyFields = ["cooNumber","blNumber","contractNo","exportInvoiceNo","inrEquivalent"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -185,21 +185,21 @@ export const ExportPayment = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Process Payment
+          Update Documentation
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Export Invoice No","accessor":"exportInvoiceNo"},{"header":"Contract No","accessor":"contractNo"},{"header":"Buyer Name","accessor":"buyerName"},{"header":"Buyer Country","accessor":"buyerCountry"},{"header":"Invoice Amount ($)","accessor":"invoiceAmount"},{"header":"Invoice Date","accessor":"invoiceDate"},{"header":"Bank Ref No","accessor":"bankRefNo"},{"header":"LC No","accessor":"lcNo"},{"header":"Document Submission Date","accessor":"docSubmissionDate"},{"header":"Outstanding ($)","accessor":"outstanding"}];
-  const historyCols = [{"header":"Payment ID","accessor":"paymentId"},{"header":"Export Invoice No","accessor":"exportInvoiceNo"},{"header":"Contract No","accessor":"contractNo"},{"header":"Buyer Name","accessor":"buyerName"},{"header":"Receipt Date","accessor":"receiptDate"},{"header":"Amount Received ($)","accessor":"amountReceived"},{"header":"INR Equivalent (₹)","accessor":"inrEquivalent"},{"header":"Forex Rate","accessor":"forexRate"},{"header":"FIRC No","accessor":"fircNo"},{"header":"FIRC Date","accessor":"fircDate"},{"header":"Outstanding ($)","accessor":"outstanding"},{"header":"Payment Mode","accessor":"paymentMode"},{"header":"Payment Status","accessor":"paymentStatus"},{"header":"Bank Ref No","accessor":"bankRefNo"},{"header":"Received By","accessor":"receivedBy"}];
+  const pendingCols = [{"header":"COO No","accessor":"cooNumber"},{"header":"BL Number","accessor":"blNumber"},{"header":"Contract No","accessor":"contractNo"},{"header":"Buyer Name","accessor":"buyerName"},{"header":"Buyer Country","accessor":"buyerCountry"},{"header":"Quantity (MT)","accessor":"quantity"},{"header":"FOB Value ($)","accessor":"fobValue"},{"header":"Issue Date","accessor":"issueDate"}];
+  const historyCols = [{"header":"Export Invoice No","accessor":"exportInvoiceNo"},{"header":"COO No","accessor":"cooNumber"},{"header":"BL Number","accessor":"blNumber"},{"header":"Contract No","accessor":"contractNo"},{"header":"Invoice Date","accessor":"invoiceDate"},{"header":"Invoice Amount ($)","accessor":"invoiceAmount"},{"header":"INR Equivalent (₹)","accessor":"inrEquivalent"},{"header":"Insurance Policy No","accessor":"insurancePolicyNo"},{"header":"Sum Insured ($)","accessor":"sumInsured"},{"header":"Port Charges (₹)","accessor":"portCharges"},{"header":"Custom Clearance (₹)","accessor":"customClearance"},{"header":"Bank Ref No","accessor":"bankRefNo"},{"header":"SWIFT Code","accessor":"swiftCode"},{"header":"LC No","accessor":"lcNo"},{"header":"Document Submission Date","accessor":"docSubmissionDate"},{"header":"Submitted By","accessor":"submittedBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 10 - Export Payment</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 9 - Insurance, Port, Invoice, Bank Advice</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -233,17 +233,27 @@ export const ExportPayment = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Payment Details"
+        title="Documentation & Bank Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <Label>Export Invoice No</Label>
+              <Label>COO No</Label>
               <Input 
                 type="text"
-                value={formData.exportInvoiceNo || ''} 
-                onChange={(e) => setFormData({...formData, exportInvoiceNo: e.target.value})}
+                value={formData.cooNumber || ''} 
+                onChange={(e) => setFormData({...formData, cooNumber: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>BL Number</Label>
+              <Input 
+                type="text"
+                value={formData.blNumber || ''} 
+                onChange={(e) => setFormData({...formData, blNumber: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -259,51 +269,51 @@ export const ExportPayment = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Buyer Name</Label>
+              <Label>Export Invoice No</Label>
               <Input 
                 type="text"
-                value={formData.buyerName || ''} 
-                onChange={(e) => setFormData({...formData, buyerName: e.target.value})}
+                value={formData.exportInvoiceNo || ''} 
+                onChange={(e) => setFormData({...formData, exportInvoiceNo: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Payment ID</Label>
-              <Input 
-                type="text"
-                value={formData.paymentId || ''} 
-                onChange={(e) => setFormData({...formData, paymentId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Receipt Date</Label>
+              <Label>Invoice Date</Label>
               <Input 
                 type="date"
-                value={formData.receiptDate || ''} 
-                onChange={(e) => setFormData({...formData, receiptDate: e.target.value})}
+                value={formData.invoiceDate || ''} 
+                onChange={(e) => setFormData({...formData, invoiceDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Amount Received ($)</Label>
+              <Label>Invoice Currency</Label>
               <Input 
-                type="number"
-                value={formData.amountReceived || ''} 
-                onChange={(e) => setFormData({...formData, amountReceived: e.target.value})}
+                type="text"
+                value={formData.invoiceCurrency || ''} 
+                onChange={(e) => setFormData({...formData, invoiceCurrency: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Forex Rate (₹/$)</Label>
+              <Label>Invoice Amount ($)</Label>
               <Input 
                 type="number"
-                value={formData.forexRate || ''} 
-                onChange={(e) => setFormData({...formData, forexRate: e.target.value})}
+                value={formData.invoiceAmount || ''} 
+                onChange={(e) => setFormData({...formData, invoiceAmount: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Conversion Rate (₹/$)</Label>
+              <Input 
+                type="number"
+                value={formData.conversionRate || ''} 
+                onChange={(e) => setFormData({...formData, conversionRate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
@@ -319,16 +329,96 @@ export const ExportPayment = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Payment Mode</Label>
+              <Label>Insurance Policy No</Label>
+              <Input 
+                type="text"
+                value={formData.insurancePolicyNo || ''} 
+                onChange={(e) => setFormData({...formData, insurancePolicyNo: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Insurance Company</Label>
+              <Input 
+                type="text"
+                value={formData.insuranceCompany || ''} 
+                onChange={(e) => setFormData({...formData, insuranceCompany: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Insurance Type</Label>
               <Select 
-                value={formData.paymentMode || ''} 
-                onChange={(e) => setFormData({...formData, paymentMode: e.target.value})}
+                value={formData.insuranceType || ''} 
+                onChange={(e) => setFormData({...formData, insuranceType: e.target.value})}
                 disabled={false}
                 className={false ? 'bg-slate-100' : ''}
               >
-                <option value="">Select Payment Mode</option>
-                <option value="LC">LC</option><option value="TT">TT</option><option value="DA">DA</option><option value="CAD">CAD</option>
+                <option value="">Select Insurance Type</option>
+                <option value="Marine">Marine</option><option value="All Risk">All Risk</option>
               </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Sum Insured ($)</Label>
+              <Input 
+                type="number"
+                value={formData.sumInsured || ''} 
+                onChange={(e) => setFormData({...formData, sumInsured: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Insurance Premium (₹)</Label>
+              <Input 
+                type="number"
+                value={formData.insurancePremium || ''} 
+                onChange={(e) => setFormData({...formData, insurancePremium: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Port Name</Label>
+              <Input 
+                type="text"
+                value={formData.portName || ''} 
+                onChange={(e) => setFormData({...formData, portName: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Port Charges (₹)</Label>
+              <Input 
+                type="number"
+                value={formData.portCharges || ''} 
+                onChange={(e) => setFormData({...formData, portCharges: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Wharfage Charges (₹)</Label>
+              <Input 
+                type="number"
+                value={formData.wharfageCharges || ''} 
+                onChange={(e) => setFormData({...formData, wharfageCharges: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Custom Clearance Charges (₹)</Label>
+              <Input 
+                type="number"
+                value={formData.customClearance || ''} 
+                onChange={(e) => setFormData({...formData, customClearance: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
             </div>
             <div className="space-y-1.5">
               <Label>Bank Name</Label>
@@ -341,7 +431,17 @@ export const ExportPayment = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Bank Reference No</Label>
+              <Label>Bank Branch</Label>
+              <Input 
+                type="text"
+                value={formData.bankBranch || ''} 
+                onChange={(e) => setFormData({...formData, bankBranch: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Bank Ref No</Label>
               <Input 
                 type="text"
                 value={formData.bankRefNo || ''} 
@@ -351,83 +451,61 @@ export const ExportPayment = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>FIRC No</Label>
+              <Label>SWIFT Code/IBAN</Label>
               <Input 
                 type="text"
-                value={formData.fircNo || ''} 
-                onChange={(e) => setFormData({...formData, fircNo: e.target.value})}
+                value={formData.swiftCode || ''} 
+                onChange={(e) => setFormData({...formData, swiftCode: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>FIRC Date</Label>
+              <Label>LC No (if applicable)</Label>
+              <Input 
+                type="text"
+                value={formData.lcNo || ''} 
+                onChange={(e) => setFormData({...formData, lcNo: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>LC Expiry Date</Label>
               <Input 
                 type="date"
-                value={formData.fircDate || ''} 
-                onChange={(e) => setFormData({...formData, fircDate: e.target.value})}
+                value={formData.lcExpiryDate || ''} 
+                onChange={(e) => setFormData({...formData, lcExpiryDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Outstanding ($)</Label>
-              <Input 
-                type="number"
-                value={formData.outstanding || ''} 
-                onChange={(e) => setFormData({...formData, outstanding: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Penalty/Deduction ($)</Label>
-              <Input 
-                type="number"
-                value={formData.penalty || ''} 
-                onChange={(e) => setFormData({...formData, penalty: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Reason for Deduction</Label>
+              <Label>Documents Submitted</Label>
               <Input 
                 type="text"
-                value={formData.reasonForDeduction || ''} 
-                onChange={(e) => setFormData({...formData, reasonForDeduction: e.target.value})}
+                value={formData.documentsSubmitted || ''} 
+                onChange={(e) => setFormData({...formData, documentsSubmitted: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Payment Status</Label>
-              <Select 
-                value={formData.paymentStatus || ''} 
-                onChange={(e) => setFormData({...formData, paymentStatus: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Payment Status</option>
-                <option value="Full">Full</option><option value="Partial">Partial</option><option value="Overdue">Overdue</option>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Received By</Label>
+              <Label>Document Submission Date</Label>
               <Input 
-                type="text"
-                value={formData.receivedBy || ''} 
-                onChange={(e) => setFormData({...formData, receivedBy: e.target.value})}
+                type="date"
+                value={formData.docSubmissionDate || ''} 
+                onChange={(e) => setFormData({...formData, docSubmissionDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Remarks</Label>
+              <Label>Submitted By</Label>
               <Input 
                 type="text"
-                value={formData.remarks || ''} 
-                onChange={(e) => setFormData({...formData, remarks: e.target.value})}
+                value={formData.submittedBy || ''} 
+                onChange={(e) => setFormData({...formData, submittedBy: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

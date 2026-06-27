@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play } from 'lucide-react';
+import { Search, Play, Plus } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -10,66 +10,50 @@ import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => {
-    const qty = Math.floor(Math.random() * 50) + 10;
-    const price = Math.floor(Math.random() * 50000) + 40000;
-    
+    const isExport = i % 2 === 0;
     return {
       id: i + 1,
-      orderId: `SO-2026-${(i + 1).toString().padStart(4, '0')}`,
-      orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      orderType: ['Domestic', 'Export'][Math.floor(Math.random() * 2)],
+      orderId: `SO-00${(i + 1).toString().padStart(2, '0')}`,
+      orderType: isExport ? 'Export' : 'Domestic',
       customerName: `Customer ${i+1}`,
-      customerPhone: `+91 9876543${(i+1).toString().padStart(3, '0')}`,
-      customerEmail: `contact@customer${i+1}.com`,
-      customerAddress: 'Mumbai, India',
-      riceGradeRequired: ['Grade A', 'Grade B', 'Premium'][Math.floor(Math.random() * 3)],
-      qtyRequired: qty,
-      bagSizePreference: ['25kg', '50kg'][Math.floor(Math.random() * 2)],
-      deliveryLocation: 'Warehouse 1',
-      expectedDeliveryDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      receivedBy: 'Sales Rep',
+      riceGrade: ['Basmati', 'Non-Basmati', 'Sona Masoori'][Math.floor(Math.random() * 3)],
+      quantity: Math.floor(Math.random() * 50) + 10,
+      totalOrderValue: Math.floor(Math.random() * 500000) + 100000,
+      requiredDeliveryDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
       
-      quotationNo: `QT-${(i + 1).toString().padStart(4, '0')}`,
-      quotationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      quotedQty: qty,
-      quotedPrice: price,
-      totalValue: qty * price,
-      validTill: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      quotationBy: 'Sales Manager',
-
-      followUpId: `FU-${(i + 1).toString().padStart(4, '0')}`,
-      followUpDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      customerDecision: ['Accepted', 'Negotiating', 'Rejected'][Math.floor(Math.random() * 3)],
-      counterOffer: price - 500,
-      nextFollowUpDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      handledBy: 'Sales Rep',
-
-      orderApprovalId: `OA-${(i + 1).toString().padStart(4, '0')}`,
-      approvedPrice: price - 200,
-      approvedQty: qty,
-      specialDiscount: 2,
-      paymentAdvance: 50000,
-      creditDays: 30,
-      orderApprovedBy: 'Sales Director',
-      approvalDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      orderCompletionId: `OC-${(i + 1).toString().padStart(4, '0')}`,
-      totalQtySupplied: qty,
-      invoiceRef: `INV-${(i + 1).toString().padStart(4, '0')}`,
-      dispatchRef: `DISP-${(i + 1).toString().padStart(4, '0')}`,
-      totalValueSupplied: qty * (price - 200),
-      balancePayment: 0,
-      paymentReceived: 'Yes',
-      orderStatus: 'Completed',
-      closedBy: 'Finance Head',
+      verificationId: `CV-00${(i + 1).toString().padStart(2, '0')}`,
+      creditLimit: isExport ? 'A+' : '500000',
+      availableCredit: 250000,
+      verificationStatus: ['Approved', 'Hold', 'Rejected'][Math.floor(Math.random() * 3)],
+      verificationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      verifiedBy: 'Finance Mgr',
+      
+      confirmationId: `OC-00${(i + 1).toString().padStart(2, '0')}`,
+      finalQuantity: Math.floor(Math.random() * 50) + 10,
+      finalRate: 45000,
+      advanceReceived: 50000,
+      confirmedDeliveryDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      confirmedBy: 'Sales Rep',
+      
+      allocationId: `AL-00${(i + 1).toString().padStart(2, '0')}`,
+      quantityAllocated: Math.floor(Math.random() * 50) + 10,
+      allocationStatus: ['Full', 'Partial', 'Backorder'][Math.floor(Math.random() * 3)],
+      stockCheckDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      allocatedBy: 'Prod Mgr',
+      
+      completionId: `OCM-00${(i + 1).toString().padStart(2, '0')}`,
+      totalQtySupplied: Math.floor(Math.random() * 50) + 10,
+      totalValue: Math.floor(Math.random() * 500000) + 100000,
       completionDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
+      closedBy: 'Sales Admin',
+      completionStatus: isExport ? 'Ready for Export Process' : 'Ready for Dispatch',
+      
       status: 'Completed'
     };
   });
 };
 
-export const OrderFollowUp = () => {
+export const ProductionAllocationCheck = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -94,12 +78,12 @@ export const OrderFollowUp = () => {
     setSelectedItem(item);
     
     let autoFields = {};
+    if ('ProductionAllocationCheck' === 'CreditBuyerVerification') autoFields = { verificationId: 'CV-00' + Math.floor(Math.random()*100) };
+    if ('ProductionAllocationCheck' === 'OrderConfirmation') autoFields = { confirmationId: 'OC-00' + Math.floor(Math.random()*100) };
+    if ('ProductionAllocationCheck' === 'ProductionAllocationCheck') autoFields = { allocationId: 'AL-00' + Math.floor(Math.random()*100) };
+    if ('ProductionAllocationCheck' === 'OrderCompletion') autoFields = { completionId: 'OCM-00' + Math.floor(Math.random()*100) };
     
-    autoFields = { followUpId: 'FU-' + Math.floor(Math.random()*10000) };
-    
-    
-    
-    const readOnlyFields = ["quotationNo","orderId","orderType","followUpId"];
+    const readOnlyFields = ["confirmationId","orderId","allocationId"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -108,12 +92,6 @@ export const OrderFollowUp = () => {
     setFormData({ ...initialFormData, ...autoFields });
     setIsModalOpen(true);
   };
-
-  useEffect(() => {
-    if (isModalOpen && formData) {
-      
-    }
-  }, [formData, isModalOpen, selectedItem]);
 
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
@@ -130,21 +108,21 @@ export const OrderFollowUp = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Follow Up
+          Allocate
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Quotation No","accessor":"quotationNo"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Quantity (MT)","accessor":"quotedQty"},{"header":"Quoted Price","accessor":"quotedPrice"},{"header":"Total Value","accessor":"totalValue"},{"header":"Valid Till","accessor":"validTill"}];
-  const historyCols = [{"header":"Follow-up ID","accessor":"followUpId"},{"header":"Quotation No","accessor":"quotationNo"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer Name","accessor":"customerName"},{"header":"Follow-up Date","accessor":"followUpDate"},{"header":"Customer Decision","accessor":"customerDecision"},{"header":"Counter Offer","accessor":"counterOffer"},{"header":"Next Follow-up Date","accessor":"nextFollowUpDate"},{"header":"Handled By","accessor":"handledBy"}];
+  const pendingCols = [{"header":"Confirmation ID","accessor":"confirmationId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Final Quantity (MT)","accessor":"finalQuantity"},{"header":"Confirmed Delivery Date","accessor":"confirmedDeliveryDate"}];
+  const historyCols = [{"header":"Allocation ID","accessor":"allocationId"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Quantity Allocated (MT)","accessor":"quantityAllocated"},{"header":"Allocation Status","accessor":"allocationStatus"},{"header":"Stock Check Date","accessor":"stockCheckDate"},{"header":"Allocated By","accessor":"allocatedBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 3 - Order Follow-up</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 4 - Production/Stock Allocation Check</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -178,17 +156,17 @@ export const OrderFollowUp = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Follow-up Details"
+        title="Allocation Details"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <Label>Quotation No</Label>
+              <Label>Confirmation ID</Label>
               <Input 
                 type="text"
-                value={formData.quotationNo || ''} 
-                onChange={(e) => setFormData({...formData, quotationNo: e.target.value})}
+                value={formData.confirmationId || ''} 
+                onChange={(e) => setFormData({...formData, confirmationId: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -204,83 +182,73 @@ export const OrderFollowUp = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Order Type</Label>
+              <Label>Allocation ID</Label>
               <Input 
                 type="text"
-                value={formData.orderType || ''} 
-                onChange={(e) => setFormData({...formData, orderType: e.target.value})}
+                value={formData.allocationId || ''} 
+                onChange={(e) => setFormData({...formData, allocationId: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Follow-up ID</Label>
-              <Input 
-                type="text"
-                value={formData.followUpId || ''} 
-                onChange={(e) => setFormData({...formData, followUpId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Follow-up Date</Label>
+              <Label>Stock Check Date</Label>
               <Input 
                 type="date"
-                value={formData.followUpDate || ''} 
-                onChange={(e) => setFormData({...formData, followUpDate: e.target.value})}
+                value={formData.stockCheckDate || ''} 
+                onChange={(e) => setFormData({...formData, stockCheckDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Customer Feedback</Label>
-              <Input 
-                type="text"
-                value={formData.customerFeedback || ''} 
-                onChange={(e) => setFormData({...formData, customerFeedback: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Counter Offer (if any) (₹/MT)</Label>
+              <Label>FG Stock Available (MT)</Label>
               <Input 
                 type="number"
-                value={formData.counterOffer || ''} 
-                onChange={(e) => setFormData({...formData, counterOffer: e.target.value})}
+                value={formData.fgStockAvailable || ''} 
+                onChange={(e) => setFormData({...formData, fgStockAvailable: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Customer Decision</Label>
+              <Label>Quantity Allocated (MT)</Label>
+              <Input 
+                type="number"
+                value={formData.quantityAllocated || ''} 
+                onChange={(e) => setFormData({...formData, quantityAllocated: e.target.value})}
+                readOnly={false}
+                className={false ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Allocation Status</Label>
               <Select 
-                value={formData.customerDecision || ''} 
-                onChange={(e) => setFormData({...formData, customerDecision: e.target.value})}
+                value={formData.allocationStatus || ''} 
+                onChange={(e) => setFormData({...formData, allocationStatus: e.target.value})}
                 disabled={false}
                 className={false ? 'bg-slate-100' : ''}
               >
-                <option value="">Select Customer Decision</option>
-                <option value="Accepted">Accepted</option><option value="Negotiating">Negotiating</option><option value="Rejected">Rejected</option>
+                <option value="">Select Allocation Status</option>
+                <option value="Full">Full</option><option value="Partial">Partial</option><option value="Backorder">Backorder</option>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Next Follow-up Date</Label>
+              <Label>Expected Production Date</Label>
               <Input 
                 type="date"
-                value={formData.nextFollowUpDate || ''} 
-                onChange={(e) => setFormData({...formData, nextFollowUpDate: e.target.value})}
+                value={formData.expectedProductionDate || ''} 
+                onChange={(e) => setFormData({...formData, expectedProductionDate: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Handled By</Label>
+              <Label>Allocated By</Label>
               <Input 
                 type="text"
-                value={formData.handledBy || ''} 
-                onChange={(e) => setFormData({...formData, handledBy: e.target.value})}
+                value={formData.allocatedBy || ''} 
+                onChange={(e) => setFormData({...formData, allocatedBy: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

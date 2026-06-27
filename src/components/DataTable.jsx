@@ -16,6 +16,7 @@ const DataTable = ({
   renderRow: propRenderRow, 
   renderCard: propRenderCard,
   minWidth = "1000px",
+  getRowClass, // New: optional function to add classes to rows/cards based on data
   // Pagination Props
   currentPage,
   totalPages,
@@ -29,7 +30,7 @@ const DataTable = ({
   const headers = columns ? columns.map(c => ({ label: c.header, className: c.className || '' })) : propHeaders;
   
   const renderRow = columns ? (row, index) => (
-    <tr key={index} className="hover:bg-slate-50 transition-colors">
+    <tr key={index} className={`hover:bg-slate-50 transition-colors ${getRowClass ? getRowClass(row) : ''}`}>
       {columns.map((col, cIdx) => (
         <td key={cIdx} className="px-4 py-3 text-sm text-slate-700 whitespace-nowrap text-center">
           {col.cell ? col.cell(row, index) : row[col.accessor]}
@@ -39,7 +40,7 @@ const DataTable = ({
   ) : propRenderRow;
 
   const renderCard = columns ? (row, index) => (
-    <div key={index} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-2">
+    <div key={index} className={`bg-white p-4 rounded-xl shadow-sm border flex flex-col gap-2 ${getRowClass ? getRowClass(row) : 'border-slate-200'}`}>
       {columns.map((col, cIdx) => (
         <div key={cIdx} className="flex justify-between items-start border-b border-slate-50 last:border-0 pb-2 last:pb-0">
           <span className="text-xs font-medium text-slate-500 uppercase">{col.header}</span>

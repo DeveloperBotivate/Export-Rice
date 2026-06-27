@@ -1,41 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Plus, Play } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
 import DataTable from '../../components/DataTable';
 import { usePagination } from '../../hooks/usePagination';
 import { Modal } from '../../components/ui/Modal';
+import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => ({
     id: i + 1,
-    contractNo: `EC-2026-${(i + 1).toString().padStart(4, '0')}`,
+    orderId: `SO-00${(i + 1).toString().padStart(2, '0')}`,
+    contractNo: `EC-00${(i + 1).toString().padStart(2, '0')}`,
     contractDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    buyerName: `Global Buyer ${i+1}`,
-    buyerCountry: ['UAE', 'UK', 'USA', 'Saudi Arabia', 'Singapore'][Math.floor(Math.random() * 5)],
+    buyerName: `Buyer ${i+1}`,
+    buyerCountry: ['USA', 'UK', 'UAE', 'Singapore'][Math.floor(Math.random() * 4)],
+    buyerAddress: '123 Export Lane',
+    buyerContactPerson: 'John Doe',
+    buyerEmail: `john.doe@buyer${i+1}.com`,
+    buyerPhone: '+1 234 567 8900',
     incoterms: ['FOB', 'CIF', 'CNF', 'EXW'][Math.floor(Math.random() * 4)],
-    riceGrade: ['Premium Basmati', '1121 Sella', 'IR64'][Math.floor(Math.random() * 3)],
+    riceGrade: ['Basmati', 'Non-Basmati'][Math.floor(Math.random() * 2)],
     quantity: Math.floor(Math.random() * 50) + 10,
-    price: Math.floor(Math.random() * 500) + 400,
-    totalContractValue: (Math.floor(Math.random() * 50) + 10) * (Math.floor(Math.random() * 500) + 400),
-    portOfLoading: 'Mundra Port',
+    price: 1000,
+    totalContractValue: 50000,
+    portOfLoading: 'Mundra',
     portOfDestination: 'Jebel Ali',
     shipmentDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    paymentTerms: ['LC', 'TT', 'DA', 'CAD'][Math.floor(Math.random() * 4)],
-    createdBy: 'Export Manager',
-    status: 'Active'
+    paymentTerms: 'LC',
+    lcTtReferenceNo: 'LC12345',
+    currency: 'USD',
+    tolerance: '5',
+    specialConditions: 'None',
+    createdBy: 'Export Mgr',
+    status: 'Completed',
+    totalQtySupplied: Math.floor(Math.random() * 50) + 10,
+    completionDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`
   }));
 };
 
 export const ExportContract = () => {
-  const [historyItems, setHistoryItems] = useState(generateDummyData());
+  const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
+  const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
+  const [activeTab, setActiveTab] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({});
 
-  const filteredData = historyItems.filter(item => 
+  const displayData = activeTab === 'pending' ? pendingItems : historyItems;
+
+  const filteredData = displayData.filter(item => 
     Object.values(item).some(val => 
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -43,37 +60,53 @@ export const ExportContract = () => {
 
   const pagination = usePagination(filteredData, 10);
 
-  const handleCreateNew = () => {
-    setFormData({ contractNo: 'EC-' + Math.floor(Math.random()*10000) });
+  const handleActionClick = (item) => {
+    setSelectedItem(item);
+    setFormData({
+      orderId: item.orderId,
+      buyerName: item.buyerName,
+      riceGrade: item.riceGrade,
+      quantity: item.quantity,
+      contractNo: 'EC-00' + Math.floor(Math.random()*100)
+    });
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
-    if (isModalOpen && formData) {
-      const qty = parseFloat(formData.quantity) || 0;
-      const price = parseFloat(formData.price) || 0;
-      const total = qty * price;
-      if (formData.totalContractValue !== total) {
-        setFormData(prev => ({ ...prev, totalContractValue: total }));
-      }
-    }
-  }, [formData, isModalOpen]);
-
   const handleSave = () => {
-    const newItem = { ...formData, id: Date.now(), status: 'Active' };
+    const newItem = { ...selectedItem, ...formData, status: 'Completed' };
     setHistoryItems([newItem, ...historyItems]);
+    setPendingItems(pendingItems.filter(p => p.id !== selectedItem.id));
     setIsModalOpen(false);
   };
 
-  const columns = [
+  const pendingCols = [
+    {
+      header: 'Action',
+      className: 'text-right',
+      cell: (row) => (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
+            <Play size={14} /> Create Contract
+          </Button>
+        </div>
+      )
+    },
+    { header: 'Order ID', accessor: 'orderId' },
+    { header: 'Customer/Buyer Name', accessor: 'buyerName' },
+    { header: 'Rice Grade', accessor: 'riceGrade' },
+    { header: 'Total Qty Supplied (MT)', accessor: 'totalQtySupplied' },
+    { header: 'Completion Date', accessor: 'completionDate' }
+  ];
+
+  const historyCols = [
     { header: 'Contract No', accessor: 'contractNo' },
+    { header: 'Order ID', accessor: 'orderId' },
     { header: 'Contract Date', accessor: 'contractDate' },
     { header: 'Buyer Name', accessor: 'buyerName' },
     { header: 'Buyer Country', accessor: 'buyerCountry' },
     { header: 'Incoterms', accessor: 'incoterms' },
     { header: 'Rice Grade', accessor: 'riceGrade' },
     { header: 'Quantity (MT)', accessor: 'quantity' },
-    { header: 'Price ($/MT)', accessor: 'price' },
     { header: 'Total Contract Value ($)', accessor: 'totalContractValue' },
     { header: 'Port of Loading', accessor: 'portOfLoading' },
     { header: 'Port of Destination', accessor: 'portOfDestination' },
@@ -83,14 +116,15 @@ export const ExportContract = () => {
     { header: 'Status', accessor: 'status' }
   ];
 
+  const columns = activeTab === 'pending' ? pendingCols : historyCols;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-800">Stage 1 - Export Contract</h2>
-        <Button onClick={handleCreateNew} className="flex items-center gap-2">
-          <Plus size={16} /> Create Export Contract
-        </Button>
       </div>
+      
+      <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <Card>
         <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
@@ -126,6 +160,10 @@ export const ExportContract = () => {
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
+              <Label>Order ID</Label>
+              <Input type="text" value={formData.orderId || ''} readOnly className="bg-slate-100" />
+            </div>
+            <div className="space-y-1.5">
               <Label>Contract No</Label>
               <Input type="text" value={formData.contractNo || ''} readOnly className="bg-slate-100" />
             </div>
@@ -135,7 +173,7 @@ export const ExportContract = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Buyer Name</Label>
-              <Input type="text" value={formData.buyerName || ''} onChange={(e) => setFormData({...formData, buyerName: e.target.value})} />
+              <Input type="text" value={formData.buyerName || ''} readOnly className="bg-slate-100" />
             </div>
             <div className="space-y-1.5">
               <Label>Buyer Country</Label>
@@ -169,11 +207,11 @@ export const ExportContract = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Rice Grade</Label>
-              <Input type="text" value={formData.riceGrade || ''} onChange={(e) => setFormData({...formData, riceGrade: e.target.value})} />
+              <Input type="text" value={formData.riceGrade || ''} readOnly className="bg-slate-100" />
             </div>
             <div className="space-y-1.5">
               <Label>Quantity (MT)</Label>
-              <Input type="number" value={formData.quantity || ''} onChange={(e) => setFormData({...formData, quantity: e.target.value})} />
+              <Input type="number" value={formData.quantity || ''} readOnly className="bg-slate-100" />
             </div>
             <div className="space-y-1.5">
               <Label>Price ($/MT)</Label>
@@ -181,7 +219,7 @@ export const ExportContract = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Total Contract Value ($)</Label>
-              <Input type="number" value={formData.totalContractValue || ''} readOnly className="bg-slate-100" />
+              <Input type="number" value={formData.totalContractValue || ''} onChange={(e) => setFormData({...formData, totalContractValue: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Port of Loading</Label>
@@ -198,7 +236,7 @@ export const ExportContract = () => {
             <div className="space-y-1.5">
               <Label>Payment Terms</Label>
               <Select value={formData.paymentTerms || ''} onChange={(e) => setFormData({...formData, paymentTerms: e.target.value})}>
-                <option value="">Select Payment Terms</option>
+                <option value="">Select Terms</option>
                 <option value="LC">LC</option>
                 <option value="TT">TT</option>
                 <option value="DA">DA</option>
@@ -207,7 +245,7 @@ export const ExportContract = () => {
             </div>
             <div className="space-y-1.5">
               <Label>LC/TT Reference No</Label>
-              <Input type="text" value={formData.lcTtRefNo || ''} onChange={(e) => setFormData({...formData, lcTtRefNo: e.target.value})} />
+              <Input type="text" value={formData.lcTtReferenceNo || ''} onChange={(e) => setFormData({...formData, lcTtReferenceNo: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Currency</Label>
@@ -215,7 +253,7 @@ export const ExportContract = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Tolerance (±%)</Label>
-              <Input type="number" value={formData.tolerance || ''} onChange={(e) => setFormData({...formData, tolerance: e.target.value})} />
+              <Input type="text" value={formData.tolerance || ''} onChange={(e) => setFormData({...formData, tolerance: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Special Conditions</Label>

@@ -8,11 +8,11 @@ const DOC_TYPES = ['All', 'Purchase Order', 'Invoice', 'Export Contract', 'Packi
 
 const DOCS = [
   // Purchase Execution
-  { id: 1, docId: 'DOC-0001', docName: 'Purchase Order — PR-0001', docType: 'Purchase Order', module: 'Purchase Execution', refId: 'PO-0001', uploadedBy: 'Ramesh Verma', uploadDate: '2026-06-01', expiryDate: null, status: 'Active', size: '245 KB', tags: ['PO', 'Basmati', 'Karnal'] },
-  { id: 2, docId: 'DOC-0002', docName: 'Purchase Challan — PR-0002', docType: 'Invoice', module: 'Purchase Execution', refId: 'PCH-0002', uploadedBy: 'Ramesh Verma', uploadDate: '2026-06-02', expiryDate: null, status: 'Active', size: '180 KB', tags: ['Challan'] },
+  { id: 1, docId: 'DOC-0001', docName: 'Purchase Indent — IND-0001', docType: 'Purchase Order', module: 'Purchase Execution', refId: 'IND-0001', uploadedBy: 'Ramesh Verma', uploadDate: '2026-06-01', expiryDate: null, status: 'Active', size: '245 KB', tags: ['PO', 'Basmati', 'Karnal'] },
+  { id: 2, docId: 'DOC-0002', docName: 'Purchase Challan — PCH-0002', docType: 'Invoice', module: 'Purchase Execution', refId: 'PCH-0002', uploadedBy: 'Ramesh Verma', uploadDate: '2026-06-02', expiryDate: null, status: 'Active', size: '180 KB', tags: ['Challan'] },
   { id: 3, docId: 'DOC-0003', docName: 'Lab Quality Report — LAB-001', docType: 'Lab Report', module: 'Purchase Execution', refId: 'LAB-0001', uploadedBy: 'Dr. Sunil Rao', uploadDate: '2026-06-02', expiryDate: null, status: 'Active', size: '320 KB', tags: ['Lab', 'Quality', 'Moisture'] },
-  { id: 4, docId: 'DOC-0004', docName: 'Gate Pass — PR-0003', docType: 'Gate Pass', module: 'Purchase Execution', refId: 'GP-0003', uploadedBy: 'Security Staff', uploadDate: '2026-06-03', expiryDate: null, status: 'Active', size: '120 KB', tags: ['Gate'] },
-  { id: 5, docId: 'DOC-0005', docName: 'Purchase Order — PR-0005', docType: 'Purchase Order', module: 'Purchase Execution', refId: 'PO-0005', uploadedBy: 'Ramesh Verma', uploadDate: '2026-06-04', expiryDate: null, status: 'Active', size: '260 KB', tags: ['PO'] },
+  { id: 4, docId: 'DOC-0004', docName: 'Gate Pass — IND-0003', docType: 'Gate Pass', module: 'Purchase Execution', refId: 'GP-0003', uploadedBy: 'Security Staff', uploadDate: '2026-06-03', expiryDate: null, status: 'Active', size: '120 KB', tags: ['Gate'] },
+  { id: 5, docId: 'DOC-0005', docName: 'Purchase Indent — IND-0005', docType: 'Purchase Order', module: 'Purchase Execution', refId: 'IND-0005', uploadedBy: 'Ramesh Verma', uploadDate: '2026-06-04', expiryDate: null, status: 'Active', size: '260 KB', tags: ['PO'] },
   // Sales
   { id: 6, docId: 'DOC-0006', docName: 'Sales Quotation — SO-0001', docType: 'Invoice', module: 'Sales', refId: 'SO-0001', uploadedBy: 'Priya Sharma', uploadDate: '2026-06-05', expiryDate: '2026-07-05', status: 'Active', size: '198 KB', tags: ['Quotation', 'Domestic'] },
   { id: 7, docId: 'DOC-0007', docName: 'Sales Invoice — SO-0003', docType: 'Invoice', module: 'Sales', refId: 'SI-0003', uploadedBy: 'Priya Sharma', uploadDate: '2026-06-06', expiryDate: null, status: 'Active', size: '215 KB', tags: ['Invoice'] },

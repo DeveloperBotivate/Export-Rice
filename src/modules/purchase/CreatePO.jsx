@@ -118,7 +118,7 @@ const generateDummyData = () => {
   });
 };
 
-export const PurchaseClosure = () => {
+export const CreatePO = () => {
   const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
   const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
   
@@ -140,7 +140,7 @@ export const PurchaseClosure = () => {
   const pagination = usePagination(filteredData, 10);
 
   const handleActionClick = (item) => {
-    if ("PurchaseClosure" === "FullKitting" && item.approved === 'No') {
+    if ("CreatePO" === "FullKitting" && item.approved === 'No') {
       alert("Cannot process kitting for rejected lab reports.");
       return;
     }
@@ -148,17 +148,17 @@ export const PurchaseClosure = () => {
     setSelectedItem(item);
     
     let autoFields = {};
-    if ("PurchaseClosure" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
+    if ("CreatePO" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
     
-    const readOnlyFields = ["kittingId","challanNo","poNumber","indentNo","closureId","lotNo","batchNo","qualityGrade","moisture","purchaseType","agencyVendorName","totalPurchaseValue","freightCost","totalLandedCost","valuationRate"];
+    const readOnlyFields = ["indentNo","approvalId","purchaseType","poNumber","paddyGrade","totalPoValue"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -180,7 +180,7 @@ export const PurchaseClosure = () => {
     header: "Action",
     className: "text-right",
     cell: (row) => {
-      if ("PurchaseClosure" === "FullKitting" && row.approved === 'No') {
+      if ("CreatePO" === "FullKitting" && row.approved === 'No') {
         return (
           <div className="flex justify-end">
             <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded font-medium">
@@ -193,15 +193,15 @@ export const PurchaseClosure = () => {
         <div className="flex justify-end">
           <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
             <Play size={14} />
-            Close & Update
+            Create PO
           </Button>
         </div>
       );
     }
   };
 
-  const pendingCols = [{"header":"Full Kitting ID","accessor":"kittingId"},{"header":"Challan No","accessor":"challanNo"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Farmer / Agency Name","accessor":"agencyVendorName"},{"header":"Net Weight Kg","accessor":"netWeight"},{"header":"Rate ₹/Qt","accessor":"rate"},{"header":"Net Payable ₹","accessor":"netPayable"},{"header":"Kitting Date","accessor":"kittingDate"}].map(col => {
-    if (col.accessor === 'approved' && "PurchaseClosure" === "FullKitting") {
+  const pendingCols = [{"header":"Indent No","accessor":"indentNo"},{"header":"Approval ID","accessor":"approvalId"},{"header":"Purchase Type","accessor":"purchaseType"},{"header":"Agency / Mandi","accessor":"agencyMandi"},{"header":"Paddy Grade","accessor":"paddyGrade"},{"header":"Approved Qty MT","accessor":"approvedQty"},{"header":"Approved Rate ₹/Qt","accessor":"approvedRate"},{"header":"Approved By","accessor":"approvedBy"},{"header":"Approval Date","accessor":"approvalDate"}].map(col => {
+    if (col.accessor === 'approved' && "CreatePO" === "FullKitting") {
       return {
         ...col,
         cell: (row) => (
@@ -214,14 +214,14 @@ export const PurchaseClosure = () => {
     return col;
   });
   
-  const historyCols = [{"header":"Purchase Closure ID","accessor":"closureId"},{"header":"Full Kitting ID","accessor":"kittingId"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Closure Date","accessor":"closureDate"},{"header":"Purchase Type","accessor":"purchaseType"},{"header":"Agency / Vendor Name","accessor":"agencyVendorName"},{"header":"Lot Number","accessor":"lotNo"},{"header":"Batch Number","accessor":"batchNo"},{"header":"Net Qty Added MT","accessor":"netQtyMt"},{"header":"Warehouse","accessor":"warehouse"},{"header":"Go-down","accessor":"godown"},{"header":"Bin / Rack","accessor":"binRack"},{"header":"Quality Grade","accessor":"qualityGrade"},{"header":"Moisture %","accessor":"moisture"},{"header":"Total Purchase Value ₹","accessor":"totalPurchaseValue"},{"header":"Freight Cost ₹","accessor":"freightCost"},{"header":"Total Landed Cost ₹","accessor":"totalLandedCost"},{"header":"Valuation Rate ₹/MT","accessor":"valuationRate"},{"header":"Inventory Updated By","accessor":"updatedBy"}];
+  const historyCols = [{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Approval ID","accessor":"approvalId"},{"header":"PO Date","accessor":"poDate"},{"header":"Purchase Type","accessor":"purchaseType"},{"header":"Agency / Vendor Name","accessor":"agencyVendorName"},{"header":"Paddy Grade","accessor":"paddyGrade"},{"header":"Quantity MT","accessor":"qtyMt"},{"header":"Rate ₹/Qt","accessor":"rate"},{"header":"Total PO Value ₹","accessor":"totalPoValue"},{"header":"Payment Terms","accessor":"paymentTerms"},{"header":"PO Validity Date","accessor":"poValidityDate"},{"header":"Created By","accessor":"createdBy"}];
 
   const columns = activeTab === "pending" ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 10 - Purchase Closure → Inventory</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 3 - Create PO</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -255,41 +255,11 @@ export const PurchaseClosure = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Purchase Closure Details"
+        title="Create Purchase Order"
       >
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             
-            <div className="space-y-1.5">
-              <Label>Full Kitting ID</Label>
-              <Input 
-                type="text"
-                value={formData.kittingId || ""} 
-                onChange={(e) => setFormData({...formData, kittingId: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Challan No</Label>
-              <Input 
-                type="text"
-                value={formData.challanNo || ""} 
-                onChange={(e) => setFormData({...formData, challanNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>PO Number</Label>
-              <Input 
-                type="text"
-                value={formData.poNumber || ""} 
-                onChange={(e) => setFormData({...formData, poNumber: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
             <div className="space-y-1.5">
               <Label>Indent No</Label>
               <Input 
@@ -301,101 +271,11 @@ export const PurchaseClosure = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Purchase Closure ID</Label>
+              <Label>Approval ID</Label>
               <Input 
                 type="text"
-                value={formData.closureId || ""} 
-                onChange={(e) => setFormData({...formData, closureId: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Closure Date</Label>
-              <Input 
-                type="date"
-                value={formData.closureDate || ""} 
-                onChange={(e) => setFormData({...formData, closureDate: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Net Quantity MT</Label>
-              <Input 
-                type="number"
-                value={formData.netQtyMt || ""} 
-                onChange={(e) => setFormData({...formData, netQtyMt: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Warehouse Location</Label>
-              <Input 
-                type="text"
-                value={formData.warehouse || ""} 
-                onChange={(e) => setFormData({...formData, warehouse: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Go-down</Label>
-              <Input 
-                type="text"
-                value={formData.godown || ""} 
-                onChange={(e) => setFormData({...formData, godown: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Bin / Rack</Label>
-              <Input 
-                type="text"
-                value={formData.binRack || ""} 
-                onChange={(e) => setFormData({...formData, binRack: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Lot Number</Label>
-              <Input 
-                type="text"
-                value={formData.lotNo || ""} 
-                onChange={(e) => setFormData({...formData, lotNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Batch Number</Label>
-              <Input 
-                type="text"
-                value={formData.batchNo || ""} 
-                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Quality Grade</Label>
-              <Input 
-                type="text"
-                value={formData.qualityGrade || ""} 
-                onChange={(e) => setFormData({...formData, qualityGrade: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Moisture at Receipt %</Label>
-              <Input 
-                type="number"
-                value={formData.moisture || ""} 
-                onChange={(e) => setFormData({...formData, moisture: e.target.value})}
+                value={formData.approvalId || ""} 
+                onChange={(e) => setFormData({...formData, approvalId: e.target.value})}
                 readOnly={true}
                 className={true ? "bg-slate-100" : ""}
               />
@@ -411,67 +291,169 @@ export const PurchaseClosure = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Agency / Vendor Name</Label>
+              <Label>PO Number</Label>
               <Input 
                 type="text"
-                value={formData.agencyVendorName || ""} 
-                onChange={(e) => setFormData({...formData, agencyVendorName: e.target.value})}
+                value={formData.poNumber || ""} 
+                onChange={(e) => setFormData({...formData, poNumber: e.target.value})}
                 readOnly={true}
                 className={true ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Total Purchase Value ₹</Label>
+              <Label>PO Date</Label>
               <Input 
-                type="number"
-                value={formData.totalPurchaseValue || ""} 
-                onChange={(e) => setFormData({...formData, totalPurchaseValue: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Freight Cost ₹</Label>
-              <Input 
-                type="number"
-                value={formData.freightCost || ""} 
-                onChange={(e) => setFormData({...formData, freightCost: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Landed Cost ₹</Label>
-              <Input 
-                type="number"
-                value={formData.totalLandedCost || ""} 
-                onChange={(e) => setFormData({...formData, totalLandedCost: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Valuation Rate ₹/MT</Label>
-              <Input 
-                type="number"
-                value={formData.valuationRate || ""} 
-                onChange={(e) => setFormData({...formData, valuationRate: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Inventory Updated By</Label>
-              <Input 
-                type="text"
-                value={formData.updatedBy || ""} 
-                onChange={(e) => setFormData({...formData, updatedBy: e.target.value})}
+                type="date"
+                value={formData.poDate || ""} 
+                onChange={(e) => setFormData({...formData, poDate: e.target.value})}
                 readOnly={false}
                 className={false ? "bg-slate-100" : ""}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Storage Remarks</Label>
+              <Label>PO Validity Date</Label>
+              <Input 
+                type="date"
+                value={formData.poValidityDate || ""} 
+                onChange={(e) => setFormData({...formData, poValidityDate: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Agency Name</Label>
+              <Input 
+                type="text"
+                value={formData.agencyVendorName || ""} 
+                onChange={(e) => setFormData({...formData, agencyVendorName: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Government Season</Label>
+              <Input 
+                type="text"
+                value={formData.season || ""} 
+                onChange={(e) => setFormData({...formData, season: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Allocation Order Ref</Label>
+              <Input 
+                type="text"
+                value={formData.allocationOrderRef || ""} 
+                onChange={(e) => setFormData({...formData, allocationOrderRef: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Mandated Rate ₹/Qt</Label>
+              <Input 
+                type="number"
+                value={formData.mandatedRate || ""} 
+                onChange={(e) => setFormData({...formData, mandatedRate: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Vendor / Farmer Name</Label>
+              <Input 
+                type="text"
+                value={formData.vendorName || ""} 
+                onChange={(e) => setFormData({...formData, vendorName: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Vendor Phone</Label>
+              <Input 
+                type="text"
+                value={formData.vendorPhone || ""} 
+                onChange={(e) => setFormData({...formData, vendorPhone: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Vendor Aadhaar / PAN</Label>
+              <Input 
+                type="text"
+                value={formData.vendorId || ""} 
+                onChange={(e) => setFormData({...formData, vendorId: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Paddy Grade</Label>
+              <Input 
+                type="text"
+                value={formData.paddyGrade || ""} 
+                onChange={(e) => setFormData({...formData, paddyGrade: e.target.value})}
+                readOnly={true}
+                className={true ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Quantity MT</Label>
+              <Input 
+                type="number"
+                value={formData.qtyMt || ""} 
+                onChange={(e) => setFormData({...formData, qtyMt: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Rate ₹/Qt</Label>
+              <Input 
+                type="number"
+                value={formData.rate || ""} 
+                onChange={(e) => setFormData({...formData, rate: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Total PO Value ₹</Label>
+              <Input 
+                type="number"
+                value={formData.totalPoValue || ""} 
+                onChange={(e) => setFormData({...formData, totalPoValue: e.target.value})}
+                readOnly={true}
+                className={true ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Delivery Terms</Label>
+              <Input 
+                type="text"
+                value={formData.deliveryTerms || ""} 
+                onChange={(e) => setFormData({...formData, deliveryTerms: e.target.value})}
+                readOnly={false}
+                className={false ? "bg-slate-100" : ""}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Payment Terms</Label>
+              <Select 
+                value={formData.paymentTerms || ""} 
+                onChange={(e) => setFormData({...formData, paymentTerms: e.target.value})}
+                disabled={false}
+                className={false ? "bg-slate-100" : ""}
+              >
+                <option value="">Select Payment Terms</option>
+                <option value="Advance">Advance</option><option value="Credit">Credit</option><option value="Full">Full</option>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>PO Remarks</Label>
               <Input 
                 type="text"
                 value={formData.remarks || ""} 

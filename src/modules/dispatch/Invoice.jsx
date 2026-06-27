@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play } from 'lucide-react';
+import { Search, Play, Plus } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -10,127 +10,82 @@ import { PageTabs } from '../../components/PageTabs';
 
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => {
-    const qty = Math.floor(Math.random() * 50) + 10;
-    const bags = qty * 40;
-    const rate = 45000;
-    const freight = qty * 1500;
-    const basic = qty * rate;
-    const tax = basic * 0.05;
-    
+    const orderType = i % 2 === 0 ? 'Export' : 'Domestic';
     return {
       id: i + 1,
-      dispatchOrderNo: `DO-${(i + 1).toString().padStart(4, '0')}`,
-      orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      orderType: 'Domestic',
+      sourceRef: orderType === 'Export' ? `EC-00${(i + 1).toString().padStart(2, '0')}` : `SO-00${(i + 1).toString().padStart(2, '0')}`,
+      dispatchOrderNo: `DO-00${(i + 1).toString().padStart(2, '0')}`,
+      orderType: orderType,
       customerName: `Customer ${i+1}`,
-      customerGst: `27AAAC${i}1234K1Z1`,
-      riceGrade: 'Premium Basmati',
-      quantity: qty,
-      noOfBags: bags,
-      reqDispatchDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      priority: 'Normal',
+      riceGrade: ['Basmati', 'Non-Basmati'][Math.floor(Math.random() * 2)],
+      quantity: Math.floor(Math.random() * 50) + 10,
+      requiredDispatchDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      priority: ['Normal', 'Urgent'][Math.floor(Math.random() * 2)],
       
-      reservationId: `SR-${(i + 1).toString().padStart(4, '0')}`,
-      fgStockId: `FG-${(i + 1).toString().padStart(4, '0')}`,
-      lotNo: `LT-${i+1}`,
-      batchNo: `BT-${i+1}`,
-      reservedQty: qty,
-      reservedBags: bags,
-      warehouse: 'Main WH',
-      godown: 'Godown 1',
-      rackBin: 'R1-B2',
-      reservationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      reservedBy: 'WH Manager',
-
-      pickListNo: `PK-${(i + 1).toString().padStart(4, '0')}`,
-      pickedQty: qty,
-      pickedBags: bags,
+      planId: `DP-00${(i + 1).toString().padStart(2, '0')}`,
+      plannedDispatchDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      allocatedQty: Math.floor(Math.random() * 50) + 10,
+      allocationStatus: 'Full',
+      planningDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      plannedBy: 'Planner',
+      
+      logisticsArrangementId: `LA-00${(i + 1).toString().padStart(2, '0')}`,
+      modeRequired: orderType === 'Export' ? 'Sea' : 'Road',
+      vehicleType: orderType === 'Export' ? 'Container' : 'Truck',
+      noOfVehicles: 2,
+      transporterShortlisted: 'Transporter X',
+      estimatedFreight: 20000,
+      arrangementStatus: 'Confirmed',
+      arrangedBy: 'Logistics',
+      
+      pickListNo: `PK-00${(i + 1).toString().padStart(2, '0')}`,
+      lotNo: 'LOT123',
+      batchNo: 'B123',
+      pickedQty: 20,
+      pickedBags: 800,
       pickDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      pickedBy: 'Picker 1',
-      supervisor: 'Super 1',
-
-      loadingId: `LD-${(i + 1).toString().padStart(4, '0')}`,
-      vehicleNumber: `MH 43 AB ${(1000 + i)}`,
-      bagsLoaded: bags,
-      weightLoaded: qty,
-      shortage: 0,
-      loadingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T10:00`,
-      loadingSupervisor: 'Super 1',
-
-      vehicleType: 'Truck',
-      driverName: 'Ramu',
-      driverPhone: '9876543210',
-      transporterName: 'ABC Logistics',
-      vehicleCapacity: 25,
-      route: 'Mill -> Mumbai',
-      freightRate: 1500,
-      totalFreight: freight,
-      expectedDeparture: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T12:00`,
-      expectedDelivery: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      assignedDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      weightSlipNo: `DW-${(i + 1).toString().padStart(4, '0')}`,
-      grossWeight: qty * 1000 + 8000,
-      tareWeight: 8000,
-      netWeight: qty * 1000,
+      pickedBy: 'Picker',
+      supervisor: 'Supervisor',
+      
+      logisticsId: `LG-00${(i + 1).toString().padStart(2, '0')}`,
+      vehicleNumber: 'MH01AB1234',
+      driverName: 'Driver Y',
+      transporterName: 'Transporter X',
+      route: 'Mill to Port',
+      totalFreightAmount: 20000,
+      expectedDeparture: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      expectedDeliveryDate: `2026-06-${(i % 28 + 5).toString().padStart(2, '0')}`,
+      
+      certificateNo: `TC-00${(i + 1).toString().padStart(2, '0')}`,
+      testDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      qualityGradeConfirmed: 'Premium',
+      moisture: 12.5,
+      phytoCertNo: 'PHYTO123',
+      result: 'Pass',
+      testedBy: 'Lab Off',
+      
+      weightSlipNo: `DW-00${(i + 1).toString().padStart(2, '0')}`,
+      grossWeight: 25000,
+      tareWeight: 5000,
+      netWeight: 20000,
       variance: 0,
-      weighbridgeId: 'WB-01',
-      operator: 'WB Op',
+      weighbridgeId: 'WB1',
+      operatorName: 'Operator',
       weighDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      challanNo: `DC-${(i + 1).toString().padStart(4, '0')}`,
-      challanDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      destination: 'Mumbai',
-      purpose: 'Sale',
-      createdBy: 'Dispatch Clerk',
-
-      invoiceNo: `INV-${(i + 1).toString().padStart(4, '0')}`,
+      
+      invoiceNo: `INV-00${(i + 1).toString().padStart(2, '0')}`,
       invoiceDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      invoiceType: 'Tax Invoice',
-      rate: rate,
-      basicAmount: basic,
-      cgst: tax / 2,
-      sgst: tax / 2,
-      igst: 0,
-      grandTotal: basic + tax,
-      paymentDueDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      gatePassNo: `GP-${(i + 1).toString().padStart(4, '0')}`,
-      issueDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T14:00`,
-      gateNo: 'Gate 2',
-      guardName: 'Security 1',
-      issuedBy: 'Dispatch Head',
-
-      ewbNo: `EWB-${(i + 1).toString().padStart(4, '0')}`,
-      ewbDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T14:00`,
-      validTill: `2026-06-${(i % 28 + 3).toString().padStart(2, '0')}`,
-      totalValue: basic + tax,
-      distance: 350,
-      modeOfTransport: 'Road',
-      transporterId: '27AABCT1234L1Z',
-      generatedBy: 'Finance Exec',
-
-      podId: `POD-${(i + 1).toString().padStart(4, '0')}`,
-      actualDeliveryDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
-      receivedBy: 'Cust Store',
-      bagsReceived: bags,
-      weightReceived: qty * 1000,
-      condition: 'Good',
-      shortageBags: 0,
-      shortageKg: 0,
-      driverConfirmation: 'Y',
-
-      confirmationId: `CF-${(i + 1).toString().padStart(4, '0')}`,
-      confirmationDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
+      qtyMt: 20,
+      grandTotal: 1000000,
+      paymentTerms: 'Advance',
+      createdBy: 'Finance',
+      
+      confirmationId: `CF-00${(i + 1).toString().padStart(2, '0')}`,
+      confirmationDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
       deliveryStatus: 'Complete',
-      customerRating: 5,
-      invoiceAmount: basic + tax,
-      outstanding: basic + tax,
-      disputedAmount: 0,
-      disputeReason: '',
-      resolved: 'Y',
-      closedBy: 'Sales Exec',
-
+      outstandingAmount: 0,
+      closedBy: 'Admin',
+      
       status: 'Completed'
     };
   });
@@ -161,18 +116,16 @@ export const Invoice = () => {
     setSelectedItem(item);
     
     let autoFields = {};
+    if ('Invoice' === 'DispatchPlanning') autoFields = { planId: 'DP-00' + Math.floor(Math.random()*100) };
+    if ('Invoice' === 'ArrangeLogistics') autoFields = { logisticsArrangementId: 'LA-00' + Math.floor(Math.random()*100) };
+    if ('Invoice' === 'PickingList') autoFields = { pickListNo: 'PK-00' + Math.floor(Math.random()*100) };
+    if ('Invoice' === 'LogisticsDetails') autoFields = { logisticsId: 'LG-00' + Math.floor(Math.random()*100) };
+    if ('Invoice' === 'TestCertificate') autoFields = { certificateNo: 'TC-00' + Math.floor(Math.random()*100) };
+    if ('Invoice' === 'DispatchWeight') autoFields = { weightSlipNo: 'DW-00' + Math.floor(Math.random()*100) };
+    if ('Invoice' === 'Invoice') autoFields = { invoiceNo: 'INV-00' + Math.floor(Math.random()*100), invoiceType: item.orderType === 'Export' ? 'Export Invoice' : 'Tax Invoice' };
+    if ('Invoice' === 'DeliveryConfirmation') autoFields = { confirmationId: 'CF-00' + Math.floor(Math.random()*100) };
     
-    
-    
-    
-    
-    autoFields = { invoiceNo: 'INV-' + Math.floor(Math.random()*10000) };
-    
-    
-    
-    
-    
-    const readOnlyFields = ["challanNo","dispatchOrderNo","invoiceNo","customerName","customerGst","riceGrade","quantity","basicAmount","taxableValue","cgst","sgst","igst","grandTotal"];
+    const readOnlyFields = ["weightSlipNo","dispatchOrderNo","orderType","sourceRef","invoiceNo","invoiceType","customerName","riceGrade","qtyMt","basicAmount","grandTotal"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -181,33 +134,6 @@ export const Invoice = () => {
     setFormData({ ...initialFormData, ...autoFields });
     setIsModalOpen(true);
   };
-
-  useEffect(() => {
-    if (isModalOpen && formData) {
-      
-      
-      
-      const qty = parseFloat(selectedItem.quantity) || 0;
-      const rate = parseFloat(formData.rate) || 0;
-      const basic = qty * rate;
-      const others = (parseFloat(formData.packingCharges)||0) + (parseFloat(formData.loadingCharges)||0) + (parseFloat(formData.freightCharges)||0) + (parseFloat(formData.otherCharges)||0);
-      const taxVal = basic + others;
-      const gstRate = parseFloat(formData.gstRate) || 0;
-      const isInter = formData.supplyType === 'Inter-State';
-      const taxAmt = taxVal * (gstRate / 100);
-      const cgst = isInter ? 0 : taxAmt / 2;
-      const sgst = isInter ? 0 : taxAmt / 2;
-      const igst = isInter ? taxAmt : 0;
-      const round = parseFloat(formData.roundOff) || 0;
-      const grand = taxVal + taxAmt + round;
-      
-      if (formData.basicAmount !== basic || formData.taxableValue !== taxVal || formData.cgst !== cgst || formData.sgst !== sgst || formData.igst !== igst || formData.grandTotal !== grand) {
-        setFormData(prev => ({ ...prev, basicAmount: basic, taxableValue: taxVal, cgst, sgst, igst, grandTotal: grand }));
-      }
-      
-      
-    }
-  }, [formData, isModalOpen, selectedItem]);
 
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
@@ -230,8 +156,8 @@ export const Invoice = () => {
     )
   };
 
-  const pendingCols = [{"header":"Challan No","accessor":"challanNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Customer Name","accessor":"customerName"},{"header":"Customer GSTIN","accessor":"customerGst"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Quantity (MT)","accessor":"quantity"},{"header":"Net Weight (Kg)","accessor":"netWeight"},{"header":"Challan Date","accessor":"challanDate"}];
-  const historyCols = [{"header":"Invoice No","accessor":"invoiceNo"},{"header":"Challan No","accessor":"challanNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Invoice Date","accessor":"invoiceDate"},{"header":"Invoice Type","accessor":"invoiceType"},{"header":"Customer Name","accessor":"customerName"},{"header":"Customer GSTIN","accessor":"customerGst"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Qty (MT)","accessor":"quantity"},{"header":"Rate (₹/MT)","accessor":"rate"},{"header":"Basic Amount (₹)","accessor":"basicAmount"},{"header":"CGST (₹)","accessor":"cgst"},{"header":"SGST (₹)","accessor":"sgst"},{"header":"IGST (₹)","accessor":"igst"},{"header":"Grand Total (₹)","accessor":"grandTotal"},{"header":"Payment Due Date","accessor":"paymentDueDate"},{"header":"Created By","accessor":"createdBy"}];
+  const pendingCols = [{"header":"Weight Slip No","accessor":"weightSlipNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Net Weight (Kg)","accessor":"netWeight"},{"header":"Customer/Buyer Name","accessor":"customerName"},{"header":"Weigh Date","accessor":"weighDate"}];
+  const historyCols = [{"header":"Invoice No","accessor":"invoiceNo"},{"header":"Dispatch Order No","accessor":"dispatchOrderNo"},{"header":"Order Type","accessor":"orderType"},{"header":"Source Ref","accessor":"sourceRef"},{"header":"Invoice Date","accessor":"invoiceDate"},{"header":"Customer/Buyer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGrade"},{"header":"Qty (MT)","accessor":"qtyMt"},{"header":"Grand Total","accessor":"grandTotal"},{"header":"Payment Terms","accessor":"paymentTerms"},{"header":"Created By","accessor":"createdBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
@@ -278,11 +204,11 @@ export const Invoice = () => {
           <div className="grid grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <Label>Challan No</Label>
+              <Label>Weight Slip No</Label>
               <Input 
                 type="text"
-                value={formData.challanNo || ''} 
-                onChange={(e) => setFormData({...formData, challanNo: e.target.value})}
+                value={formData.weightSlipNo || ''} 
+                onChange={(e) => setFormData({...formData, weightSlipNo: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -293,6 +219,26 @@ export const Invoice = () => {
                 type="text"
                 value={formData.dispatchOrderNo || ''} 
                 onChange={(e) => setFormData({...formData, dispatchOrderNo: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Order Type</Label>
+              <Input 
+                type="text"
+                value={formData.orderType || ''} 
+                onChange={(e) => setFormData({...formData, orderType: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Source Reference</Label>
+              <Input 
+                type="text"
+                value={formData.sourceRef || ''} 
+                onChange={(e) => setFormData({...formData, sourceRef: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
@@ -319,18 +265,16 @@ export const Invoice = () => {
             </div>
             <div className="space-y-1.5">
               <Label>Invoice Type</Label>
-              <Select 
+              <Input 
+                type="text"
                 value={formData.invoiceType || ''} 
                 onChange={(e) => setFormData({...formData, invoiceType: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Invoice Type</option>
-                <option value="Tax Invoice">Tax Invoice</option><option value="Proforma">Proforma</option>
-              </Select>
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
             </div>
             <div className="space-y-1.5">
-              <Label>Customer Name</Label>
+              <Label>Customer/Buyer Name</Label>
               <Input 
                 type="text"
                 value={formData.customerName || ''} 
@@ -340,41 +284,11 @@ export const Invoice = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Customer GSTIN</Label>
+              <Label>GSTIN / Buyer Country</Label>
               <Input 
                 type="text"
-                value={formData.customerGst || ''} 
-                onChange={(e) => setFormData({...formData, customerGst: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Customer Billing Address</Label>
-              <Input 
-                type="text"
-                value={formData.billingAddress || ''} 
-                onChange={(e) => setFormData({...formData, billingAddress: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Customer Shipping Address</Label>
-              <Input 
-                type="text"
-                value={formData.shippingAddress || ''} 
-                onChange={(e) => setFormData({...formData, shippingAddress: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>HSN Code</Label>
-              <Input 
-                type="text"
-                value={formData.hsnCode || ''} 
-                onChange={(e) => setFormData({...formData, hsnCode: e.target.value})}
+                value={formData.gstinOrCountry || ''} 
+                onChange={(e) => setFormData({...formData, gstinOrCountry: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
@@ -393,14 +307,14 @@ export const Invoice = () => {
               <Label>Quantity (MT)</Label>
               <Input 
                 type="number"
-                value={formData.quantity || ''} 
-                onChange={(e) => setFormData({...formData, quantity: e.target.value})}
+                value={formData.qtyMt || ''} 
+                onChange={(e) => setFormData({...formData, qtyMt: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Rate (₹/MT)</Label>
+              <Label>Rate (₹/MT or $/MT)</Label>
               <Input 
                 type="number"
                 value={formData.rate || ''} 
@@ -410,7 +324,7 @@ export const Invoice = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Basic Amount (₹)</Label>
+              <Label>Basic Amount</Label>
               <Input 
                 type="number"
                 value={formData.basicAmount || ''} 
@@ -420,27 +334,7 @@ export const Invoice = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Packing Charges (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.packingCharges || ''} 
-                onChange={(e) => setFormData({...formData, packingCharges: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Loading Charges (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.loadingCharges || ''} 
-                onChange={(e) => setFormData({...formData, loadingCharges: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Freight Charges (₹)</Label>
+              <Label>Freight Charges</Label>
               <Input 
                 type="number"
                 value={formData.freightCharges || ''} 
@@ -450,7 +344,7 @@ export const Invoice = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Other Charges (₹)</Label>
+              <Label>Other Charges</Label>
               <Input 
                 type="number"
                 value={formData.otherCharges || ''} 
@@ -460,79 +354,17 @@ export const Invoice = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Total Taxable Value (₹)</Label>
+              <Label>GST — CGST/SGST/IGST (Domestic only)</Label>
               <Input 
                 type="number"
-                value={formData.taxableValue || ''} 
-                onChange={(e) => setFormData({...formData, taxableValue: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Supply Type</Label>
-              <Select 
-                value={formData.supplyType || ''} 
-                onChange={(e) => setFormData({...formData, supplyType: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Supply Type</option>
-                <option value="Intra-State">Intra-State</option><option value="Inter-State">Inter-State</option>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>GST Rate (%)</Label>
-              <Input 
-                type="number"
-                value={formData.gstRate || ''} 
-                onChange={(e) => setFormData({...formData, gstRate: e.target.value})}
+                value={formData.gstAmount || ''} 
+                onChange={(e) => setFormData({...formData, gstAmount: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />
             </div>
             <div className="space-y-1.5">
-              <Label>CGST (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.cgst || ''} 
-                onChange={(e) => setFormData({...formData, cgst: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>SGST (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.sgst || ''} 
-                onChange={(e) => setFormData({...formData, sgst: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>IGST (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.igst || ''} 
-                onChange={(e) => setFormData({...formData, igst: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Round Off (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.roundOff || ''} 
-                onChange={(e) => setFormData({...formData, roundOff: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Grand Total (₹)</Label>
+              <Label>Grand Total</Label>
               <Input 
                 type="number"
                 value={formData.grandTotal || ''} 
@@ -542,31 +374,11 @@ export const Invoice = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Payment Due Date</Label>
-              <Input 
-                type="date"
-                value={formData.paymentDueDate || ''} 
-                onChange={(e) => setFormData({...formData, paymentDueDate: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Credit Days</Label>
-              <Input 
-                type="number"
-                value={formData.creditDays || ''} 
-                onChange={(e) => setFormData({...formData, creditDays: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Bank Account Details</Label>
+              <Label>Payment Terms</Label>
               <Input 
                 type="text"
-                value={formData.bankDetails || ''} 
-                onChange={(e) => setFormData({...formData, bankDetails: e.target.value})}
+                value={formData.paymentTerms || ''} 
+                onChange={(e) => setFormData({...formData, paymentTerms: e.target.value})}
                 readOnly={false}
                 className={false ? 'bg-slate-100' : ''}
               />

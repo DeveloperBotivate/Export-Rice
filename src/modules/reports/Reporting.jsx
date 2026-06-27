@@ -31,14 +31,14 @@ const TABS = ['Overview', 'Procurement', 'Production', 'Sales', 'Export', 'Dispa
 // ─── DATA ───────────────────────────────────────────
 
 const procurementData = [
-  { id: 1, prNumber: 'PR-0001', paddyType: 'Basmati', targetMandi: 'Karnal', qtyRequired: 120, qtyProcured: 115.5, rate: 2500, totalValue: 288750, agent: 'Harish Kumar', closureDate: '2026-06-03', mspRate: 2203, premium: 297, status: 'Closed' },
-  { id: 2, prNumber: 'PR-0002', paddyType: 'IR-36', targetMandi: 'Moga', qtyRequired: 80, qtyProcured: 78, rate: 2000, totalValue: 156000, agent: 'Suresh Lal', closureDate: '2026-06-04', mspRate: 1940, premium: 60, status: 'Closed' },
-  { id: 3, prNumber: 'PR-0003', paddyType: 'Sharbati', targetMandi: 'Ambala', qtyRequired: 60, qtyProcured: 60, rate: 1800, totalValue: 108000, agent: 'Mahesh Yadav', closureDate: '2026-06-05', mspRate: 1815, premium: -15, status: 'Closed' },
-  { id: 4, prNumber: 'PR-0004', paddyType: 'Basmati', targetMandi: 'Karnal', qtyRequired: 100, qtyProcured: 98, rate: 2550, totalValue: 249900, agent: 'Harish Kumar', closureDate: '2026-06-07', mspRate: 2203, premium: 347, status: 'Closed' },
-  { id: 5, prNumber: 'PR-0005', paddyType: 'Sona Masoori', targetMandi: 'Guntur', qtyRequired: 200, qtyProcured: 195, rate: 2100, totalValue: 409500, agent: 'Krishna Reddy', closureDate: '2026-06-09', mspRate: 2050, premium: 50, status: 'Closed' },
-  { id: 6, prNumber: 'PR-0006', paddyType: 'IR-36', targetMandi: 'Moga', qtyRequired: 90, qtyProcured: 85, rate: 2020, totalValue: 171700, agent: 'Suresh Lal', closureDate: '2026-06-10', mspRate: 1940, premium: 80, status: 'Closed' },
-  { id: 7, prNumber: 'PR-0007', paddyType: 'Basmati', targetMandi: 'Panipat', qtyRequired: 150, qtyProcured: 148, rate: 2480, totalValue: 367040, agent: 'Ramesh Gupta', closureDate: '2026-06-12', mspRate: 2203, premium: 277, status: 'Closed' },
-  { id: 8, prNumber: 'PR-0008', paddyType: 'Basmati', targetMandi: 'Karnal', qtyRequired: 75, qtyProcured: 0, rate: 0, totalValue: 0, agent: 'Harish Kumar', closureDate: '-', mspRate: 2203, premium: 0, status: 'Pending' },
+  { id: 1, indentNo: 'IND-0001', paddyType: 'Basmati', targetMandi: 'Karnal', qtyRequired: 120, qtyProcured: 115.5, rate: 2500, totalValue: 288750, agent: 'Harish Kumar', closureDate: '2026-06-03', mspRate: 2203, premium: 297, status: 'Closed' },
+  { id: 2, indentNo: 'IND-0002', paddyType: 'IR-36', targetMandi: 'Moga', qtyRequired: 80, qtyProcured: 78, rate: 2000, totalValue: 156000, agent: 'Suresh Lal', closureDate: '2026-06-04', mspRate: 1940, premium: 60, status: 'Closed' },
+  { id: 3, indentNo: 'IND-0003', paddyType: 'Sharbati', targetMandi: 'Ambala', qtyRequired: 60, qtyProcured: 60, rate: 1800, totalValue: 108000, agent: 'Mahesh Yadav', closureDate: '2026-06-05', mspRate: 1815, premium: -15, status: 'Closed' },
+  { id: 4, indentNo: 'IND-0004', paddyType: 'Basmati', targetMandi: 'Karnal', qtyRequired: 100, qtyProcured: 98, rate: 2550, totalValue: 249900, agent: 'Harish Kumar', closureDate: '2026-06-07', mspRate: 2203, premium: 347, status: 'Closed' },
+  { id: 5, indentNo: 'IND-0005', paddyType: 'Sona Masoori', targetMandi: 'Guntur', qtyRequired: 200, qtyProcured: 195, rate: 2100, totalValue: 409500, agent: 'Krishna Reddy', closureDate: '2026-06-09', mspRate: 2050, premium: 50, status: 'Closed' },
+  { id: 6, indentNo: 'IND-0006', paddyType: 'IR-36', targetMandi: 'Moga', qtyRequired: 90, qtyProcured: 85, rate: 2020, totalValue: 171700, agent: 'Suresh Lal', closureDate: '2026-06-10', mspRate: 1940, premium: 80, status: 'Closed' },
+  { id: 7, indentNo: 'IND-0007', paddyType: 'Basmati', targetMandi: 'Panipat', qtyRequired: 150, qtyProcured: 148, rate: 2480, totalValue: 367040, agent: 'Ramesh Gupta', closureDate: '2026-06-12', mspRate: 2203, premium: 277, status: 'Closed' },
+  { id: 8, indentNo: 'IND-0008', paddyType: 'Basmati', targetMandi: 'Karnal', qtyRequired: 75, qtyProcured: 0, rate: 0, totalValue: 0, agent: 'Harish Kumar', closureDate: '-', mspRate: 2203, premium: 0, status: 'Pending' },
 ];
 
 const productionData = [
@@ -120,7 +120,7 @@ export const Reporting = () => {
   const finPag = usePagination(financeData, 8);
 
   const procColumns = [
-    { header: 'PR Number', cell: r => <span className="font-semibold text-primary">{r.prNumber}</span> },
+    { header: 'Indent Number', cell: r => <span className="font-semibold text-primary">{r.indentNo}</span> },
     { header: 'Paddy Type', accessor: 'paddyType' },
     { header: 'Target Mandi', accessor: 'targetMandi' },
     { header: 'Qty Required (MT)', accessor: 'qtyRequired' },

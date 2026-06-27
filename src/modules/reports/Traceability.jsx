@@ -6,9 +6,9 @@ import { usePagination } from '../../hooks/usePagination';
 
 // ── Full lifecycle trace records
 const AUDIT_LOG = [
-  // PR-0001 full journey
+  // IND-0001 full journey
   { id: 1, auditId: 'AUD-0001', eventType: 'Procurement Planning', module: 'Procurement', refId: 'PRC-0001', lotNo: '-', description: 'Procurement plan approved for Basmati 120 MT target — Karnal Mandi', performedBy: 'Mill Manager', timestamp: '2026-06-01 09:00', ipAddr: '192.168.1.10', result: 'Approved' },
-  { id: 2, auditId: 'AUD-0002', eventType: 'Purchase Request Created', module: 'Purchase Execution', refId: 'PR-0001', lotNo: '-', description: 'Purchase Request PR-0001 created for 120 MT Basmati Paddy', performedBy: 'Ramesh Verma', timestamp: '2026-06-01 10:15', ipAddr: '192.168.1.12', result: 'Created' },
+  { id: 2, auditId: 'AUD-0002', eventType: 'Purchase Indent Created', module: 'Purchase Execution', refId: 'IND-0001', lotNo: '-', description: 'Purchase Indent IND-0001 created for 120 MT Basmati Paddy', performedBy: 'Ramesh Verma', timestamp: '2026-06-01 10:15', ipAddr: '192.168.1.12', result: 'Created' },
   { id: 3, auditId: 'AUD-0003', eventType: 'Purchase Order Issued', module: 'Purchase Execution', refId: 'PO-0001', lotNo: '-', description: 'PO-0001 issued to farmer Rajesh Kumar @ ₹2500/Qt — Moga Mandi', performedBy: 'Ramesh Verma', timestamp: '2026-06-01 11:30', ipAddr: '192.168.1.12', result: 'Issued' },
   { id: 4, auditId: 'AUD-0004', eventType: 'Agent Assigned', module: 'Purchase Execution', refId: 'PO-0001', lotNo: '-', description: 'Harish Kumar (AG-001) assigned to PO-0001 for field coordination', performedBy: 'Purchase Head', timestamp: '2026-06-01 12:00', ipAddr: '192.168.1.10', result: 'Assigned' },
   { id: 5, auditId: 'AUD-0005', eventType: 'Vehicle Assigned', module: 'Purchase Execution', refId: 'PO-0001', lotNo: '-', description: 'Vehicle HR-55-AB-1234 assigned for paddy pickup — Driver Raju Singh', performedBy: 'Transport Dept', timestamp: '2026-06-02 08:00', ipAddr: '192.168.1.15', result: 'Assigned' },
@@ -16,7 +16,7 @@ const AUDIT_LOG = [
   { id: 7, auditId: 'AUD-0007', eventType: 'Gate Entry Recorded', module: 'Purchase Execution', refId: 'GE-0001', lotNo: '-', description: 'Vehicle PB-10-AB-1234 entered mill gate — Gross: 22500 KG', performedBy: 'Security Staff', timestamp: '2026-06-03 07:15', ipAddr: '192.168.1.30', result: 'Entered' },
   { id: 8, auditId: 'AUD-0008', eventType: 'Weighbridge — Gross Weight', module: 'Purchase Execution', refId: 'WB-0001', lotNo: '-', description: 'Gross: 22,500 KG | Tare: 7,000 KG | Net: 15,500 KG (115.5 MT)', performedBy: 'Weighbridge Operator', timestamp: '2026-06-03 07:30', ipAddr: '192.168.1.31', result: 'Recorded' },
   { id: 9, auditId: 'AUD-0009', eventType: 'Lab Quality Test', module: 'Purchase Execution', refId: 'LAB-0001', lotNo: '-', description: 'Moisture: 13.2% | Broken: 1.8% | Foreign Matter: 0.5% — APPROVED', performedBy: 'Dr. Sunil Rao', timestamp: '2026-06-03 09:00', ipAddr: '192.168.1.25', result: 'Approved' },
-  { id: 10, auditId: 'AUD-0010', eventType: 'Purchase Closure', module: 'Purchase Execution', refId: 'PCL-0001', lotNo: '-', description: 'PR-0001 closed. Final Qty: 115.5 MT @ ₹2500/Qt. Total: ₹2,88,750', performedBy: 'Purchase Head', timestamp: '2026-06-03 11:00', ipAddr: '192.168.1.10', result: 'Closed' },
+  { id: 10, auditId: 'AUD-0010', eventType: 'Purchase Closure', module: 'Purchase Execution', refId: 'PCL-0001', lotNo: '-', description: 'IND-0001 closed. Final Qty: 115.5 MT @ ₹2500/Qt. Total: ₹2,88,750', performedBy: 'Purchase Head', timestamp: '2026-06-03 11:00', ipAddr: '192.168.1.10', result: 'Closed' },
   // Inventory
   { id: 11, auditId: 'AUD-0011', eventType: 'Stock Allocated', module: 'Inventory', refId: 'STK-0001', lotNo: 'LOT-001', description: 'LOT-001: 115.5 MT Basmati Paddy allocated to Main Warehouse / GD-01', performedBy: 'Warehouse Manager', timestamp: '2026-06-03 12:00', ipAddr: '192.168.1.40', result: 'Allocated' },
   // Production

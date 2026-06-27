@@ -99,7 +99,7 @@ export const SentQuotation = () => {
     
     
     
-    const readOnlyFields = ["orderId","quotationNo","customerName","riceGradeRequired","totalValue"];
+    const readOnlyFields = ["orderId","orderType","quotationNo","customerName","riceGradeRequired","totalValue"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -145,7 +145,7 @@ export const SentQuotation = () => {
   };
 
   const pendingCols = [{"header":"Order ID","accessor":"orderId"},{"header":"Order Date","accessor":"orderDate"},{"header":"Order Type","accessor":"orderType"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Qty Required (MT)","accessor":"qtyRequired"},{"header":"Delivery Location","accessor":"deliveryLocation"},{"header":"Expected Delivery Date","accessor":"expectedDeliveryDate"},{"header":"Received By","accessor":"receivedBy"}];
-  const historyCols = [{"header":"Quotation No","accessor":"quotationNo"},{"header":"Order ID","accessor":"orderId"},{"header":"Quotation Date","accessor":"quotationDate"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Quantity (MT)","accessor":"quotedQty"},{"header":"Quoted Price (₹ or $/MT)","accessor":"quotedPrice"},{"header":"Total Value","accessor":"totalValue"},{"header":"Valid Till","accessor":"validTill"},{"header":"Quotation By","accessor":"quotationBy"}];
+  const historyCols = [{"header":"Quotation No","accessor":"quotationNo"},{"header":"Order ID","accessor":"orderId"},{"header":"Order Type","accessor":"orderType"},{"header":"Quotation Date","accessor":"quotationDate"},{"header":"Customer Name","accessor":"customerName"},{"header":"Rice Grade","accessor":"riceGradeRequired"},{"header":"Quantity (MT)","accessor":"quotedQty"},{"header":"Quoted Price (₹ or $/MT)","accessor":"quotedPrice"},{"header":"Total Value","accessor":"totalValue"},{"header":"Valid Till","accessor":"validTill"},{"header":"Quotation By","accessor":"quotationBy"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
@@ -197,6 +197,16 @@ export const SentQuotation = () => {
                 type="text"
                 value={formData.orderId || ''} 
                 onChange={(e) => setFormData({...formData, orderId: e.target.value})}
+                readOnly={true}
+                className={true ? 'bg-slate-100' : ''}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Order Type</Label>
+              <Input 
+                type="text"
+                value={formData.orderType || ''} 
+                onChange={(e) => setFormData({...formData, orderType: e.target.value})}
                 readOnly={true}
                 className={true ? 'bg-slate-100' : ''}
               />
