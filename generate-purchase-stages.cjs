@@ -311,12 +311,12 @@ const stages = [
     file: 'Weighment.jsx',
     prev: '/lift', next: '/material-receipt', storageKey: 'purchase_9_history', readFrom: 'purchase_8_history',
     pendingColumns: [
-      ['Action', ''], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Vehicle Number', 'vehicleNumber'], ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['No. of Bags', 'noOfBags'], 
       ['Net Weight Lifted Kg', 'netWeight'], ['Moisture %', 'moisture'], ['Lift Date', 'liftDate']
     ],
     historyColumns: [
-      ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Weigh Slip No', 'weighSlipNo'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Weigh Date', 'weighDate'], ['Vehicle Number', 'vehicleNumber'], ['Gross Weight Kg', 'grossWeight'], 
       ['Tare Weight Kg', 'tareWeight'], ['Net Weight Kg', 'netWeight'], ['Variance Kg', 'varianceKg'], 
       ['Variance %', 'variancePct'], ['Operator', 'operator']
@@ -344,12 +344,12 @@ const stages = [
     file: 'MaterialReceipt.jsx',
     prev: '/weighment', next: '/laboratory-report', storageKey: 'purchase_10_history', readFrom: 'purchase_9_history',
     pendingColumns: [
-      ['Action', ''], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Vehicle Number', 'vehicleNumber'], ['Net Weight Kg', 'netWeight'], 
       ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['Weigh Date', 'weighDate']
     ],
     historyColumns: [
-      ['GRN No', 'grnNo'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['GRN No', 'grnNo'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['GRN Date', 'grnDate'], ['Lot No', 'lotNo'], ['Batch No', 'batchNo'], 
       ['Warehouse', 'warehouse'], ['Go-down', 'godown'], ['Received Qty Kg', 'receivedQty'], 
       ['Shortage Kg', 'shortage'], ['Excess Kg', 'excess'], ['Received By', 'receivedBy']
@@ -382,12 +382,12 @@ const stages = [
     file: 'LaboratoryReport.jsx',
     prev: '/material-receipt', next: '/accounts-verification', storageKey: 'purchase_11_history', readFrom: 'purchase_10_history',
     pendingColumns: [
-      ['Action', ''], ['GRN No', 'grnNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Lot No', 'lotNo'], ['Net Weight Kg', 'netWeight|receivedQty'], 
       ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['GRN Date', 'grnDate']
     ],
     historyColumns: [
-      ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Lab Report ID', 'labReportId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Lot No', 'lotNo'], ['Lab Name', 'labName'], ['Test Date', 'testDate'], ['Moisture %', 'moisture'], 
       ['Broken %', 'broken'], ['Paddy Grade Result', 'paddyGradeResult'], ['Recovery %', 'recovery'], 
       ['Lab Result', 'labResult'], ['Approved', 'approved'], ['Technician', 'technician']
@@ -418,12 +418,12 @@ const stages = [
     file: 'AccountsVerification.jsx',
     prev: '/laboratory-report', next: '/full-kitting', storageKey: 'purchase_12_history', readFrom: 'purchase_11_history',
     pendingColumns: [
-      ['Action', ''], ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
       ['Net Weight Kg', 'netWeight|receivedQty'], ['Lab Result', 'labResult']
     ],
     historyColumns: [
-      ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['AV ID', 'accountsVerificationId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Purchase Type', 'purchaseType'], ['Supplier/Govt Bill ₹', 'supplierBillAmt|govtBillAmt'], 
       ['Freight ₹', 'freightAmount'], ['Labour ₹', 'labourCharges'], ['Advance Paid ₹', 'advancePaid|advanceAmount'], 
       ['Balance Payable ₹', 'balancePayable'], ['TDS ₹', 'tdsAmount'], ['Net Payable ₹', 'netPayable'], 
@@ -461,12 +461,12 @@ const stages = [
     file: 'FullKitting.jsx',
     prev: '/accounts-verification', next: '/purchase-closure', storageKey: 'purchase_13_history', readFrom: 'purchase_12_history',
     pendingColumns: [
-      ['Action', ''], ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
       ['Net Payable ₹', 'netPayable'], ['Payment Status', 'paymentStatus']
     ],
     historyColumns: [
-      ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['AV ID', 'accountsVerificationId'], 
+      ['Full Kitting ID', 'fullKittingId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Challan No', 'challanNo'], ['AV ID', 'accountsVerificationId'], 
       ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Kitting Date', 'kittingDate'], 
       ['Farmer/Agency Name', 'farmerName|agencyName'], ['No. of Bags', 'noOfBags'], ['Net Weight Kg', 'netWeight'], 
       ['Rate ₹/Qt', 'rate'], ['Total Amount ₹', 'totalAmount'], ['Advance Paid ₹', 'advancePaid|advanceAmount'], 
@@ -501,12 +501,12 @@ const stages = [
     file: 'PurchaseClosure.jsx',
     prev: '/full-kitting', next: null, storageKey: 'purchase_14_history', readFrom: 'purchase_13_history',
     pendingColumns: [
-      ['Action', ''], ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Agency/Vendor Name', 'agencyName|vendorName'], ['Net Weight Kg', 'netWeight'], 
       ['Rate ₹/Qt', 'rate'], ['Net Payable ₹', 'netPayable'], ['Kitting Date', 'kittingDate']
     ],
     historyColumns: [
-      ['Purchase Closure ID', 'purchaseClosureId'], ['Full Kitting ID', 'fullKittingId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Purchase Closure ID', 'purchaseClosureId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Full Kitting ID', 'fullKittingId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Closure Date', 'closureDate'], ['Purchase Type', 'purchaseType'], 
       ['Vendor/Agency Name', 'vendorName|agencyName'], ['Lot No', 'lotNo'], ['Batch No', 'batchNo'], 
       ['Net Qty Added MT', 'netQty'], ['Warehouse', 'warehouse'], ['Go-down', 'godown'], 

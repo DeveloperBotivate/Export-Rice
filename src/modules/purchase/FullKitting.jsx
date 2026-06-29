@@ -144,6 +144,8 @@ export const FullKitting = () => {
                 {activeTab === 'pending' ? (
                   <>
                     <th className="px-6 py-4 font-bold">Action</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">AV ID</th>
                     <th className="px-6 py-4 font-bold">GRN No</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
@@ -156,6 +158,8 @@ export const FullKitting = () => {
                 ) : (
                   <>
                     <th className="px-6 py-4 font-bold">Full Kitting ID</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Challan No</th>
                     <th className="px-6 py-4 font-bold">AV ID</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
@@ -190,6 +194,8 @@ export const FullKitting = () => {
                           Process
                         </Button>
                       </td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'accountsVerificationId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'grnNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
@@ -201,7 +207,7 @@ export const FullKitting = () => {
                     </tr>
                   ))}
                   {items.length === 0 && (
-                    <tr><td colSpan="9" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                    <tr><td colSpan="11" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
                   )}
                 </>
               )}
@@ -211,6 +217,8 @@ export const FullKitting = () => {
                   {historyItems.map((item, index) => (
                     <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'fullKittingId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'challanNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'accountsVerificationId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
@@ -228,7 +236,7 @@ export const FullKitting = () => {
                     </tr>
                   ))}
                   {historyItems.length === 0 && (
-                    <tr><td colSpan="15" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                    <tr><td colSpan="17" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
                   )}
                 </>
               )}

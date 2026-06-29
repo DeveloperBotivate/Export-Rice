@@ -144,6 +144,8 @@ export const Weighment = () => {
                 {activeTab === 'pending' ? (
                   <>
                     <th className="px-6 py-4 font-bold">Action</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Lift ID</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Indent No</th>
@@ -157,6 +159,8 @@ export const Weighment = () => {
                 ) : (
                   <>
                     <th className="px-6 py-4 font-bold">Weigh Slip No</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Lift ID</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Indent No</th>
@@ -188,6 +192,8 @@ export const Weighment = () => {
                           Process
                         </Button>
                       </td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
@@ -200,7 +206,7 @@ export const Weighment = () => {
                     </tr>
                   ))}
                   {items.length === 0 && (
-                    <tr><td colSpan="10" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                    <tr><td colSpan="12" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
                   )}
                 </>
               )}
@@ -210,6 +216,8 @@ export const Weighment = () => {
                   {historyItems.map((item, index) => (
                     <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'weighSlipNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
@@ -224,7 +232,7 @@ export const Weighment = () => {
                     </tr>
                   ))}
                   {historyItems.length === 0 && (
-                    <tr><td colSpan="12" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                    <tr><td colSpan="14" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
                   )}
                 </>
               )}

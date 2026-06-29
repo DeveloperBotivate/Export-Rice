@@ -144,6 +144,8 @@ export const PurchaseClosure = () => {
                 {activeTab === 'pending' ? (
                   <>
                     <th className="px-6 py-4 font-bold">Action</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Full Kitting ID</th>
                     <th className="px-6 py-4 font-bold">Challan No</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
@@ -157,6 +159,8 @@ export const PurchaseClosure = () => {
                 ) : (
                   <>
                     <th className="px-6 py-4 font-bold">Purchase Closure ID</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Full Kitting ID</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Indent No</th>
@@ -193,6 +197,8 @@ export const PurchaseClosure = () => {
                           Process
                         </Button>
                       </td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'fullKittingId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'challanNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
@@ -205,7 +211,7 @@ export const PurchaseClosure = () => {
                     </tr>
                   ))}
                   {items.length === 0 && (
-                    <tr><td colSpan="10" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                    <tr><td colSpan="12" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
                   )}
                 </>
               )}
@@ -215,6 +221,8 @@ export const PurchaseClosure = () => {
                   {historyItems.map((item, index) => (
                     <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'purchaseClosureId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'fullKittingId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
@@ -234,7 +242,7 @@ export const PurchaseClosure = () => {
                     </tr>
                   ))}
                   {historyItems.length === 0 && (
-                    <tr><td colSpan="17" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                    <tr><td colSpan="19" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
                   )}
                 </>
               )}

@@ -144,6 +144,8 @@ export const AccountsVerification = () => {
                 {activeTab === 'pending' ? (
                   <>
                     <th className="px-6 py-4 font-bold">Action</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Lab Report ID</th>
                     <th className="px-6 py-4 font-bold">GRN No</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
@@ -156,6 +158,8 @@ export const AccountsVerification = () => {
                 ) : (
                   <>
                     <th className="px-6 py-4 font-bold">AV ID</th>
+                    <th className="px-6 py-4 font-bold">Lift No</th>
+                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">GRN No</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Indent No</th>
@@ -189,6 +193,8 @@ export const AccountsVerification = () => {
                           Process
                         </Button>
                       </td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'labReportId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'grnNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
@@ -200,7 +206,7 @@ export const AccountsVerification = () => {
                     </tr>
                   ))}
                   {items.length === 0 && (
-                    <tr><td colSpan="9" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                    <tr><td colSpan="11" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
                   )}
                 </>
               )}
@@ -210,6 +216,8 @@ export const AccountsVerification = () => {
                   {historyItems.map((item, index) => (
                     <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'accountsVerificationId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'grnNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
@@ -226,7 +234,7 @@ export const AccountsVerification = () => {
                     </tr>
                   ))}
                   {historyItems.length === 0 && (
-                    <tr><td colSpan="14" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                    <tr><td colSpan="16" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
                   )}
                 </>
               )}
