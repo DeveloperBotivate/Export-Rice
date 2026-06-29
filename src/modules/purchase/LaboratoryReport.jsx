@@ -17,15 +17,15 @@ const getVal = (item, keyStr) => {
 
 export const LaboratoryReport = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master_v2')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v3')) || [];
     
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
 
     
-    const rawPending = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
+    const rawPending = JSON.parse(localStorage.getItem('purchase_3_1_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_3_1_history')) || [];
     
     const pending = resolveItems(rawPending);
     const history = resolveItems(rawHistory);
@@ -56,9 +56,9 @@ export const LaboratoryReport = () => {
     if (!newItem.id) newItem.id = Date.now();
     
     // Save new item directly to raw history array
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_3_1_history')) || [];
     rawHistory.push(newItem);
-    localStorage.setItem('purchase_v2_', JSON.stringify(rawHistory));
+    localStorage.setItem('purchase_3_1_history', JSON.stringify(rawHistory));
     
     setHistoryItems([...historyItems, newItem]);
 
