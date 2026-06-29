@@ -121,10 +121,15 @@ export const Lift = () => {
     };
     localStorage.setItem(`lift_data_${selectedItem.id}`, JSON.stringify(liftData));
 
-    // Save lift record to purchase_v2_ for downstream stages
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
-    rawHistory.push(liftRecord);
-    localStorage.setItem('purchase_v2_', JSON.stringify(rawHistory));
+    // Save lift record to purchase_8_history for downstream stages
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
+    rawHistory.push(liftRecord); // Push the full object
+    localStorage.setItem('purchase_8_history', JSON.stringify(rawHistory));
+
+    // Also push to masterData so downstream stages can resolve it by string ID
+    const masterData = JSON.parse(localStorage.getItem('purchase_master_v6')) || [];
+    masterData.push(liftRecord);
+    localStorage.setItem('purchase_master_v6', JSON.stringify(masterData));
 
     setHistoryItems([...historyItems, liftRecord]);
 
