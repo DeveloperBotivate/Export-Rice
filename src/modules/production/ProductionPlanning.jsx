@@ -7,27 +7,7 @@ import DataTable from '../../components/DataTable';
 import { usePagination } from '../../hooks/usePagination';
 import { Modal } from '../../components/ui/Modal';
 
-const generateDummyData = () => {
-  return Array.from({ length: 40 }, (_, i) => ({
-    id: i + 1,
-    planNo: `PP-2026-${(i + 1).toString().padStart(4, '0')}`,
-    planDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    planType: ['Daily', 'Weekly', 'Monthly'][Math.floor(Math.random() * 3)],
-    paddyVariety: ['Basmati', 'Sona Masuri', 'IR64'][Math.floor(Math.random() * 3)],
-    plannedInputQty: Math.floor(Math.random() * 50) + 10,
-    targetHeadRice: (Math.floor(Math.random() * 50) * 0.6).toFixed(2),
-    targetBrokenRice: (Math.floor(Math.random() * 50) * 0.1).toFixed(2),
-    targetBran: (Math.floor(Math.random() * 50) * 0.08).toFixed(2),
-    targetHusk: (Math.floor(Math.random() * 50) * 0.2).toFixed(2),
-    expectedRecovery: 60,
-    plant: 'Mill Unit 1',
-    shift: ['Morning', 'Evening', 'Night'][Math.floor(Math.random() * 3)],
-    machineAllocated: `MCH-${Math.floor(Math.random() * 10)}`,
-    supervisor: 'Rajesh',
-    plannedBy: 'Production Head',
-    status: 'Open'
-  }));
-};
+" + generateDummyData.toString() + "
 
 export const ProductionPlanning = () => {
   const getInitialData = () => {
