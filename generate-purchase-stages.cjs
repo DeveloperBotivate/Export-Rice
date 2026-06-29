@@ -556,15 +556,9 @@ const getVal = (item, keyStr) => {
 };
 
 export const ${stage.file.replace('.jsx', '')} = () => {
-  const [items, setItems] = useState([]);
-  const [historyItems, setHistoryItems] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [selectedType, setSelectedType] = useState('All');
-  const [activeTab, setActiveTab] = useState('${isStage1 ? 'history' : 'pending'}');
-
-  useEffect(() => {
-    const masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+  const getInitialData = () => {
+    let masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
@@ -615,24 +609,28 @@ export const ${stage.file.replace('.jsx', '')} = () => {
       rawHistory = Array.from({length: 280}, (_, index) => index + 1);
     }
     
-    setHistoryItems(resolveItems(rawHistory));
+    return { pending: [], history: resolveItems(rawHistory) };
     ` : `
-    // Load raw arrays (mix of IDs from dummy data, and full objects from manual entry)
     const rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
     const rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
     
-    // Resolve to full objects
     const pending = resolveItems(rawPending);
     const history = resolveItems(rawHistory);
     
-    // Filter pending
     const historyIds = history.map(h => h.id);
     const unresolvedPending = pending.filter(p => !historyIds.includes(p.id));
     
-    setItems(unresolvedPending);
-    setHistoryItems(history);
+    return { pending: unresolvedPending, history };
     `}
-  }, []);
+  };
+
+  const initial = getInitialData();
+  const [items, setItems] = useState(initial.pending);
+  const [historyItems, setHistoryItems] = useState(initial.history);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [selectedType, setSelectedType] = useState('All');
+  const [activeTab, setActiveTab] = useState('${isStage1 ? 'history' : 'pending'}');
 
   const handleAction = (item, type = 'Market') => {
     const autoGen = !item.requirementNo ? { requirementNo: 'REQ-2026-' + Math.floor(Math.random() * 10000) } : {};

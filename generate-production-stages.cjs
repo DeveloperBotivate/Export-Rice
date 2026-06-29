@@ -644,12 +644,18 @@ const generateDummyData = () => {
       batchNo: \`BT-2026-\${(i + 1).toString().padStart(4, '0')}\`,
       lotNo: \`LT-2026-\${(i + 1).toString().padStart(4, '0')}\`,
       planDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
+      planType: ['Daily', 'Weekly', 'Monthly'][Math.floor(Math.random() * 3)],
       paddyVariety: ['Basmati', 'Sona Masuri', 'IR64'][Math.floor(Math.random() * 3)],
       plannedInputQty: qty,
       targetHeadRice: (qty * 0.6).toFixed(2),
+      targetBrokenRice: (qty * 0.05).toFixed(2),
+      targetBran: (qty * 0.08).toFixed(2),
+      targetHusk: (qty * 0.20).toFixed(2),
       expectedRecovery: 60,
       plant: 'Mill Unit 1',
       shift: ['Morning', 'Evening', 'Night'][Math.floor(Math.random() * 3)],
+      machineAllocated: \`MCH-\${Math.floor(Math.random() * 10).toString().padStart(2, '0')}\`,
+      machineName: 'Satake Master',
       supervisor: 'Rajesh',
       plannedBy: 'Production Head',
       orderDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
@@ -662,9 +668,10 @@ const generateDummyData = () => {
       sourceStockId: \`STK-\${Math.floor(Math.random() * 1000)}\`,
       sourceWarehouse: 'Godown A',
       qtyToProcess: qty,
-      machineUsed: \`MCH-\${Math.floor(Math.random() * 10)}\`,
+      machineUsed: \`MCH-\${Math.floor(Math.random() * 10).toString().padStart(2, '0')}\`,
       batchStartTime: '08:00',
       batchEndTime: '16:00',
+      batchRemarks: 'Standard Processing',
       issueId: \`RMI-2026-\${(i + 1).toString().padStart(4, '0')}\`,
       issueDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}T08:30\`,
       paddyQtyIssued: qty,
@@ -672,20 +679,30 @@ const generateDummyData = () => {
       boppBagsIssued: 'BOPP-25KG (500)',
       threadIssued: 'TH-01 (10)',
       labelsIssued: 'LBL-01 (2000)',
+      palletsIssued: 5,
+      lubricantsIssued: 'LUB-10 (2L)',
+      otherConsumables: 'None',
       issuedBy: 'Store Keeper',
       receivedBy: 'Suresh',
+      issueRemarks: 'All items OK',
       preQcId: \`PQC-2026-\${(i + 1).toString().padStart(4, '0')}\`,
       testDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}T09:00\`,
       moisturePercent: 12.5,
       foreignMatterPercent: 1.2,
       brokenPercent: 2.5,
       chalkyPercent: 1.0,
+      immatureGrainPercent: 0.5,
+      damagedGrainPercent: 0.4,
+      redGrainPercent: 0.2,
       paddyGradeConfirmed: 'A',
       expectedRecoveryAfterTest: 62,
       qcResult: 'Pass',
       approvedForProduction: 'Yes',
+      rejectionReason: '-',
+      qcRemarks: 'Good Quality',
       labTechnician: 'Dr. Kumar',
       millingSessionId: \`MILL-2026-\${(i + 1).toString().padStart(4, '0')}\`,
+      remarks: 'Standard processing parameters applied',
       cleaningId: \`CLN-2026-\${(i + 1).toString().padStart(4, '0')}\`,
       cleaningInputMt: qty,
       cleanedOutputMt: (qty * 0.98).toFixed(2),
@@ -794,9 +811,25 @@ const generateDummyData = () => {
 
 export const ${stage.name} = () => {
   const getInitialData = () => {
-    const rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
-    const rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
-    const master = JSON.parse(localStorage.getItem('production_master')) || [];
+    let rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
+    let rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
+    let master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    
+    if (!master || master.length === 0) {
+      master = generateDummyData();
+      localStorage.setItem('production_master_v3', JSON.stringify(master));
+      
+      for(let i=1; i<=17; i++) {
+        const numItems = Math.max(0, (18 - i) * 2); 
+        const ids = Array.from({length: numItems}, (_, index) => index + 1);
+        localStorage.setItem(\`prod_v3_\${i}_history\`, JSON.stringify(ids));
+      }
+      const initialIds = Array.from({length: 40}, (_, index) => index + 1);
+      localStorage.setItem('prod_v3_1_history', JSON.stringify(initialIds));
+      
+      rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
+      rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
+    }
     
     const resolvedPending = rawPending.map(id => master.find(m => m.id === id)).filter(Boolean);
     const resolvedHistory = rawHistory.map(id => master.find(m => m.id === id)).filter(Boolean);
@@ -907,9 +940,9 @@ export const ${stage.name} = () => {
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
     
-    const master = JSON.parse(localStorage.getItem('production_master')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
     const updatedMaster = master.map(m => m.id === processedItem.id ? processedItem : m);
-    localStorage.setItem('production_master', JSON.stringify(updatedMaster));
+    localStorage.setItem('production_master_v3', JSON.stringify(updatedMaster));
 
     const rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
     if (!rawHistory.includes(processedItem.id)) {
@@ -1067,20 +1100,20 @@ const generateDummyData = () => {
 
 export const ProductionPlanning = () => {
   const getInitialData = () => {
-    let master = JSON.parse(localStorage.getItem('production_master'));
-    let historyIds = JSON.parse(localStorage.getItem('production_1_history'));
+    let master = JSON.parse(localStorage.getItem('production_master_v3'));
+    let historyIds = JSON.parse(localStorage.getItem('prod_v3_1_history'));
     
     if (!master || master.length === 0) {
       master = generateDummyData();
-      localStorage.setItem('production_master', JSON.stringify(master));
+      localStorage.setItem('production_master_v3', JSON.stringify(master));
       
       for(let i=1; i<=17; i++) {
         const numItems = Math.max(0, (18 - i) * 2); 
         const ids = Array.from({length: numItems}, (_, index) => index + 1);
-        localStorage.setItem(\`production_\${i}_history\`, JSON.stringify(ids));
+        localStorage.setItem(\`prod_v3_\${i}_history\`, JSON.stringify(ids));
       }
       historyIds = Array.from({length: 40}, (_, index) => index + 1);
-      localStorage.setItem('production_1_history', JSON.stringify(historyIds));
+      localStorage.setItem('prod_v3_1_history', JSON.stringify(historyIds));
     }
     
     return historyIds.map(id => master.find(m => m.id === id)).filter(Boolean);
@@ -1108,12 +1141,12 @@ export const ProductionPlanning = () => {
   const handleSave = () => {
     const newItem = { ...formData, id: Date.now(), status: 'Open' };
     
-    const master = JSON.parse(localStorage.getItem('production_master')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
     const newMaster = [newItem, ...master];
-    localStorage.setItem('production_master', JSON.stringify(newMaster));
+    localStorage.setItem('production_master_v3', JSON.stringify(newMaster));
     
-    const historyIds = JSON.parse(localStorage.getItem('production_1_history')) || [];
-    localStorage.setItem('production_1_history', JSON.stringify([newItem.id, ...historyIds]));
+    const historyIds = JSON.parse(localStorage.getItem('prod_v3_1_history')) || [];
+    localStorage.setItem('prod_v3_1_history', JSON.stringify([newItem.id, ...historyIds]));
     
     setHistoryItems([newItem, ...historyItems]);
     setIsModalOpen(false);
@@ -1293,8 +1326,8 @@ console.log('Created ProductionPlanning.jsx');
 
 // Write Stages 2-12
 stages.forEach((stage, idx) => {
-  stage.storageKey = `production_${idx + 2}_history`;
-  stage.readFrom = `production_${idx + 1}_history`;
+  stage.storageKey = `prod_v3_${idx + 2}_history`;
+  stage.readFrom = `prod_v3_${idx + 1}_history`;
   const filePath = path.join(__dirname, 'src/modules/production', stage.file);
   fs.writeFileSync(filePath, template(stage));
   console.log('Created ' + stage.file);

@@ -16,15 +16,9 @@ const getVal = (item, keyStr) => {
 };
 
 export const PurchaseRequirement = () => {
-  const [items, setItems] = useState([]);
-  const [historyItems, setHistoryItems] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [selectedType, setSelectedType] = useState('All');
-  const [activeTab, setActiveTab] = useState('history');
-
-  useEffect(() => {
-    const masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+  const getInitialData = () => {
+    let masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
@@ -75,9 +69,17 @@ export const PurchaseRequirement = () => {
       rawHistory = Array.from({length: 280}, (_, index) => index + 1);
     }
     
-    setHistoryItems(resolveItems(rawHistory));
+    return { pending: [], history: resolveItems(rawHistory) };
     
-  }, []);
+  };
+
+  const initial = getInitialData();
+  const [items, setItems] = useState(initial.pending);
+  const [historyItems, setHistoryItems] = useState(initial.history);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [selectedType, setSelectedType] = useState('All');
+  const [activeTab, setActiveTab] = useState('history');
 
   const handleAction = (item, type = 'Market') => {
     const autoGen = !item.requirementNo ? { requirementNo: 'REQ-2026-' + Math.floor(Math.random() * 10000) } : {};
