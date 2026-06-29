@@ -4,6 +4,10 @@ import { DashboardLayout } from './layouts/DashboardLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 import { DashboardPage } from './modules/dashboard/DashboardPage';
+import { ensurePurchaseDummyData } from './utils/dummyData';
+
+ensurePurchaseDummyData();
+
 import { LoginPage } from './modules/auth/LoginPage';
 import { PurchaseRequirement } from './modules/purchase/PurchaseRequirement';
 import { SourceSelection } from './modules/purchase/SourceSelection';

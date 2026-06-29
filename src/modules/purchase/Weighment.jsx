@@ -17,15 +17,15 @@ const getVal = (item, keyStr) => {
 
 export const Weighment = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master_v3')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v6')) || [];
     
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
 
     
-    const rawPending = JSON.parse(localStorage.getItem('purchase_3_1_history')) || [];
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_3_1_history')) || [];
+    const rawPending = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_9_history')) || [];
     
     const pending = resolveItems(rawPending);
     const history = resolveItems(rawHistory);
@@ -56,9 +56,9 @@ export const Weighment = () => {
     if (!newItem.id) newItem.id = Date.now();
     
     // Save new item directly to raw history array
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_3_1_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_9_history')) || [];
     rawHistory.push(newItem);
-    localStorage.setItem('purchase_3_1_history', JSON.stringify(rawHistory));
+    localStorage.setItem('purchase_9_history', JSON.stringify(rawHistory));
     
     setHistoryItems([...historyItems, newItem]);
 
@@ -145,7 +145,6 @@ export const Weighment = () => {
                   <>
                     <th className="px-6 py-4 font-bold">Action</th>
                     <th className="px-6 py-4 font-bold">Lift No</th>
-                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Lift ID</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Indent No</th>
@@ -160,7 +159,6 @@ export const Weighment = () => {
                   <>
                     <th className="px-6 py-4 font-bold">Weigh Slip No</th>
                     <th className="px-6 py-4 font-bold">Lift No</th>
-                    <th className="px-6 py-4 font-bold">Pending Lift MT</th>
                     <th className="px-6 py-4 font-bold">Lift ID</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Indent No</th>
@@ -193,7 +191,6 @@ export const Weighment = () => {
                         </Button>
                       </td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
@@ -206,7 +203,7 @@ export const Weighment = () => {
                     </tr>
                   ))}
                   {items.length === 0 && (
-                    <tr><td colSpan="12" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                    <tr><td colSpan="11" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
                   )}
                 </>
               )}
@@ -217,7 +214,6 @@ export const Weighment = () => {
                     <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'weighSlipNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'remainingAfterLiftMT')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
@@ -232,7 +228,7 @@ export const Weighment = () => {
                     </tr>
                   ))}
                   {historyItems.length === 0 && (
-                    <tr><td colSpan="14" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                    <tr><td colSpan="13" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
                   )}
                 </>
               )}

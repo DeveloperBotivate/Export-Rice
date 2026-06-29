@@ -5,7 +5,7 @@ const stages = [
   {
     title: 'Purchase Requirement',
     file: 'PurchaseRequirement.jsx',
-    prev: null, next: '/source-selection', storageKey: 'purchase_3_1_history', readFrom: null,
+    prev: null, next: '/source-selection', storageKey: 'purchase_1_history', readFrom: null,
     pendingColumns: [],
     historyColumns: [
       ['Requirement No', 'requirementNo'], ['Date', 'requirementDate'], ['Purchase Type', 'purchaseType'],
@@ -38,7 +38,7 @@ const stages = [
   {
     title: 'Source Selection & Indent',
     file: 'SourceSelection.jsx',
-    prev: '/purchase-requirement', next: '/purchase-approval', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/purchase-requirement', next: '/purchase-approval', storageKey: 'purchase_2_history', readFrom: 'purchase_1_history',
     pendingColumns: [
       ['Action', ''], ['Requirement No', 'requirementNo'], ['Date', 'requirementDate'], ['Purchase Type', 'purchaseType'],
       ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], ['Qty MT', 'govQtyMT|mktQtyMT'], ['Rate ₹/Qt', 'mspRate|budgetRate'],
@@ -84,7 +84,7 @@ const stages = [
   {
     title: 'Purchase Approval',
     file: 'PurchaseApproval.jsx',
-    prev: '/source-selection', next: '/po-do-entry', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/source-selection', next: '/po-do-entry', storageKey: 'purchase_3_history', readFrom: 'purchase_2_history',
     pendingColumns: [
       ['Action', ''], ['Indent No', 'indentNo'], ['Indent Date', 'indentDate'], ['Purchase Type', 'purchaseType'],
       ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
@@ -116,7 +116,7 @@ const stages = [
   {
     title: 'Create PO / Government DO',
     file: 'CreatePODO.jsx',
-    prev: '/purchase-approval', next: '/arrange-logistics-purchase', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/purchase-approval', next: '/arrange-logistics-purchase', storageKey: 'purchase_4_history', readFrom: 'purchase_3_history',
     pendingColumns: [
       ['Action', ''], ['Indent No', 'indentNo'], ['Approval ID', 'approvalId'], ['Purchase Type', 'purchaseType'], 
       ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
@@ -158,7 +158,7 @@ const stages = [
   {
     title: 'Arrange Logistics',
     file: 'ArrangeLogistics.jsx',
-    prev: '/po-do-entry', next: '/source-entry', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/po-do-entry', next: '/source-entry', storageKey: 'purchase_5_history', readFrom: 'purchase_4_history',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poNumber|doNumber|poDoNumber'], ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], 
       ['Vendor/Agency Name', 'vendorName|agencyName'], ['Paddy Grade', 'paddyGrade|govPaddyGrade|mktPaddyGrade'], 
@@ -197,7 +197,7 @@ const stages = [
   {
     title: 'Source Entry',
     file: 'SourceEntry.jsx',
-    prev: '/arrange-logistics-purchase', next: '/advance-payment', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/arrange-logistics-purchase', next: '/advance-payment', storageKey: 'purchase_6_history', readFrom: 'purchase_5_history',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Logistics ID', 'logisticsId'], 
       ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], ['Paddy Grade', 'paddyGrade|govPaddyGrade|mktPaddyGrade'], 
@@ -236,7 +236,7 @@ const stages = [
   {
     title: 'Advance Payment',
     file: 'AdvancePayment.jsx',
-    prev: '/source-entry', next: '/lift', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/source-entry', next: '/lift', storageKey: 'purchase_7_history', readFrom: 'purchase_6_history',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['PO Entry ID', 'poEntryId'], 
       ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], ['Rate ₹/Qt', 'rate'], ['Qty MT', 'qtyMT']
@@ -273,7 +273,7 @@ const stages = [
   {
     title: 'Lift',
     file: 'Lift.jsx',
-    prev: '/advance-payment', next: '/weighment', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/advance-payment', next: '/weighment', storageKey: 'purchase_8_history', readFrom: 'purchase_7_history',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['PO Entry ID', 'poEntryId'], 
       ['Purchase Type', 'purchaseType'], ['Vendor/Agency', 'vendorName|agencyName'], ['Qty MT', 'qtyMT'], ['Advance Paid ₹', 'advanceAmount']
@@ -309,14 +309,14 @@ const stages = [
   {
     title: 'Weighment',
     file: 'Weighment.jsx',
-    prev: '/lift', next: '/material-receipt', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/lift', next: '/material-receipt', storageKey: 'purchase_9_history', readFrom: 'purchase_8_history',
     pendingColumns: [
-      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Vehicle Number', 'vehicleNumber'], ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['No. of Bags', 'noOfBags'], 
       ['Net Weight Lifted Kg', 'netWeight'], ['Moisture %', 'moisture'], ['Lift Date', 'liftDate']
     ],
     historyColumns: [
-      ['Weigh Slip No', 'weighSlipNo'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Weigh Slip No', 'weighSlipNo'], ['Lift No', 'liftNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Weigh Date', 'weighDate'], ['Vehicle Number', 'vehicleNumber'], ['Gross Weight Kg', 'grossWeight'], 
       ['Tare Weight Kg', 'tareWeight'], ['Net Weight Kg', 'netWeight'], ['Variance Kg', 'varianceKg'], 
       ['Variance %', 'variancePct'], ['Operator', 'operator']
@@ -342,14 +342,14 @@ const stages = [
   {
     title: 'Material Receipt',
     file: 'MaterialReceipt.jsx',
-    prev: '/weighment', next: '/laboratory-report', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/weighment', next: '/laboratory-report', storageKey: 'purchase_10_history', readFrom: 'purchase_9_history',
     pendingColumns: [
-      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Vehicle Number', 'vehicleNumber'], ['Net Weight Kg', 'netWeight'], 
       ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['Weigh Date', 'weighDate']
     ],
     historyColumns: [
-      ['GRN No', 'grnNo'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['GRN No', 'grnNo'], ['Lift No', 'liftNo'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['GRN Date', 'grnDate'], ['Lot No', 'lotNo'], ['Batch No', 'batchNo'], 
       ['Warehouse', 'warehouse'], ['Go-down', 'godown'], ['Received Qty Kg', 'receivedQty'], 
       ['Shortage Kg', 'shortage'], ['Excess Kg', 'excess'], ['Received By', 'receivedBy']
@@ -380,14 +380,14 @@ const stages = [
   {
     title: 'Laboratory Report',
     file: 'LaboratoryReport.jsx',
-    prev: '/material-receipt', next: '/accounts-verification', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/material-receipt', next: '/accounts-verification', storageKey: 'purchase_11_history', readFrom: 'purchase_10_history',
     pendingColumns: [
-      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['GRN No', 'grnNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Lot No', 'lotNo'], ['Net Weight Kg', 'netWeight|receivedQty'], 
       ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['GRN Date', 'grnDate']
     ],
     historyColumns: [
-      ['Lab Report ID', 'labReportId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Lab Report ID', 'labReportId'], ['Lift No', 'liftNo'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Lot No', 'lotNo'], ['Lab Name', 'labName'], ['Test Date', 'testDate'], ['Moisture %', 'moisture'], 
       ['Broken %', 'broken'], ['Paddy Grade Result', 'paddyGradeResult'], ['Recovery %', 'recovery'], 
       ['Lab Result', 'labResult'], ['Approved', 'approved'], ['Technician', 'technician']
@@ -416,14 +416,14 @@ const stages = [
   {
     title: 'Accounts Verification',
     file: 'AccountsVerification.jsx',
-    prev: '/laboratory-report', next: '/full-kitting', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/laboratory-report', next: '/full-kitting', storageKey: 'purchase_12_history', readFrom: 'purchase_11_history',
     pendingColumns: [
-      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
       ['Net Weight Kg', 'netWeight|receivedQty'], ['Lab Result', 'labResult']
     ],
     historyColumns: [
-      ['AV ID', 'accountsVerificationId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['AV ID', 'accountsVerificationId'], ['Lift No', 'liftNo'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Purchase Type', 'purchaseType'], ['Supplier/Govt Bill ₹', 'supplierBillAmt|govtBillAmt'], 
       ['Freight ₹', 'freightAmount'], ['Labour ₹', 'labourCharges'], ['Advance Paid ₹', 'advancePaid|advanceAmount'], 
       ['Balance Payable ₹', 'balancePayable'], ['TDS ₹', 'tdsAmount'], ['Net Payable ₹', 'netPayable'], 
@@ -459,14 +459,14 @@ const stages = [
   {
     title: 'Full Kitting',
     file: 'FullKitting.jsx',
-    prev: '/accounts-verification', next: '/purchase-closure', storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/accounts-verification', next: '/purchase-closure', storageKey: 'purchase_13_history', readFrom: 'purchase_12_history',
     pendingColumns: [
-      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
       ['Net Payable ₹', 'netPayable'], ['Payment Status', 'paymentStatus']
     ],
     historyColumns: [
-      ['Full Kitting ID', 'fullKittingId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Challan No', 'challanNo'], ['AV ID', 'accountsVerificationId'], 
+      ['Full Kitting ID', 'fullKittingId'], ['Lift No', 'liftNo'], ['Challan No', 'challanNo'], ['AV ID', 'accountsVerificationId'], 
       ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Kitting Date', 'kittingDate'], 
       ['Farmer/Agency Name', 'farmerName|agencyName'], ['No. of Bags', 'noOfBags'], ['Net Weight Kg', 'netWeight'], 
       ['Rate ₹/Qt', 'rate'], ['Total Amount ₹', 'totalAmount'], ['Advance Paid ₹', 'advancePaid|advanceAmount'], 
@@ -499,14 +499,14 @@ const stages = [
   {
     title: 'Purchase Closure',
     file: 'PurchaseClosure.jsx',
-    prev: '/full-kitting', next: null, storageKey: 'purchase_3_1_history', readFrom: 'purchase_3_1_history',
+    prev: '/full-kitting', next: null, storageKey: 'purchase_14_history', readFrom: 'purchase_13_history',
     pendingColumns: [
-      ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Action', ''], ['Lift No', 'liftNo'], ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Agency/Vendor Name', 'agencyName|vendorName'], ['Net Weight Kg', 'netWeight'], 
       ['Rate ₹/Qt', 'rate'], ['Net Payable ₹', 'netPayable'], ['Kitting Date', 'kittingDate']
     ],
     historyColumns: [
-      ['Purchase Closure ID', 'purchaseClosureId'], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Full Kitting ID', 'fullKittingId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Purchase Closure ID', 'purchaseClosureId'], ['Lift No', 'liftNo'], ['Full Kitting ID', 'fullKittingId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Closure Date', 'closureDate'], ['Purchase Type', 'purchaseType'], 
       ['Vendor/Agency Name', 'vendorName|agencyName'], ['Lot No', 'lotNo'], ['Batch No', 'batchNo'], 
       ['Net Qty Added MT', 'netQty'], ['Warehouse', 'warehouse'], ['Go-down', 'godown'], 
@@ -557,7 +557,7 @@ const getVal = (item, keyStr) => {
 
 export const ${stage.file.replace('.jsx', '')} = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master_v3')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v6')) || [];
     
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
@@ -565,50 +565,7 @@ export const ${stage.file.replace('.jsx', '')} = () => {
 
     ${isStage1 ? `
     // Dummy Data seeding across all stages using Normalized Storage to save quota
-    let rawHistory = JSON.parse(localStorage.getItem('purchase_3_1_history'));
-    
-    if (!rawHistory || rawHistory.length === 0) {
-      const dummyDataArray = [];
-      // Generate 40 items (reduced from 280 to fix slow first-load)
-      for (let i = 1; i <= 40; i++) {
-        const pReq = "PRQ-" + i.toString().padStart(4, '0');
-        const pInd = "IND-" + i.toString().padStart(4, '0');
-        const pPo = "PO-" + i.toString().padStart(4, '0');
-        const pType = i % 2 === 0 ? 'Government' : 'Market';
-        
-        dummyDataArray.push({
-          id: i, requirementNo: pReq, requirementDate: '2023-10-15', purchaseType: pType, targetMandi: 'Karnal Mandi', mktPaddyGrade: 'Basmati 1121', mktQtyMT: 300 + i*10, budgetRate: 3500, brokerName: 'Ramesh Trading', brokerCode: 'BRK-045', requiredByDate: '2023-11-05', requestedBy: 'Admin', department: 'Procurement', status: 'Processed',
-          indentNo: pInd, indentDate: '2023-10-16', mandiName: 'Karnal Mandi', supplierName: 'Kisan Traders', paddyVariety: 'Basmati', mktSeason: 'Kharif', mktRate: 3450, commission: 2, brokerage: 1, loadingCharges: 500, hamaliCharges: 200, otherCharges: 100,
-          approvalId: "APR-" + i.toString().padStart(4, '0'), approvalDate: '2023-10-17', approvedBy: 'Manager', approvedQtyMT: 300 + i*10, approvedRate: 3450, approvedTotalValue: 1035000, priorityLevel: 'High', approvalStatus: 'Approved',
-          poNumber: pPo, poDate: '2023-10-18', poValidity: '2023-11-18', vendorName: 'Kisan Traders', vendorPhone: '9876543210', vendorId: 'PAN12345', qtyMT: 300 + i*10, rate: 3450, totalValue: 1035000, paymentTerms: 'Net 30', deliveryTerms: 'FOB',
-          logisticsId: "LOG-" + i.toString().padStart(4, '0'), vehicleNumber: 'HR-45-A-1234', vehicleType: 'Truck', driverName: 'Raju', transporterName: 'Speedy Transport', route: 'Karnal -> Mill', distance: 50, expectedDeparture: '2023-10-19', expectedArrival: '2023-10-20', freightRate: 500, totalFreight: 10000, advanceDriver: 2000,
-          poEntryId: "POE-" + i.toString().padStart(4, '0'), entryDate: '2023-10-20', mandiLocation: 'Karnal', auctionSlot: 'A-12', commissionAmt: 20700, lotNumbers: "LOT-K-" + i, noOfBags: 600, grossWeightSource: 30000, moistureSource: 17.5, paddyGradeVerified: 'Basmati 1121', recordedBy: 'Gate Keeper',
-          advancePaymentId: "ADV-" + i.toString().padStart(4, '0'), paymentDate: '2023-10-21', payeeName: 'Kisan Traders', bankAccount: 'AC123456', advanceAmount: 50000, paymentMode: 'NEFT', utrNo: 'UTR98765', tdsAmount: 500, netAmount: 49500, paidBy: 'Finance',
-          liftId: "LIFT-" + i.toString().padStart(4, '0'), liftDate: '2023-10-22T08:00', grossWeight: 30000, tareWeight: 10000, netWeight: 20000, moisture: 17.4, liftedFrom: 'Karnal Godown', supervisor: 'Amit',
-          weighSlipNo: "WB-" + i.toString().padStart(4, '0'), weighDate: '2023-10-22T14:00', weighbridgeId: 'WB-A1', operator: 'Suresh', varianceKg: 0, variancePct: 0,
-          grnNo: "GRN-" + i.toString().padStart(4, '0'), grnDate: '2023-10-22', warehouse: 'WH-1', godown: 'G-1', lotNo: "LT-" + i.toString().padStart(4, '0'), batchNo: "BT-" + i.toString().padStart(4, '0'), receivedQty: 20000, expectedQty: 20000, shortage: 0, excess: 0, receivedBy: 'Store Keeper',
-          labReportId: "LAB-" + i.toString().padStart(4, '0'), labName: 'Internal QC', testDate: '2023-10-23', broken: 2, paddyGradeResult: 'A', recovery: 68, technician: 'Dr. Singh', labResult: 'Pass', approved: 'Yes',
-          accountsVerificationId: "AV-" + i.toString().padStart(4, '0'), verificationDate: '2023-10-24', supplierBillAmt: 690000, brokerCommission: 13800, freightAmount: 10000, advancePaid: 50000, balancePayable: 666500, paymentStatus: 'Paid', netPayable: 666500, verifiedBy: 'Accounts Dept',
-          fullKittingId: "FK-" + i.toString().padStart(4, '0'), challanNo: "CHL-" + i.toString().padStart(4, '0'), kittingDate: '2023-10-25', farmerName: 'Ramesh Farmer', totalAmount: 690000,
-          purchaseClosureId: "PC-" + i.toString().padStart(4, '0'), closureDate: '2023-10-26', netQty: 20, qualityGrade: 'A', totalPurchaseValue: 690000, totalLandedCost: 715000, valuationRate: 35750, closureStatus: 'Complete',
-          // Gov Specific Fields
-          procurementRef: "PROC-Gov-" + (100+i), govPaddyGrade: 'Grade A', govQtyMT: 500, mspRate: 2203, targetSeason: 'Kharif 2023', agencyName: 'FCI', season: 'Kharif 2023', mandatedRate: 2203, allocationRef: "ALLOC-" + i, doNo: "DO-FCI-" + i
-        });
-      }
-      
-      // Store full objects ONCE to save memory limit
-      localStorage.setItem('purchase_master_v3', JSON.stringify(dummyDataArray));
-      masterData = dummyDataArray;
-      
-      // Inject only IDs into all stages via mathematical slices
-      for(let i=1; i<=14; i++) {
-        const numItems = Math.max(2, Math.round(40 * (15 - i) / 14)); 
-        const ids = Array.from({length: numItems}, (_, index) => index + 1);
-        localStorage.setItem(\`purchase_\${i}_history\`, JSON.stringify(ids));
-      }
-      
-      rawHistory = Array.from({length: 40}, (_, index) => index + 1);
-    }
+    let rawHistory = JSON.parse(localStorage.getItem('purchase_1_history'));
     
     return { pending: [], history: resolveItems(rawHistory) };
     ` : `
