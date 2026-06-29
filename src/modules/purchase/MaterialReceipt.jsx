@@ -51,6 +51,24 @@ export const MaterialReceipt = () => {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    if (formData.receivedQty && formData.netWeight) {
+      const received = parseFloat(formData.receivedQty);
+      const expected = parseFloat(formData.netWeight);
+      if (!isNaN(received) && !isNaN(expected)) {
+        const diff = expected - received;
+        setFormData(prev => ({ 
+          ...prev, 
+          expectedQty: expected,
+          shortage: diff > 0 ? diff : 0,
+          excess: diff < 0 ? Math.abs(diff) : 0
+        }));
+      }
+    } else if (formData.netWeight) {
+      setFormData(prev => ({ ...prev, expectedQty: prev.netWeight }));
+    }
+  }, [formData.receivedQty, formData.netWeight]);
+
   const handleSave = () => {
     const newItem = { ...formData, status: 'Processed' };
     if (!newItem.id) newItem.id = Date.now();
@@ -194,7 +212,7 @@ export const MaterialReceipt = () => {
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'weighSlipNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{item.isGroupedLift ? `${item.items?.length || 0} POs` : getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'netWeight')}</td>
@@ -216,7 +234,7 @@ export const MaterialReceipt = () => {
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'weighSlipNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{item.isGroupedLift ? `${item.items?.length || 0} POs` : getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'grnDate')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'lotNo')}</td>

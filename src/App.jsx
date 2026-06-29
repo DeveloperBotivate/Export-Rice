@@ -12,6 +12,8 @@ import { LoginPage } from './modules/auth/LoginPage';
 import { PurchaseRequirement } from './modules/purchase/PurchaseRequirement';
 import { SourceSelection } from './modules/purchase/SourceSelection';
 import { PurchaseApproval } from './modules/purchase/PurchaseApproval';
+import { CreatePO } from './modules/purchase/CreatePO';
+import { RevisePO } from './modules/purchase/RevicePO';
 import { CreatePODO } from './modules/purchase/CreatePODO';
 import { ArrangeLogistics as PurchaseArrangeLogistics } from './modules/purchase/ArrangeLogistics';
 import { SourceEntry } from './modules/purchase/SourceEntry';
@@ -133,6 +135,8 @@ function App() {
           <Route path="purchase-requirement" element={<PurchaseRequirement />} />
           <Route path="source-selection" element={<SourceSelection />} />
           <Route path="purchase-approval" element={<PurchaseApproval />} />
+          <Route path="po-creation" element={<CreatePO />} />
+          <Route path="revise-po" element={<RevisePO />} />
           <Route path="po-do-entry" element={<CreatePODO />} />
           <Route path="arrange-logistics-purchase" element={<PurchaseArrangeLogistics />} />
           <Route path="source-entry" element={<SourceEntry />} />

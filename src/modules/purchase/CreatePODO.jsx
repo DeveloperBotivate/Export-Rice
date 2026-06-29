@@ -27,8 +27,8 @@ export const CreatePODO = () => {
     const rawPending = JSON.parse(localStorage.getItem('purchase_3_history')) || [];
     const rawHistory = JSON.parse(localStorage.getItem('purchase_4_history')) || [];
     
-    const pending = resolveItems(rawPending);
-    const history = resolveItems(rawHistory);
+    const pending = resolveItems(rawPending).filter(p => p.purchaseType !== 'Market');
+    const history = resolveItems(rawHistory).filter(h => h.purchaseType !== 'Market');
     
     const historyIds = history.map(h => h.id);
     const unresolvedPending = pending.filter(p => !historyIds.includes(p.id));
@@ -83,8 +83,8 @@ export const CreatePODO = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Create PO / Government DO</h1>
-          <p className="text-slate-500">Manage create po / government do</p>
+          <h1 className="text-2xl font-bold text-slate-800">Create Government DO</h1>
+          <p className="text-slate-500">Manage government delivery orders</p>
         </div>
         
       </div>
@@ -131,7 +131,6 @@ export const CreatePODO = () => {
             className="w-48 bg-slate-50 border-slate-200"
           >
             <option value="All">All Types</option>
-            <option value="Market">Market (Mkt)</option>
             <option value="Government">Government (Gov)</option>
           </Select>
           
@@ -236,7 +235,7 @@ export const CreatePODO = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title={`Create PO / Government DO Details`}
+        title={`Create Government DO Details`}
         size="4xl"
       >
         <div className="max-h-[85vh] overflow-y-auto p-6">

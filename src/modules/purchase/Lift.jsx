@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Filter, Clock, History as HistoryIcon, Package, TrendingUp } from 'lucide-react';
+import { Search, Plus, Filter, Clock, History as HistoryIcon, Package, TrendingUp, ChevronDown, ChevronUp, Eye } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -17,7 +17,6 @@ const getVal = (item, keyStr) => {
 export const Lift = () => {
   const getInitialData = () => {
     let masterData = JSON.parse(localStorage.getItem('purchase_master_v6')) || [];
-
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
@@ -28,7 +27,6 @@ export const Lift = () => {
     const pending = resolveItems(rawPending);
     const history = resolveItems(rawHistory);
 
-    const historyIds = history.map(h => h.id);
     // Items that have not yet been fully lifted
     const unresolvedPending = pending.filter(p => {
       const liftData = JSON.parse(localStorage.getItem(`lift_data_${p.id}`)) || { totalLifted: 0 };
@@ -42,115 +40,24 @@ export const Lift = () => {
   const initial = getInitialData();
   const [items, setItems] = useState(initial.pending);
   const [historyItems, setHistoryItems] = useState(initial.history);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedType, setSelectedType] = useState('All');
   const [activeTab, setActiveTab] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedType, setSelectedType] = useState('All');
 
-  const handleAction = (item) => {
-    const liftData = JSON.parse(localStorage.getItem(`lift_data_${item.id}`)) || { totalLifted: 0, liftCount: 0 };
-    const totalQty = parseFloat(item.qtyMT) || 0;
-    const remainingQty = Math.max(0, totalQty - liftData.totalLifted);
-    const newLiftNo = liftData.liftCount + 1;
-    const newLiftId = `LIFT-${item.id}-${newLiftNo}`;
+  // Group Lift Modal States
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [selectedPaddyGrade, setSelectedPaddyGrade] = useState('');
+  const [groupedFormData, setGroupedFormData] = useState({
+    supervisor: 'Amit',
+    remarks: '',
+    vehicleNumber: '',
+    driverName: ''
+  });
+  // State for rows inside group modal
+  const [modalItems, setModalItems] = useState([]);
 
-    setSelectedItem(item);
-    setFormData({
-      ...item,
-      liftId: newLiftId,
-      liftNo: newLiftNo,
-      totalQtyMT: totalQty,
-      totalLiftedQtyMT: liftData.totalLifted,
-      remainingQtyMT: remainingQty,
-      liftQtyMT: '', // User fills this
-      liftDate: new Date().toISOString().slice(0, 16),
-      grossWeight: item.grossWeight || '',
-      tareWeight: item.tareWeight || '',
-      netWeight: item.netWeight || '',
-      moisture: item.moisture || '',
-      liftedFrom: item.liftedFrom || '',
-      supervisor: item.supervisor || 'Amit',
-      vehicleNumber: item.vehicleNumber || '',
-      driverName: item.driverName || '',
-      noOfBags: item.noOfBags || '',
-    });
-    setIsModalOpen(true);
-  };
-
-  useEffect(() => {
-    if (formData.grossWeight && formData.tareWeight) {
-      const net = parseFloat(formData.grossWeight) - parseFloat(formData.tareWeight);
-      if (!isNaN(net)) {
-        setFormData(prev => ({ ...prev, netWeight: net }));
-      }
-    }
-  }, [formData.grossWeight, formData.tareWeight]);
-
-  const handleSave = () => {
-    const liftQty = parseFloat(formData.liftQtyMT) || 0;
-    if (liftQty <= 0) {
-      alert('Please enter a valid Lift Qty MT greater than 0');
-      return;
-    }
-
-    const totalQty = parseFloat(formData.totalQtyMT) || 0;
-    const prevLifted = parseFloat(formData.totalLiftedQtyMT) || 0;
-    const newTotalLifted = prevLifted + liftQty;
-    const newRemaining = Math.max(0, totalQty - newTotalLifted);
-
-    // Save the lift record
-    const liftRecord = {
-      ...formData,
-      id: `${selectedItem.id}_L${formData.liftNo}`,
-      parentId: selectedItem.id,
-      liftQtyMT: liftQty,
-      newTotalLiftedQtyMT: newTotalLifted,
-      remainingAfterLiftMT: newRemaining,
-      status: newRemaining <= 0 ? 'Fully Lifted' : 'Partial Lift',
-      liftCompletedAt: new Date().toISOString(),
-    };
-
-    // Update lift tracking data
-    const liftData = {
-      totalLifted: newTotalLifted,
-      liftCount: formData.liftNo,
-      lastLiftId: formData.liftId,
-      fully: newRemaining <= 0,
-    };
-    localStorage.setItem(`lift_data_${selectedItem.id}`, JSON.stringify(liftData));
-
-    // Save lift record to purchase_8_history for downstream stages
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
-    rawHistory.push(liftRecord); // Push the full object
-    localStorage.setItem('purchase_8_history', JSON.stringify(rawHistory));
-
-    // Also push to masterData so downstream stages can resolve it by string ID
-    const masterData = JSON.parse(localStorage.getItem('purchase_master_v6')) || [];
-    masterData.push(liftRecord);
-    localStorage.setItem('purchase_master_v6', JSON.stringify(masterData));
-
-    setHistoryItems([...historyItems, liftRecord]);
-
-    // If fully lifted, remove from pending
-    if (newRemaining <= 0) {
-      setItems(items.filter(i => i.id !== selectedItem.id));
-    } else {
-      // Update remaining qty in the pending display
-      setItems(items.map(i => i.id === selectedItem.id ? { ...i, _remaining: newRemaining, _liftCount: formData.liftNo } : i));
-    }
-
-    setIsModalOpen(false);
-    setFormData({});
-    setSelectedItem(null);
-  };
-
-  const getRowClass = (type) => {
-    if (type === 'Domestic' || type === 'Government') return 'bg-blue-50/50 hover:bg-blue-100/60 transition-colors border-l-4 border-l-blue-400';
-    if (type === 'Export' || type === 'Market') return 'bg-emerald-50/50 hover:bg-emerald-100/60 transition-colors border-l-4 border-l-emerald-400';
-    return 'hover:bg-slate-50 transition-colors';
-  };
+  // History expanded state
+  const [expandedHistoryId, setExpandedHistoryId] = useState(null);
 
   const getLiftStats = (item) => {
     const liftData = JSON.parse(localStorage.getItem(`lift_data_${item.id}`)) || { totalLifted: 0, liftCount: 0 };
@@ -161,6 +68,144 @@ export const Lift = () => {
       remaining: Math.max(0, totalQty - liftData.totalLifted),
       percent: totalQty > 0 ? Math.round((liftData.totalLifted / totalQty) * 100) : 0,
     };
+  };
+
+  // Get unique paddy grades from pending items
+  const uniqueGrades = [...new Set(items.map(i => i.paddyGrade || 'Standard').filter(Boolean))];
+
+  const handleOpenGroupModal = () => {
+    setIsGroupModalOpen(true);
+    setSelectedPaddyGrade('');
+    setModalItems([]);
+    setGroupedFormData({
+      liftId: `LIFT-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+      liftDate: new Date().toISOString().slice(0, 16),
+      supervisor: 'Amit',
+      remarks: '',
+      vehicleNumber: '',
+      driverName: ''
+    });
+  };
+
+  useEffect(() => {
+    if (selectedPaddyGrade) {
+      const filtered = items.filter(i => (i.paddyGrade || 'Standard') === selectedPaddyGrade);
+      setModalItems(filtered.map(i => {
+        const stats = getLiftStats(i);
+        return {
+          ...i,
+          _checked: false,
+          _liftQtyMT: '', // User will input this
+          _stats: stats
+        };
+      }));
+    } else {
+      setModalItems([]);
+    }
+  }, [selectedPaddyGrade, items]);
+
+  const handleModalItemChange = (index, field, value) => {
+    const newItems = [...modalItems];
+    newItems[index][field] = value;
+    setModalItems(newItems);
+  };
+
+  const handleGroupSave = () => {
+    const selected = modalItems.filter(i => i._checked);
+    if (selected.length === 0) {
+      alert("Please select at least one PO/DO to lift.");
+      return;
+    }
+
+    let hasError = false;
+    selected.forEach(i => {
+      const liftQty = parseFloat(i._liftQtyMT) || 0;
+      if (liftQty <= 0 || liftQty > i._stats.remaining) {
+        alert(`Invalid lift quantity for PO: ${getVal(i, 'poNumber|poDoNumber')}`);
+        hasError = true;
+      }
+    });
+
+    if (hasError) return;
+
+    const liftedItemsData = [];
+    let totalGroupLiftQty = 0;
+
+    selected.forEach(i => {
+      const liftQty = parseFloat(i._liftQtyMT);
+      totalGroupLiftQty += liftQty;
+      
+      const newTotalLifted = i._stats.totalLifted + liftQty;
+      const newRemaining = Math.max(0, parseFloat(i.qtyMT || 0) - newTotalLifted);
+      const newLiftNo = i._stats.liftCount + 1;
+
+      liftedItemsData.push({
+        id: i.id, // reference to the original PO/DO id
+        poNumber: getVal(i, 'poNumber|poDoNumber|doNumber'),
+        vendorName: getVal(i, 'vendorName|agencyName|supplierName'),
+        purchaseType: i.purchaseType,
+        liftedFrom: i.liftedFrom || '',
+        totalQtyMT: i.qtyMT,
+        liftQtyMT: liftQty,
+        liftNo: newLiftNo,
+        remainingAfterLiftMT: newRemaining
+      });
+
+      // Update lift tracking data in localstorage for each PO/DO
+      const liftData = {
+        totalLifted: newTotalLifted,
+        liftCount: newLiftNo,
+        lastLiftId: groupedFormData.liftId,
+        fully: newRemaining <= 0,
+      };
+      localStorage.setItem(`lift_data_${i.id}`, JSON.stringify(liftData));
+    });
+
+    // Create Group Lift Record
+    const groupLiftRecord = {
+      ...groupedFormData,
+      id: groupedFormData.liftId, // Using liftId as the unique id for the grouped record
+      isGroupedLift: true,
+      paddyGrade: selectedPaddyGrade,
+      totalGroupLiftQtyMT: totalGroupLiftQty,
+      items: liftedItemsData,
+      status: 'Group Lifted',
+      liftCompletedAt: new Date().toISOString()
+    };
+
+    // Save to purchase_8_history
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
+    rawHistory.push(groupLiftRecord);
+    localStorage.setItem('purchase_8_history', JSON.stringify(rawHistory));
+
+    // Push to masterData 
+    const masterData = JSON.parse(localStorage.getItem('purchase_master_v6')) || [];
+    masterData.push(groupLiftRecord);
+    localStorage.setItem('purchase_master_v6', JSON.stringify(masterData));
+
+    setHistoryItems([...historyItems, groupLiftRecord]);
+
+    // Refresh pending items 
+    // Filter out fully lifted items, update _remaining for partially lifted
+    const updatedItems = items.filter(item => {
+      const checkedItem = selected.find(s => s.id === item.id);
+      if (checkedItem) {
+        const liftQty = parseFloat(checkedItem._liftQtyMT);
+        const newTotalLifted = checkedItem._stats.totalLifted + liftQty;
+        const totalQty = parseFloat(item.qtyMT || 0);
+        return newTotalLifted < totalQty;
+      }
+      return true; // Not selected, keep it
+    });
+    setItems(updatedItems);
+
+    setIsGroupModalOpen(false);
+  };
+
+  const getRowClass = (type) => {
+    if (type === 'Domestic' || type === 'Government') return 'bg-blue-50/50 hover:bg-blue-100/60 transition-colors border-l-4 border-l-blue-400';
+    if (type === 'Export' || type === 'Market') return 'bg-emerald-50/50 hover:bg-emerald-100/60 transition-colors border-l-4 border-l-emerald-400';
+    return 'hover:bg-slate-50 transition-colors';
   };
 
   const filteredPending = items.filter(item =>
@@ -177,9 +222,13 @@ export const Lift = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Lift</h1>
-          <p className="text-slate-500">Manage paddy lifting — supports partial lifts per order</p>
+          <h1 className="text-2xl font-bold text-slate-800">Lift (Grouped)</h1>
+          <p className="text-slate-500">Manage paddy lifting — batch multiple PO/DOs by Paddy Grade</p>
         </div>
+        <Button onClick={handleOpenGroupModal} className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          Create Lift
+        </Button>
       </div>
 
       <div className="border-b border-slate-200 mb-6">
@@ -220,28 +269,25 @@ export const Lift = () => {
               <tr>
                 {activeTab === 'pending' ? (
                   <>
-                    <th className="px-6 py-4 font-bold">Action</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Vendor / Agency</th>
+                    <th className="px-6 py-4 font-bold">Paddy Grade</th>
                     <th className="px-6 py-4 font-bold">Purchase Type</th>
                     <th className="px-6 py-4 font-bold">Total Qty MT</th>
                     <th className="px-6 py-4 font-bold">Lifted MT</th>
                     <th className="px-6 py-4 font-bold text-amber-700">Pending Qty MT</th>
-                    <th className="px-6 py-4 font-bold">Lift Count</th>
                     <th className="px-6 py-4 font-bold">Lift Progress</th>
                   </>
                 ) : (
                   <>
+                    <th className="px-6 py-4 font-bold"></th>
                     <th className="px-6 py-4 font-bold">Lift ID</th>
-                    <th className="px-6 py-4 font-bold">Lift No</th>
-                    <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Lift Date</th>
+                    <th className="px-6 py-4 font-bold">Paddy Grade</th>
                     <th className="px-6 py-4 font-bold">Vehicle No</th>
                     <th className="px-6 py-4 font-bold">Driver</th>
-                    <th className="px-6 py-4 font-bold">Lift Qty MT</th>
-                    <th className="px-6 py-4 font-bold">Net Weight Kg</th>
-                    <th className="px-6 py-4 font-bold">Remaining MT</th>
-                    <th className="px-6 py-4 font-bold">Status</th>
+                    <th className="px-6 py-4 font-bold">Total Lift Qty MT</th>
+                    <th className="px-6 py-4 font-bold">POs Lifted</th>
                     <th className="px-6 py-4 font-bold">Supervisor</th>
                   </>
                 )}
@@ -254,24 +300,13 @@ export const Lift = () => {
                     const stats = getLiftStats(item);
                     return (
                       <tr key={index} className={getRowClass(item.purchaseType)}>
-                        <td className="px-6 py-4">
-                          <Button
-                            onClick={() => handleAction(item)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-4 py-2 text-xs rounded-md shadow-sm font-medium"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                            Lift #{stats.liftCount + 1}
-                          </Button>
-                        </td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poNumber|poDoNumber|doNumber')}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vendorName|agencyName|supplierName')}</td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{item.paddyGrade || 'Standard'}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'purchaseType')}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'qtyMT')}</td>
                         <td className="px-6 py-4 font-medium text-emerald-600 font-bold">{stats.totalLifted}</td>
                         <td className="px-6 py-4 font-medium text-amber-600 font-bold">{stats.remaining}</td>
-                        <td className="px-6 py-4">
-                          <span className="bg-slate-100 text-slate-700 rounded-full px-3 py-1 text-xs font-bold">{stats.liftCount}</span>
-                        </td>
                         <td className="px-6 py-4 w-36">
                           <div className="flex items-center gap-2">
                             <div className="flex-1 bg-slate-200 rounded-full h-2">
@@ -284,7 +319,7 @@ export const Lift = () => {
                     );
                   })}
                   {filteredPending.length === 0 && (
-                    <tr><td colSpan="9" className="px-6 py-12 text-center text-slate-500">No pending lift records found</td></tr>
+                    <tr><td colSpan="8" className="px-6 py-12 text-center text-slate-500">No pending lift records found</td></tr>
                   )}
                 </>
               )}
@@ -292,28 +327,61 @@ export const Lift = () => {
               {activeTab === 'history' && (
                 <>
                   {filteredHistory.map((item, index) => (
-                    <tr key={index} className={getRowClass(item.purchaseType)}>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">
-                        <span className="bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 text-xs font-bold">#{getVal(item, 'liftNo')}</span>
-                      </td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poNumber|poDoNumber|doNumber')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftDate')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'driverName')}</td>
-                      <td className="px-6 py-4 font-medium text-emerald-600 font-bold">{getVal(item, 'liftQtyMT')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'netWeight')}</td>
-                      <td className="px-6 py-4 font-medium text-amber-600 font-bold">{getVal(item, 'remainingAfterLiftMT')}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'Fully Lifted' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                          {item.status || 'Partial Lift'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'supervisor')}</td>
-                    </tr>
+                    <React.Fragment key={index}>
+                      <tr className={item.isGroupedLift ? getRowClass('Export') : getRowClass(item.purchaseType)}>
+                        <td className="px-6 py-4">
+                          {item.isGroupedLift && (
+                            <button onClick={() => setExpandedHistoryId(expandedHistoryId === item.id ? null : item.id)} className="text-slate-400 hover:text-blue-600 transition-colors">
+                              {expandedHistoryId === item.id ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                            </button>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 font-bold text-slate-800">{getVal(item, 'liftId')}</td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftDate')?.substring(0,10)}</td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{item.paddyGrade || '-'}</td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'driverName')}</td>
+                        <td className="px-6 py-4 font-bold text-emerald-600">{item.isGroupedLift ? item.totalGroupLiftQtyMT : getVal(item, 'liftQtyMT')}</td>
+                        <td className="px-6 py-4">
+                          <span className="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-bold">
+                            {item.isGroupedLift ? (item.items?.length || 0) : 1} POs
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'supervisor')}</td>
+                      </tr>
+                      {item.isGroupedLift && expandedHistoryId === item.id && (
+                        <tr>
+                          <td colSpan="9" className="p-0 border-b border-slate-200">
+                            <div className="bg-slate-50 p-6 shadow-inner">
+                              <h4 className="text-sm font-bold text-slate-700 mb-3">Associated PO/DOs for this Lift</h4>
+                              <table className="w-full text-sm bg-white rounded-lg overflow-hidden border border-slate-200">
+                                <thead className="bg-slate-100 text-slate-600">
+                                  <tr>
+                                    <th className="px-4 py-2 font-semibold text-left">PO Number</th>
+                                    <th className="px-4 py-2 font-semibold text-left">Vendor</th>
+                                    <th className="px-4 py-2 font-semibold text-left">Purchase Type</th>
+                                    <th className="px-4 py-2 font-semibold text-right">Lifted MT in this Batch</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                  {item.items?.map((subItem, idx) => (
+                                    <tr key={idx}>
+                                      <td className="px-4 py-2 font-medium text-slate-800">{subItem.poNumber}</td>
+                                      <td className="px-4 py-2 text-slate-600">{subItem.vendorName}</td>
+                                      <td className="px-4 py-2 text-slate-600">{subItem.purchaseType}</td>
+                                      <td className="px-4 py-2 font-bold text-emerald-600 text-right">{subItem.liftQtyMT} MT</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   ))}
                   {filteredHistory.length === 0 && (
-                    <tr><td colSpan="11" className="px-6 py-12 text-center text-slate-500">No lift history found</td></tr>
+                    <tr><td colSpan="9" className="px-6 py-12 text-center text-slate-500">No lift history found</td></tr>
                   )}
                 </>
               )}
@@ -322,133 +390,116 @@ export const Lift = () => {
         </div>
       </Card>
 
-      {/* Partial Lift Modal */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Lift #${formData.liftNo} — ${formData.poNumber || formData.poDoNumber || ''}`} size="4xl">
-        <div className="max-h-[85vh] overflow-y-auto p-6">
-
-          {/* Lift Progress Banner */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-xl">
-            <div className="flex justify-between items-center mb-2">
-              <div className="text-sm font-semibold text-slate-700">Lift Progress for this PO/DO</div>
-              <div className="text-sm font-bold text-blue-700">Lift #{formData.liftNo}</div>
+      {/* Create Group Lift Modal */}
+      <Modal isOpen={isGroupModalOpen} onClose={() => setIsGroupModalOpen(false)} title="Create Group Lift" size="5xl">
+        <div className="max-h-[85vh] overflow-y-auto p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Select Paddy Grade to Filter</Label>
+              <Select 
+                value={selectedPaddyGrade} 
+                onChange={(e) => setSelectedPaddyGrade(e.target.value)}
+                className="w-full mt-1.5 bg-white border-slate-300"
+              >
+                <option value="">-- Select Grade --</option>
+                {uniqueGrades.map(g => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </Select>
             </div>
-            <div className="grid grid-cols-3 gap-4 text-center mb-3">
-              <div className="bg-white rounded-lg p-3 border border-slate-200">
-                <p className="text-xs text-slate-500 font-medium">Total Qty</p>
-                <p className="text-xl font-bold text-slate-800">{formData.totalQtyMT} MT</p>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-emerald-200">
-                <p className="text-xs text-emerald-600 font-medium">Already Lifted</p>
-                <p className="text-xl font-bold text-emerald-600">{formData.totalLiftedQtyMT} MT</p>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-amber-200">
-                <p className="text-xs text-amber-600 font-medium">Pending Lift</p>
-                <p className="text-xl font-bold text-amber-600">{formData.remainingQtyMT} MT</p>
-              </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Lift ID (Auto)</Label>
+              <Input type="text" value={groupedFormData.liftId} readOnly className="w-full mt-1.5 bg-slate-100 border-slate-200 cursor-not-allowed" />
             </div>
-            <div className="w-full bg-slate-200 rounded-full h-2.5">
-              <div
-                className="bg-emerald-500 h-2.5 rounded-full transition-all"
-                style={{ width: `${formData.totalQtyMT > 0 ? Math.min(100, (formData.totalLiftedQtyMT / formData.totalQtyMT) * 100) : 0}%` }}
-              ></div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Lift Date</Label>
+              <Input type="datetime-local" value={groupedFormData.liftDate} onChange={(e) => setGroupedFormData({...groupedFormData, liftDate: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Lift ID (Auto)</Label>
-              <Input type="text" value={formData.liftId || ''} readOnly className="w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md" />
+          {selectedPaddyGrade && (
+            <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <div className="bg-slate-100 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+                <h3 className="font-semibold text-slate-800">Pending PO/DOs for '{selectedPaddyGrade}'</h3>
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">{modalItems.length} Available</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left whitespace-nowrap">
+                  <thead className="bg-slate-50 text-slate-600 text-xs uppercase">
+                    <tr>
+                      <th className="px-4 py-3 font-bold text-center">Action</th>
+                      <th className="px-4 py-3 font-bold">PO/DO Number</th>
+                      <th className="px-4 py-3 font-bold">Type</th>
+                      <th className="px-4 py-3 font-bold">Lifted From</th>
+                      <th className="px-4 py-3 font-bold">Total Qty</th>
+                      <th className="px-4 py-3 font-bold">Prev Lifted</th>
+                      <th className="px-4 py-3 font-bold text-amber-700">Pending MT</th>
+                      <th className="px-4 py-3 font-bold text-blue-700">Lift Qty MT</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {modalItems.map((mi, idx) => (
+                      <tr key={idx} className={mi._checked ? 'bg-blue-50/30' : ''}>
+                        <td className="px-4 py-3 text-center">
+                          <input 
+                            type="checkbox" 
+                            checked={mi._checked}
+                            onChange={(e) => handleModalItemChange(idx, '_checked', e.target.checked)}
+                            className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer"
+                          />
+                        </td>
+                        <td className="px-4 py-3 font-medium">{getVal(mi, 'poNumber|poDoNumber|doNumber')}</td>
+                        <td className="px-4 py-3">{mi.purchaseType}</td>
+                        <td className="px-4 py-3">{mi.liftedFrom || '-'}</td>
+                        <td className="px-4 py-3">{mi.qtyMT}</td>
+                        <td className="px-4 py-3 text-emerald-600">{mi._stats.totalLifted}</td>
+                        <td className="px-4 py-3 text-amber-600 font-bold">{mi._stats.remaining}</td>
+                        <td className="px-4 py-3">
+                          <Input 
+                            type="number" 
+                            min="0"
+                            max={mi._stats.remaining}
+                            disabled={!mi._checked}
+                            value={mi._liftQtyMT}
+                            onChange={(e) => handleModalItemChange(idx, '_liftQtyMT', e.target.value)}
+                            placeholder="Qty MT"
+                            className={`w-28 text-sm ${mi._checked ? 'border-blue-300 bg-white focus:ring-blue-500 focus:border-blue-500' : 'bg-slate-100 border-slate-200 opacity-50'}`}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                    {modalItems.length === 0 && (
+                      <tr><td colSpan="8" className="px-4 py-8 text-center text-slate-500">No pending items for this grade.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Lift Number</Label>
-              <Input type="number" value={formData.liftNo || ''} readOnly className="w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md" />
-            </div>
-            <div className="space-y-1 col-span-2">
-              <Label className="text-sm font-medium text-amber-700 font-bold">⬇️ Lift Qty MT <span className="text-red-500">*</span> (max: {formData.remainingQtyMT} MT)</Label>
-              <Input
-                type="number"
-                min="0"
-                max={formData.remainingQtyMT}
-                value={formData.liftQtyMT || ''}
-                onChange={(e) => {
-                  const v = Math.min(parseFloat(e.target.value) || 0, formData.remainingQtyMT);
-                  setFormData({ ...formData, liftQtyMT: v });
-                }}
-                className="w-full mt-1.5 bg-amber-50 border-amber-300 text-slate-900 focus:ring-amber-500 focus:border-amber-500 rounded-md shadow-sm font-bold text-lg"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">PO / DO Number</Label>
-              <Input type="text" value={formData.poNumber || formData.poDoNumber || ''} readOnly className="w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Indent No</Label>
-              <Input type="text" value={formData.indentNo || ''} readOnly className="w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Purchase Type</Label>
-              <Input type="text" value={formData.purchaseType || ''} readOnly className="w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Lift Date &amp; Time</Label>
-              <Input type="datetime-local" value={formData.liftDate || ''} onChange={(e) => setFormData({ ...formData, liftDate: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Vehicle Number</Label>
-              <Input type="text" value={formData.vehicleNumber || ''} onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
+              <Input type="text" value={groupedFormData.vehicleNumber} onChange={(e) => setGroupedFormData({...groupedFormData, vehicleNumber: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Driver Name</Label>
-              <Input type="text" value={formData.driverName || ''} onChange={(e) => setFormData({ ...formData, driverName: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
+              <Input type="text" value={groupedFormData.driverName} onChange={(e) => setGroupedFormData({...groupedFormData, driverName: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
             <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">No. of Bags</Label>
-              <Input type="number" value={formData.noOfBags || ''} onChange={(e) => setFormData({ ...formData, noOfBags: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
+              <Label className="text-sm font-medium text-slate-700">Supervisor</Label>
+              <Input type="text" value={groupedFormData.supervisor} onChange={(e) => setGroupedFormData({...groupedFormData, supervisor: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Gross Weight Kg</Label>
-              <Input type="number" value={formData.grossWeight || ''} onChange={(e) => setFormData({ ...formData, grossWeight: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Tare Weight Kg</Label>
-              <Input type="number" value={formData.tareWeight || ''} onChange={(e) => setFormData({ ...formData, tareWeight: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Net Weight Kg (Auto)</Label>
-              <Input type="number" value={formData.netWeight || ''} readOnly className="w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Moisture at Lift %</Label>
-              <Input type="number" value={formData.moisture || ''} onChange={(e) => setFormData({ ...formData, moisture: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Lifted From</Label>
-              <Input type="text" value={formData.liftedFrom || ''} onChange={(e) => setFormData({ ...formData, liftedFrom: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Supervisor Name</Label>
-              <Input type="text" value={formData.supervisor || ''} onChange={(e) => setFormData({ ...formData, supervisor: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Seal No</Label>
-              <Input type="text" value={formData.sealNo || ''} onChange={(e) => setFormData({ ...formData, sealNo: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-            </div>
-            {formData.purchaseType === 'Government' && (
-              <div className="space-y-1">
-                <Label className="text-sm font-medium text-slate-700">Lorry Receipt No</Label>
-                <Input type="text" value={formData.lorryReceipt || ''} onChange={(e) => setFormData({ ...formData, lorryReceipt: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
-              </div>
-            )}
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">Loading Remarks</Label>
-              <Input type="text" value={formData.remarks || ''} onChange={(e) => setFormData({ ...formData, remarks: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm" />
+            <div className="space-y-1 md:col-span-3">
+              <Label className="text-sm font-medium text-slate-700">Remarks</Label>
+              <Input type="text" value={groupedFormData.remarks} onChange={(e) => setGroupedFormData({...groupedFormData, remarks: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" placeholder="Any additional notes..." />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-8 mt-8 border-t border-slate-100">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">Cancel</Button>
-            <Button onClick={handleSave} className="px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-              Save Lift #{formData.liftNo}
+          <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-slate-100">
+            <Button onClick={() => setIsGroupModalOpen(false)} variant="outline" className="px-6">Cancel</Button>
+            <Button onClick={handleGroupSave} className="px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-sm" disabled={!selectedPaddyGrade || modalItems.filter(i => i._checked).length === 0}>
+              Save Lift
             </Button>
           </div>
         </div>

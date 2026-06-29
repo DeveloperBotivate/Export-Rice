@@ -194,7 +194,7 @@ export const LaboratoryReport = () => {
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'grnNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{item.isGroupedLift ? `${item.items?.length || 0} POs` : getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'lotNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'netWeight|receivedQty')}</td>
@@ -215,7 +215,7 @@ export const LaboratoryReport = () => {
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'labReportId')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'grnNo')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{item.isGroupedLift ? `${item.items?.length || 0} POs` : getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'lotNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'labName')}</td>

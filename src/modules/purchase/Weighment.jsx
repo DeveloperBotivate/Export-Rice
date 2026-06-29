@@ -51,6 +51,15 @@ export const Weighment = () => {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    if (formData.grossWeight && formData.tareWeight) {
+      const net = parseFloat(formData.grossWeight) - parseFloat(formData.tareWeight);
+      if (!isNaN(net)) {
+        setFormData(prev => ({ ...prev, netWeight: net }));
+      }
+    }
+  }, [formData.grossWeight, formData.tareWeight]);
+
   const handleSave = () => {
     const newItem = { ...formData, status: 'Processed' };
     if (!newItem.id) newItem.id = Date.now();
@@ -192,7 +201,7 @@ export const Weighment = () => {
                       </td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{item.isGroupedLift ? `${item.items?.length || 0} POs` : getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'paddyGrade|paddyGradeVerified')}</td>
@@ -215,7 +224,7 @@ export const Weighment = () => {
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'weighSlipNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftId')}</td>
-                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{item.isGroupedLift ? `${item.items?.length || 0} POs` : getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'weighDate')}</td>
                       <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
@@ -256,15 +265,24 @@ export const Weighment = () => {
                 className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-slate-700">PO / DO Number</Label>
-              <Input 
-                type="text"
-                value={formData.poDoNumber || ''} 
-                onChange={(e) => setFormData({...formData, poDoNumber: e.target.value})}
-                readOnly={true}
-                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
-              />
+            <div className="space-y-1 md:col-span-2">
+              <Label className="text-sm font-medium text-slate-700">PO / DO Number(s)</Label>
+              {formData.isGroupedLift ? (
+                <div className="mt-1.5 p-2 bg-slate-50 border border-slate-200 rounded-md flex flex-wrap gap-2">
+                  {formData.items?.map((item, idx) => (
+                    <span key={idx} className="bg-white border border-slate-200 text-slate-700 text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">
+                      {item.poNumber || item.poDoNumber || item.doNumber}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <Input 
+                  type="text"
+                  value={formData.poDoNumber || formData.poNumber || formData.doNumber || ''} 
+                  readOnly={true}
+                  className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
+                />
+              )}
             </div>
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Purchase Type</Label>
