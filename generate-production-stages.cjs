@@ -813,19 +813,19 @@ export const ${stage.name} = () => {
   const getInitialData = () => {
     let rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
     let rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
-    let master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    let master = JSON.parse(localStorage.getItem('production_master_v4')) || [];
     
-    if (!master || master.length === 0) {
+    if (!master || master.length === 0 || !master[0].productionOrderNo) {
       master = generateDummyData();
-      localStorage.setItem('production_master_v3', JSON.stringify(master));
+      localStorage.setItem('production_master_v4', JSON.stringify(master));
       
       for(let i=1; i<=17; i++) {
         const numItems = Math.max(0, (18 - i) * 2); 
         const ids = Array.from({length: numItems}, (_, index) => index + 1);
-        localStorage.setItem(\`prod_v3_\${i}_history\`, JSON.stringify(ids));
+        localStorage.setItem(\`prod_v4_\${i}_history\`, JSON.stringify(ids));
       }
       const initialIds = Array.from({length: 40}, (_, index) => index + 1);
-      localStorage.setItem('prod_v3_1_history', JSON.stringify(initialIds));
+      localStorage.setItem('prod_v4_1_history', JSON.stringify(initialIds));
       
       rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
       rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
@@ -940,9 +940,9 @@ export const ${stage.name} = () => {
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
     
-    const master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master_v4')) || [];
     const updatedMaster = master.map(m => m.id === processedItem.id ? processedItem : m);
-    localStorage.setItem('production_master_v3', JSON.stringify(updatedMaster));
+    localStorage.setItem('production_master_v4', JSON.stringify(updatedMaster));
 
     const rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
     if (!rawHistory.includes(processedItem.id)) {
@@ -1255,20 +1255,20 @@ const generateDummyData = () => {
 
 export const ProductionPlanning = () => {
   const getInitialData = () => {
-    let master = JSON.parse(localStorage.getItem('production_master_v3'));
-    let historyIds = JSON.parse(localStorage.getItem('prod_v3_1_history'));
+    let master = JSON.parse(localStorage.getItem('production_master_v4'));
+    let historyIds = JSON.parse(localStorage.getItem('prod_v4_1_history'));
     
-    if (!master || master.length === 0) {
+    if (!master || master.length === 0 || !master[0].productionOrderNo) {
       master = generateDummyData();
-      localStorage.setItem('production_master_v3', JSON.stringify(master));
+      localStorage.setItem('production_master_v4', JSON.stringify(master));
       
       for(let i=1; i<=17; i++) {
         const numItems = Math.max(0, (18 - i) * 2); 
         const ids = Array.from({length: numItems}, (_, index) => index + 1);
-        localStorage.setItem(\`prod_v3_\${i}_history\`, JSON.stringify(ids));
+        localStorage.setItem(\`prod_v4_\${i}_history\`, JSON.stringify(ids));
       }
       historyIds = Array.from({length: 40}, (_, index) => index + 1);
-      localStorage.setItem('prod_v3_1_history', JSON.stringify(historyIds));
+      localStorage.setItem('prod_v4_1_history', JSON.stringify(historyIds));
     }
     
     return historyIds.map(id => master.find(m => m.id === id)).filter(Boolean);
@@ -1296,12 +1296,12 @@ export const ProductionPlanning = () => {
   const handleSave = () => {
     const newItem = { ...formData, id: Date.now(), status: 'Open' };
     
-    const master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master_v4')) || [];
     const newMaster = [newItem, ...master];
-    localStorage.setItem('production_master_v3', JSON.stringify(newMaster));
+    localStorage.setItem('production_master_v4', JSON.stringify(newMaster));
     
-    const historyIds = JSON.parse(localStorage.getItem('prod_v3_1_history')) || [];
-    localStorage.setItem('prod_v3_1_history', JSON.stringify([newItem.id, ...historyIds]));
+    const historyIds = JSON.parse(localStorage.getItem('prod_v4_1_history')) || [];
+    localStorage.setItem('prod_v4_1_history', JSON.stringify([newItem.id, ...historyIds]));
     
     setHistoryItems([newItem, ...historyItems]);
     setIsModalOpen(false);
@@ -1481,8 +1481,8 @@ console.log('Created ProductionPlanning.jsx');
 
 // Write Stages 2-12
 stages.forEach((stage, idx) => {
-  stage.storageKey = `prod_v3_${idx + 2}_history`;
-  stage.readFrom = `prod_v3_${idx + 1}_history`;
+  stage.storageKey = `prod_v4_${idx + 2}_history`;
+  stage.readFrom = `prod_v4_${idx + 1}_history`;
   const filePath = path.join(__dirname, 'src/modules/production', stage.file);
   fs.writeFileSync(filePath, template(stage));
   console.log('Created ' + stage.file);

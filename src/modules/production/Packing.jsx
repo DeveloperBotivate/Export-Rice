@@ -186,24 +186,24 @@ const generateDummyData = () => {
 
 export const Packing = () => {
   const getInitialData = () => {
-    let rawPending = JSON.parse(localStorage.getItem('prod_v3_14_history')) || [];
-    let rawHistory = JSON.parse(localStorage.getItem('prod_v3_15_history')) || [];
-    let master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    let rawPending = JSON.parse(localStorage.getItem('prod_v4_14_history')) || [];
+    let rawHistory = JSON.parse(localStorage.getItem('prod_v4_15_history')) || [];
+    let master = JSON.parse(localStorage.getItem('production_master_v4')) || [];
     
-    if (!master || master.length === 0) {
+    if (!master || master.length === 0 || !master[0].productionOrderNo) {
       master = generateDummyData();
-      localStorage.setItem('production_master_v3', JSON.stringify(master));
+      localStorage.setItem('production_master_v4', JSON.stringify(master));
       
       for(let i=1; i<=17; i++) {
         const numItems = Math.max(0, (18 - i) * 2); 
         const ids = Array.from({length: numItems}, (_, index) => index + 1);
-        localStorage.setItem(`prod_v3_${i}_history`, JSON.stringify(ids));
+        localStorage.setItem(`prod_v4_${i}_history`, JSON.stringify(ids));
       }
       const initialIds = Array.from({length: 40}, (_, index) => index + 1);
-      localStorage.setItem('prod_v3_1_history', JSON.stringify(initialIds));
+      localStorage.setItem('prod_v4_1_history', JSON.stringify(initialIds));
       
-      rawPending = JSON.parse(localStorage.getItem('prod_v3_14_history')) || [];
-      rawHistory = JSON.parse(localStorage.getItem('prod_v3_15_history')) || [];
+      rawPending = JSON.parse(localStorage.getItem('prod_v4_14_history')) || [];
+      rawHistory = JSON.parse(localStorage.getItem('prod_v4_15_history')) || [];
     }
     
     const resolvedPending = rawPending.map(id => master.find(m => m.id === id)).filter(Boolean);
@@ -283,14 +283,14 @@ export const Packing = () => {
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
     
-    const master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master_v4')) || [];
     const updatedMaster = master.map(m => m.id === processedItem.id ? processedItem : m);
-    localStorage.setItem('production_master_v3', JSON.stringify(updatedMaster));
+    localStorage.setItem('production_master_v4', JSON.stringify(updatedMaster));
 
-    const rawHistory = JSON.parse(localStorage.getItem('prod_v3_15_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('prod_v4_15_history')) || [];
     if (!rawHistory.includes(processedItem.id)) {
       rawHistory.unshift(processedItem.id);
-      localStorage.setItem('prod_v3_15_history', JSON.stringify(rawHistory));
+      localStorage.setItem('prod_v4_15_history', JSON.stringify(rawHistory));
     }
     
     setHistoryItems([processedItem, ...historyItems]);

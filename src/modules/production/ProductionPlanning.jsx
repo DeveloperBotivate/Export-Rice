@@ -186,20 +186,20 @@ const generateDummyData = () => {
 
 export const ProductionPlanning = () => {
   const getInitialData = () => {
-    let master = JSON.parse(localStorage.getItem('production_master_v3'));
-    let historyIds = JSON.parse(localStorage.getItem('prod_v3_1_history'));
+    let master = JSON.parse(localStorage.getItem('production_master_v4'));
+    let historyIds = JSON.parse(localStorage.getItem('prod_v4_1_history'));
     
-    if (!master || master.length === 0) {
+    if (!master || master.length === 0 || !master[0].productionOrderNo) {
       master = generateDummyData();
-      localStorage.setItem('production_master_v3', JSON.stringify(master));
+      localStorage.setItem('production_master_v4', JSON.stringify(master));
       
       for(let i=1; i<=17; i++) {
         const numItems = Math.max(0, (18 - i) * 2); 
         const ids = Array.from({length: numItems}, (_, index) => index + 1);
-        localStorage.setItem(`prod_v3_${i}_history`, JSON.stringify(ids));
+        localStorage.setItem(`prod_v4_${i}_history`, JSON.stringify(ids));
       }
       historyIds = Array.from({length: 40}, (_, index) => index + 1);
-      localStorage.setItem('prod_v3_1_history', JSON.stringify(historyIds));
+      localStorage.setItem('prod_v4_1_history', JSON.stringify(historyIds));
     }
     
     return historyIds.map(id => master.find(m => m.id === id)).filter(Boolean);
@@ -227,12 +227,12 @@ export const ProductionPlanning = () => {
   const handleSave = () => {
     const newItem = { ...formData, id: Date.now(), status: 'Open' };
     
-    const master = JSON.parse(localStorage.getItem('production_master_v3')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master_v4')) || [];
     const newMaster = [newItem, ...master];
-    localStorage.setItem('production_master_v3', JSON.stringify(newMaster));
+    localStorage.setItem('production_master_v4', JSON.stringify(newMaster));
     
-    const historyIds = JSON.parse(localStorage.getItem('prod_v3_1_history')) || [];
-    localStorage.setItem('prod_v3_1_history', JSON.stringify([newItem.id, ...historyIds]));
+    const historyIds = JSON.parse(localStorage.getItem('prod_v4_1_history')) || [];
+    localStorage.setItem('prod_v4_1_history', JSON.stringify([newItem.id, ...historyIds]));
     
     setHistoryItems([newItem, ...historyItems]);
     setIsModalOpen(false);
