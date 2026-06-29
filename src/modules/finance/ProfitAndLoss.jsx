@@ -298,350 +298,454 @@ export const ProfitAndLoss = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         title="Profit & Loss Statement Details"
+        size="5xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
-            
-            <div className="space-y-1.5">
-              <Label>P&L ID</Label>
-              <Input 
-                type="text"
-                value={formData.plId || ''} 
-                onChange={(e) => setFormData({...formData, plId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
+        <div className="max-h-[85vh] overflow-y-auto">
+          <div className="bg-gradient-to-r from-green-900 to-green-800 px-6 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-green-300 text-xs font-medium uppercase tracking-widest">Finance Module</p>
+              <h3 className="text-white text-lg font-bold mt-0.5">Profit & Loss Statement Details</h3>
             </div>
-            <div className="space-y-1.5">
-              <Label>Period Type</Label>
-              <Select 
-                value={formData.periodType || ''} 
-                onChange={(e) => setFormData({...formData, periodType: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Period Type</option>
-                <option value="Monthly">Monthly</option><option value="Quarterly">Quarterly</option><option value="Yearly">Yearly</option>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Period</Label>
-              <Input 
-                type="text"
-                value={formData.period || ''} 
-                onChange={(e) => setFormData({...formData, period: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder="e.g. Apr 2025–Mar 2026"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Domestic Sales Revenue (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.domRevenue || ''} 
-                onChange={(e) => setFormData({...formData, domRevenue: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Export Revenue (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.expRevenue || ''} 
-                onChange={(e) => setFormData({...formData, expRevenue: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Revenue (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.totalRevenue || ''} 
-                onChange={(e) => setFormData({...formData, totalRevenue: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Purchase Cost (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.purchaseCost || ''} 
-                onChange={(e) => setFormData({...formData, purchaseCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Production Cost (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.productionCost || ''} 
-                onChange={(e) => setFormData({...formData, productionCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Packing Cost (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.packingCost || ''} 
-                onChange={(e) => setFormData({...formData, packingCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Domestic Transport Cost (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.domTransportCost || ''} 
-                onChange={(e) => setFormData({...formData, domTransportCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Export Freight Cost (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.expFreightCost || ''} 
-                onChange={(e) => setFormData({...formData, expFreightCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Agent Commission (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.agentComm || ''} 
-                onChange={(e) => setFormData({...formData, agentComm: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Sales Commission (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.salesComm || ''} 
-                onChange={(e) => setFormData({...formData, salesComm: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Broker Commission (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.brokerComm || ''} 
-                onChange={(e) => setFormData({...formData, brokerComm: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Admin & Overhead (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.adminCost || ''} 
-                onChange={(e) => setFormData({...formData, adminCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Other Expenses (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.otherCost || ''} 
-                onChange={(e) => setFormData({...formData, otherCost: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Cost (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.totalCost || ''} 
-                onChange={(e) => setFormData({...formData, totalCost: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Gross Profit (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.grossProfit || ''} 
-                onChange={(e) => setFormData({...formData, grossProfit: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Gross Margin %</Label>
-              <Input 
-                type="number"
-                value={formData.grossMargin || ''} 
-                onChange={(e) => setFormData({...formData, grossMargin: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>EBITDA (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.ebitda || ''} 
-                onChange={(e) => setFormData({...formData, ebitda: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Depreciation (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.depreciation || ''} 
-                onChange={(e) => setFormData({...formData, depreciation: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>EBIT (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.ebit || ''} 
-                onChange={(e) => setFormData({...formData, ebit: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Interest Expense (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.interest || ''} 
-                onChange={(e) => setFormData({...formData, interest: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>EBT (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.ebt || ''} 
-                onChange={(e) => setFormData({...formData, ebt: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Tax (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.tax || ''} 
-                onChange={(e) => setFormData({...formData, tax: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Net Profit (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.netProfit || ''} 
-                onChange={(e) => setFormData({...formData, netProfit: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Net Margin %</Label>
-              <Input 
-                type="number"
-                value={formData.netMargin || ''} 
-                onChange={(e) => setFormData({...formData, netMargin: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Recovery % (Paddy → Rice)</Label>
-              <Input 
-                type="number"
-                value={formData.recoveryPercent || ''} 
-                onChange={(e) => setFormData({...formData, recoveryPercent: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Yield %</Label>
-              <Input 
-                type="number"
-                value={formData.yieldPercent || ''} 
-                onChange={(e) => setFormData({...formData, yieldPercent: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Prepared By</Label>
-              <Input 
-                type="text"
-                value={formData.preparedBy || ''} 
-                onChange={(e) => setFormData({...formData, preparedBy: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+              <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
+              <span className="text-white text-xs font-medium">Recording</span>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
-              Cancel
-            </Button>
-            <Button onClick={handleSave}>
-              Save & Process
-            </Button>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">P&L ID</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.plId || ''} 
+                  onChange={(e) => setFormData({...formData, plId: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Period Type</Label>
+                  
+                </div>
+                <Select 
+                  value={formData.periodType || ''} 
+                  onChange={(e) => setFormData({...formData, periodType: e.target.value})}
+                  disabled={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                >
+                  <option value="">Select...</option>
+                  <option value="Monthly">Monthly</option><option value="Quarterly">Quarterly</option><option value="Yearly">Yearly</option>
+                </Select>
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Period</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.period || ''} 
+                  onChange={(e) => setFormData({...formData, period: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder="e.g. Apr 2025–Mar 2026"
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Domestic Sales Revenue (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.domRevenue || ''} 
+                  onChange={(e) => setFormData({...formData, domRevenue: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Export Revenue (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.expRevenue || ''} 
+                  onChange={(e) => setFormData({...formData, expRevenue: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Revenue (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.totalRevenue || ''} 
+                  onChange={(e) => setFormData({...formData, totalRevenue: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Purchase Cost (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.purchaseCost || ''} 
+                  onChange={(e) => setFormData({...formData, purchaseCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Production Cost (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.productionCost || ''} 
+                  onChange={(e) => setFormData({...formData, productionCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Packing Cost (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.packingCost || ''} 
+                  onChange={(e) => setFormData({...formData, packingCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Domestic Transport Cost (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.domTransportCost || ''} 
+                  onChange={(e) => setFormData({...formData, domTransportCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Export Freight Cost (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.expFreightCost || ''} 
+                  onChange={(e) => setFormData({...formData, expFreightCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Agent Commission (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.agentComm || ''} 
+                  onChange={(e) => setFormData({...formData, agentComm: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Sales Commission (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.salesComm || ''} 
+                  onChange={(e) => setFormData({...formData, salesComm: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Broker Commission (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.brokerComm || ''} 
+                  onChange={(e) => setFormData({...formData, brokerComm: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Admin & Overhead (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.adminCost || ''} 
+                  onChange={(e) => setFormData({...formData, adminCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Other Expenses (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.otherCost || ''} 
+                  onChange={(e) => setFormData({...formData, otherCost: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Cost (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.totalCost || ''} 
+                  onChange={(e) => setFormData({...formData, totalCost: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Gross Profit (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.grossProfit || ''} 
+                  onChange={(e) => setFormData({...formData, grossProfit: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Gross Margin %</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.grossMargin || ''} 
+                  onChange={(e) => setFormData({...formData, grossMargin: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">EBITDA (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.ebitda || ''} 
+                  onChange={(e) => setFormData({...formData, ebitda: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Depreciation (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.depreciation || ''} 
+                  onChange={(e) => setFormData({...formData, depreciation: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">EBIT (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.ebit || ''} 
+                  onChange={(e) => setFormData({...formData, ebit: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Interest Expense (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.interest || ''} 
+                  onChange={(e) => setFormData({...formData, interest: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">EBT (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.ebt || ''} 
+                  onChange={(e) => setFormData({...formData, ebt: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Tax (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.tax || ''} 
+                  onChange={(e) => setFormData({...formData, tax: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Net Profit (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.netProfit || ''} 
+                  onChange={(e) => setFormData({...formData, netProfit: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Net Margin %</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.netMargin || ''} 
+                  onChange={(e) => setFormData({...formData, netMargin: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Recovery % (Paddy → Rice)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.recoveryPercent || ''} 
+                  onChange={(e) => setFormData({...formData, recoveryPercent: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Yield %</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.yieldPercent || ''} 
+                  onChange={(e) => setFormData({...formData, yieldPercent: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Prepared By</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.preparedBy || ''} 
+                  onChange={(e) => setFormData({...formData, preparedBy: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
+                Cancel
+              </Button>
+              <Button onClick={handleSave} className="px-6 bg-gradient-to-r from-green-700 to-green-600 shadow-md text-white">
+                Save & Process
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>

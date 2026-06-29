@@ -1,493 +1,473 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play, Plus, AlertCircle } from 'lucide-react';
+import { Search, Plus, Filter, Clock, History as HistoryIcon } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
-import DataTable from '../../components/DataTable';
-import { usePagination } from '../../hooks/usePagination';
 import { Modal } from '../../components/ui/Modal';
-import { PageTabs } from '../../components/PageTabs';
+import { WorkflowNavigation } from '../../components/WorkflowNavigation';
 
-const generateDummyData = () => {
-  return Array.from({ length: 40 }, (_, i) => {
-    const isGov = i % 2 === 0;
-    const orderType = isGov ? 'Government' : 'Direct Market';
-    return {
-      id: i + 1,
-      indentNo: `IND-00${(i + 1).toString().padStart(2, '0')}`,
-      indentDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      purchaseType: orderType,
-      agencyMandi: isGov ? 'FCI' : 'Local Mandi',
-      paddyGrade: ['Grade A', 'Grade B', 'Common'][Math.floor(Math.random() * 3)],
-      qtyMt: Math.floor(Math.random() * 50) + 10,
-      rate: Math.floor(Math.random() * 500) + 2000,
-      requiredByDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      requestedBy: `User ${i+1}`,
-      
-      approvalId: `APR-00${(i + 1).toString().padStart(2, '0')}`,
-      approvedQty: Math.floor(Math.random() * 50) + 10,
-      approvedRate: Math.floor(Math.random() * 500) + 2000,
-      approvedBudget: 100000,
-      approvedBy: 'Manager',
-      approvalDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      priority: 'High',
-      approvalStatus: 'Approved',
-      
-      poNumber: `PO-00${(i + 1).toString().padStart(2, '0')}`,
-      poDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      agencyVendorName: isGov ? 'FCI' : 'Farmer Singh',
-      totalPoValue: 100000,
-      paymentTerms: 'Advance',
-      poValidityDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      createdBy: 'Buyer',
-      
-      logisticsId: `LOG-00${(i + 1).toString().padStart(2, '0')}`,
-      vehicleNumber: 'PB01A1234',
-      vehicleType: 'Truck',
-      driverName: 'Driver X',
-      transporterName: 'Trans Y',
-      route: 'Mandi-Mill',
-      distance: 50,
-      freightRate: 100,
-      totalFreight: 5000,
-      expectedDeparture: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      expectedArrival: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
-      
-      poEntryId: `POE-00${(i + 1).toString().padStart(2, '0')}`,
-      entryDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      location: 'Gate 1',
-      lotNo: 'L-123',
-      noOfBags: 500,
-      grossWeight: 25000,
-      moisture: 14.5,
-      paddyGradeVerified: 'Yes',
-      recordedBy: 'Guard',
-      
-      advanceId: `ADV-00${(i + 1).toString().padStart(2, '0')}`,
-      paymentDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      payeeName: isGov ? 'FCI' : 'Farmer Singh',
-      advanceAmount: 20000,
-      tdsAmount: 0,
-      netPaid: 20000,
-      paymentMode: 'NEFT',
-      utrNo: 'UTR123456',
-      paidBy: 'Finance',
-      
-      liftId: `LIFT-00${(i + 1).toString().padStart(2, '0')}`,
-      liftDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      netWeight: 24500,
-      liftedFrom: 'Mandi',
-      supervisor: 'Supervisor A',
-      
-      labReportId: `LAB-00${(i + 1).toString().padStart(2, '0')}`,
-      labName: 'Inhouse',
-      testDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      broken: 2.1,
-      chalky: 1.5,
-      foreignMatter: 0.5,
-      gradeResult: 'A',
-      recovery: 67,
-      labResult: 'Pass',
-      approved: i % 5 === 0 ? 'No' : 'Yes',
-      technician: 'Tech 1',
-      
-      kittingId: `FK-00${(i + 1).toString().padStart(2, '0')}`,
-      challanNo: `CHL-00${(i + 1).toString().padStart(2, '0')}`,
-      kittingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      totalAmount: 100000,
-      advancePaid: 20000,
-      balancePaid: 80000,
-      netPayable: 80000,
-      
-      closureId: `PC-00${(i + 1).toString().padStart(2, '0')}`,
-      closureDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      batchNo: 'B-123',
-      netQtyMt: 24.5,
-      warehouse: 'W1',
-      godown: 'G1',
-      binRack: 'R1',
-      qualityGrade: 'A',
-      totalPurchaseValue: 100000,
-      freightCost: 5000,
-      totalLandedCost: 105000,
-      valuationRate: 4285,
-      updatedBy: 'Store',
-      
-      status: 'Completed'
-    };
-  });
+const getVal = (item, keyStr) => {
+  if (!keyStr) return '-';
+  const keys = keyStr.split('|');
+  for (let k of keys) {
+    if (item[k]) return item[k];
+  }
+  return '-';
 };
 
 export const PurchaseClosure = () => {
-  const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
-  const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
-  
-  const [activeTab, setActiveTab] = useState("pending");
-  const [searchTerm, setSearchTerm] = useState("");
-  
+  const [items, setItems] = useState([]);
+  const [historyItems, setHistoryItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [selectedType, setSelectedType] = useState('All');
+  const [activeTab, setActiveTab] = useState('pending');
 
-  const displayData = activeTab === "pending" ? pendingItems : historyItems;
-  
-  const filteredData = displayData.filter(item => 
-    Object.values(item).some(val => 
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  useEffect(() => {
+    const masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    const resolveItems = (rawArray) => {
+      return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
+    };
 
-  const pagination = usePagination(filteredData, 10);
+    
+    // Load raw arrays (mix of IDs from dummy data, and full objects from manual entry)
+    const rawPending = JSON.parse(localStorage.getItem('purchase_13_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_14_history')) || [];
+    
+    // Resolve to full objects
+    const pending = resolveItems(rawPending);
+    const history = resolveItems(rawHistory);
+    
+    // Filter pending
+    const historyIds = history.map(h => h.id);
+    const unresolvedPending = pending.filter(p => !historyIds.includes(p.id));
+    
+    setItems(unresolvedPending);
+    setHistoryItems(history);
+    
+  }, []);
 
-  const handleActionClick = (item) => {
-    if ("PurchaseClosure" === "FullKitting" && item.approved === 'No') {
-      alert("Cannot process kitting for rejected lab reports.");
-      return;
-    }
-    
-    setSelectedItem(item);
-    
-    let autoFields = {};
-    if ("PurchaseClosure" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
-    if ("PurchaseClosure" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
-    
-    const readOnlyFields = ["kittingId","challanNo","poNumber","indentNo","closureId","lotNo","batchNo","qualityGrade","moisture","purchaseType","agencyVendorName","totalPurchaseValue","freightCost","totalLandedCost","valuationRate"];
-    const initialFormData = {};
-    readOnlyFields.forEach(field => {
-      initialFormData[field] = item[field];
-    });
-    
-    setFormData({ ...initialFormData, ...autoFields });
+  const handleAction = (item, type = 'Market') => {
+    const autoGen = !item.requirementNo ? { requirementNo: 'REQ-2026-' + Math.floor(Math.random() * 10000) } : {};
+    setFormData({ ...item, purchaseType: type, ...autoGen });
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    const processedItem = { ...selectedItem, ...formData, status: "Completed" };
-    setHistoryItems([processedItem, ...historyItems]);
-    setPendingItems(pendingItems.filter(p => p.id !== selectedItem.id));
+    const newItem = { ...formData, status: 'Processed' };
+    if (!newItem.id) newItem.id = Date.now();
+    
+    // Save new item directly to raw history array
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_14_history')) || [];
+    rawHistory.push(newItem);
+    localStorage.setItem('purchase_14_history', JSON.stringify(rawHistory));
+    
+    setHistoryItems([...historyItems, newItem]);
+
+    
+    
+    const remainingItems = items.filter(i => i.id !== formData.id);
+    setItems(remainingItems);
+    
+    
     setIsModalOpen(false);
-    setSelectedItem(null);
+    setFormData({});
   };
 
-  const actionColumn = {
-    header: "Action",
-    className: "text-right",
-    cell: (row) => {
-      if ("PurchaseClosure" === "FullKitting" && row.approved === 'No') {
-        return (
-          <div className="flex justify-end">
-            <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded font-medium">
-              <AlertCircle size={12} /> Blocked
-            </span>
-          </div>
-        );
-      }
-      return (
-        <div className="flex justify-end">
-          <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
-            <Play size={14} />
-            Close & Update
-          </Button>
-        </div>
-      );
-    }
+  const getRowClass = (type) => {
+    if (type === 'Domestic' || type === 'Government') return 'bg-blue-50/50 hover:bg-blue-100/60 transition-colors border-l-4 border-l-blue-400';
+    if (type === 'Export' || type === 'Market') return 'bg-emerald-50/50 hover:bg-emerald-100/60 transition-colors border-l-4 border-l-emerald-400';
+    return 'hover:bg-slate-50 transition-colors';
   };
-
-  const pendingCols = [{"header":"Full Kitting ID","accessor":"kittingId"},{"header":"Challan No","accessor":"challanNo"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Farmer / Agency Name","accessor":"agencyVendorName"},{"header":"Net Weight Kg","accessor":"netWeight"},{"header":"Rate ₹/Qt","accessor":"rate"},{"header":"Net Payable ₹","accessor":"netPayable"},{"header":"Kitting Date","accessor":"kittingDate"}].map(col => {
-    if (col.accessor === 'approved' && "PurchaseClosure" === "FullKitting") {
-      return {
-        ...col,
-        cell: (row) => (
-          <span className={`px-2 py-1 rounded text-xs font-semibold ${row.approved === 'Yes' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-            {row.approved}
-          </span>
-        )
-      };
-    }
-    return col;
-  });
-  
-  const historyCols = [{"header":"Purchase Closure ID","accessor":"closureId"},{"header":"Full Kitting ID","accessor":"kittingId"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Closure Date","accessor":"closureDate"},{"header":"Purchase Type","accessor":"purchaseType"},{"header":"Agency / Vendor Name","accessor":"agencyVendorName"},{"header":"Lot Number","accessor":"lotNo"},{"header":"Batch Number","accessor":"batchNo"},{"header":"Net Qty Added MT","accessor":"netQtyMt"},{"header":"Warehouse","accessor":"warehouse"},{"header":"Go-down","accessor":"godown"},{"header":"Bin / Rack","accessor":"binRack"},{"header":"Quality Grade","accessor":"qualityGrade"},{"header":"Moisture %","accessor":"moisture"},{"header":"Total Purchase Value ₹","accessor":"totalPurchaseValue"},{"header":"Freight Cost ₹","accessor":"freightCost"},{"header":"Total Landed Cost ₹","accessor":"totalLandedCost"},{"header":"Valuation Rate ₹/MT","accessor":"valuationRate"},{"header":"Inventory Updated By","accessor":"updatedBy"}];
-
-  const columns = activeTab === "pending" ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 10 - Purchase Closure → Inventory</h2>
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Purchase Closure</h1>
+          <p className="text-slate-500">Manage purchase closure</p>
+        </div>
+        
       </div>
 
-      <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      <Card>
-        <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <Input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+      <div className="border-b border-slate-200 mb-6">
+        <div className="flex gap-6">
+          
+          <button 
+            onClick={() => setActiveTab('pending')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+              activeTab === 'pending' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <Clock className="w-4 h-4" />
+            Pending Action
+          </button>
+          
+          <button 
+            onClick={() => setActiveTab('history')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+              activeTab === 'history' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <HistoryIcon className="w-4 h-4" />
+            History / Completed
+          </button>
         </div>
+      </div>
 
-        <DataTable 
-          columns={columns} 
-          data={pagination.paginatedData} 
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          itemsPerPage={pagination.itemsPerPage}
-          onPageChange={pagination.setCurrentPage}
-          onItemsPerPageChange={pagination.setItemsPerPage}
-          totalResults={pagination.totalResults}
-        />
+      <Card className="p-0 border-0 shadow-sm ring-1 ring-slate-200 rounded-xl overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+          <div className="relative w-64">
+            <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <Input className="pl-9 bg-slate-50 border-slate-200" placeholder="Search..." />
+          </div>
+          
+          <Select 
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="w-48 bg-slate-50 border-slate-200"
+          >
+            <option value="All">All Types</option>
+            <option value="Market">Market (Mkt)</option>
+            <option value="Government">Government (Gov)</option>
+          </Select>
+          
+        </div>
+        
+        <div className="overflow-x-auto bg-white">
+          <table className="w-full text-sm text-left whitespace-nowrap">
+            <thead className="text-xs text-slate-600 bg-slate-50 uppercase tracking-wide border-b border-slate-200">
+              <tr>
+                {activeTab === 'pending' ? (
+                  <>
+                    <th className="px-6 py-4 font-bold">Action</th>
+                    <th className="px-6 py-4 font-bold">Full Kitting ID</th>
+                    <th className="px-6 py-4 font-bold">Challan No</th>
+                    <th className="px-6 py-4 font-bold">PO/DO Number</th>
+                    <th className="px-6 py-4 font-bold">Indent No</th>
+                    <th className="px-6 py-4 font-bold">Agency/Vendor Name</th>
+                    <th className="px-6 py-4 font-bold">Net Weight Kg</th>
+                    <th className="px-6 py-4 font-bold">Rate ₹/Qt</th>
+                    <th className="px-6 py-4 font-bold">Net Payable ₹</th>
+                    <th className="px-6 py-4 font-bold">Kitting Date</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="px-6 py-4 font-bold">Purchase Closure ID</th>
+                    <th className="px-6 py-4 font-bold">Full Kitting ID</th>
+                    <th className="px-6 py-4 font-bold">PO/DO Number</th>
+                    <th className="px-6 py-4 font-bold">Indent No</th>
+                    <th className="px-6 py-4 font-bold">Closure Date</th>
+                    <th className="px-6 py-4 font-bold">Purchase Type</th>
+                    <th className="px-6 py-4 font-bold">Vendor/Agency Name</th>
+                    <th className="px-6 py-4 font-bold">Lot No</th>
+                    <th className="px-6 py-4 font-bold">Batch No</th>
+                    <th className="px-6 py-4 font-bold">Net Qty Added MT</th>
+                    <th className="px-6 py-4 font-bold">Warehouse</th>
+                    <th className="px-6 py-4 font-bold">Go-down</th>
+                    <th className="px-6 py-4 font-bold">Quality Grade</th>
+                    <th className="px-6 py-4 font-bold">Moisture %</th>
+                    <th className="px-6 py-4 font-bold">Total Landed Cost ₹</th>
+                    <th className="px-6 py-4 font-bold">Valuation Rate ₹/MT</th>
+                    <th className="px-6 py-4 font-bold">Status</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {activeTab === 'pending' && (
+                <>
+                  {items
+                    .filter(item => selectedType === 'All' || item.purchaseType === selectedType)
+                    .map((item, index) => (
+                    <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
+                      <td className="px-6 py-4">
+                        <Button 
+                          onClick={() => handleAction(item, item.purchaseType)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-4 py-2 text-xs rounded-md shadow-sm font-medium"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          Process
+                        </Button>
+                      </td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'fullKittingId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'challanNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'agencyName|vendorName')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'netWeight')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'rate')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'netPayable')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'kittingDate')}</td>
+                    </tr>
+                  ))}
+                  {items.length === 0 && (
+                    <tr><td colSpan="10" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                  )}
+                </>
+              )}
+              
+              {activeTab === 'history' && (
+                <>
+                  {historyItems.map((item, index) => (
+                    <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'purchaseClosureId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'fullKittingId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'closureDate')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'purchaseType')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vendorName|agencyName')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'lotNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'batchNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'netQty')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'warehouse')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'godown')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'qualityGrade')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'moisture')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'totalLandedCost')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'valuationRate')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'closureStatus')}</td>
+                    </tr>
+                  ))}
+                  {historyItems.length === 0 && (
+                    <tr><td colSpan="17" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
+        </div>
       </Card>
 
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Purchase Closure Details"
+        title={`Purchase Closure Details`}
+        size="4xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="max-h-[85vh] overflow-y-auto p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             
-            <div className="space-y-1.5">
-              <Label>Full Kitting ID</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Purchase Closure ID</Label>
               <Input 
                 type="text"
-                value={formData.kittingId || ""} 
-                onChange={(e) => setFormData({...formData, kittingId: e.target.value})}
+                value={formData.purchaseClosureId || ''} 
+                onChange={(e) => setFormData({...formData, purchaseClosureId: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Challan No</Label>
-              <Input 
-                type="text"
-                value={formData.challanNo || ""} 
-                onChange={(e) => setFormData({...formData, challanNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>PO Number</Label>
-              <Input 
-                type="text"
-                value={formData.poNumber || ""} 
-                onChange={(e) => setFormData({...formData, poNumber: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Indent No</Label>
-              <Input 
-                type="text"
-                value={formData.indentNo || ""} 
-                onChange={(e) => setFormData({...formData, indentNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Purchase Closure ID</Label>
-              <Input 
-                type="text"
-                value={formData.closureId || ""} 
-                onChange={(e) => setFormData({...formData, closureId: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Closure Date</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Closure Date</Label>
               <Input 
                 type="date"
-                value={formData.closureDate || ""} 
+                value={formData.closureDate || ''} 
                 onChange={(e) => setFormData({...formData, closureDate: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Net Quantity MT</Label>
-              <Input 
-                type="number"
-                value={formData.netQtyMt || ""} 
-                onChange={(e) => setFormData({...formData, netQtyMt: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Warehouse Location</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Purchase Type</Label>
               <Input 
                 type="text"
-                value={formData.warehouse || ""} 
-                onChange={(e) => setFormData({...formData, warehouse: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Go-down</Label>
-              <Input 
-                type="text"
-                value={formData.godown || ""} 
-                onChange={(e) => setFormData({...formData, godown: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Bin / Rack</Label>
-              <Input 
-                type="text"
-                value={formData.binRack || ""} 
-                onChange={(e) => setFormData({...formData, binRack: e.target.value})}
-                readOnly={false}
-                className={false ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Lot Number</Label>
-              <Input 
-                type="text"
-                value={formData.lotNo || ""} 
-                onChange={(e) => setFormData({...formData, lotNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Batch Number</Label>
-              <Input 
-                type="text"
-                value={formData.batchNo || ""} 
-                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Quality Grade</Label>
-              <Input 
-                type="text"
-                value={formData.qualityGrade || ""} 
-                onChange={(e) => setFormData({...formData, qualityGrade: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Moisture at Receipt %</Label>
-              <Input 
-                type="number"
-                value={formData.moisture || ""} 
-                onChange={(e) => setFormData({...formData, moisture: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Purchase Type</Label>
-              <Input 
-                type="text"
-                value={formData.purchaseType || ""} 
+                value={formData.purchaseType || ''} 
                 onChange={(e) => setFormData({...formData, purchaseType: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Agency / Vendor Name</Label>
-              <Input 
-                type="text"
-                value={formData.agencyVendorName || ""} 
-                onChange={(e) => setFormData({...formData, agencyVendorName: e.target.value})}
-                readOnly={true}
-                className={true ? "bg-slate-100" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Purchase Value ₹</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Net Qty MT</Label>
               <Input 
                 type="number"
-                value={formData.totalPurchaseValue || ""} 
+                value={formData.netQty || ''} 
+                onChange={(e) => setFormData({...formData, netQty: e.target.value})}
+                readOnly={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Warehouse Location</Label>
+              <Input 
+                type="text"
+                value={formData.warehouse || ''} 
+                onChange={(e) => setFormData({...formData, warehouse: e.target.value})}
+                readOnly={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Go-down</Label>
+              <Input 
+                type="text"
+                value={formData.godown || ''} 
+                onChange={(e) => setFormData({...formData, godown: e.target.value})}
+                readOnly={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Bin / Rack</Label>
+              <Input 
+                type="text"
+                value={formData.binRack || ''} 
+                onChange={(e) => setFormData({...formData, binRack: e.target.value})}
+                readOnly={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Lot No</Label>
+              <Input 
+                type="text"
+                value={formData.lotNo || ''} 
+                onChange={(e) => setFormData({...formData, lotNo: e.target.value})}
+                readOnly={true}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Batch No</Label>
+              <Input 
+                type="text"
+                value={formData.batchNo || ''} 
+                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
+                readOnly={true}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Quality Grade</Label>
+              <Input 
+                type="text"
+                value={formData.qualityGrade || ''} 
+                onChange={(e) => setFormData({...formData, qualityGrade: e.target.value})}
+                readOnly={true}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Moisture at Receipt %</Label>
+              <Input 
+                type="number"
+                value={formData.moisture || ''} 
+                onChange={(e) => setFormData({...formData, moisture: e.target.value})}
+                readOnly={true}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Total Purchase Value ₹</Label>
+              <Input 
+                type="number"
+                value={formData.totalPurchaseValue || ''} 
                 onChange={(e) => setFormData({...formData, totalPurchaseValue: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Freight Cost ₹</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Freight Cost ₹</Label>
               <Input 
                 type="number"
-                value={formData.freightCost || ""} 
+                value={formData.freightCost || ''} 
                 onChange={(e) => setFormData({...formData, freightCost: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Total Landed Cost ₹</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Total Landed Cost ₹</Label>
               <Input 
                 type="number"
-                value={formData.totalLandedCost || ""} 
+                value={formData.totalLandedCost || ''} 
                 onChange={(e) => setFormData({...formData, totalLandedCost: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Valuation Rate ₹/MT</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Valuation Rate ₹/MT</Label>
               <Input 
                 type="number"
-                value={formData.valuationRate || ""} 
+                value={formData.valuationRate || ''} 
                 onChange={(e) => setFormData({...formData, valuationRate: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Inventory Updated By</Label>
+            {formData.purchaseType === 'Government' && (
+              <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Total Govt Charges ₹</Label>
+              <Input 
+                type="number"
+                value={formData.govtCharges || ''} 
+                onChange={(e) => setFormData({...formData, govtCharges: e.target.value})}
+                readOnly={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              />
+            </div>
+              )}
+            {formData.purchaseType === 'Market' && (
+              <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Total Broker Commission ₹</Label>
+              <Input 
+                type="number"
+                value={formData.brokerCommission || ''} 
+                onChange={(e) => setFormData({...formData, brokerCommission: e.target.value})}
+                readOnly={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              />
+            </div>
+              )}
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Inventory Updated By</Label>
               <Input 
                 type="text"
-                value={formData.updatedBy || ""} 
+                value={formData.updatedBy || ''} 
                 onChange={(e) => setFormData({...formData, updatedBy: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Storage Remarks</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Storage Remarks</Label>
               <Input 
                 type="text"
-                value={formData.remarks || ""} 
+                value={formData.remarks || ''} 
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Closure Status</Label>
+              <Select 
+                value={formData.closureStatus || ''} 
+                onChange={(e) => setFormData({...formData, closureStatus: e.target.value})}
+                disabled={false}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
+              >
+                <option value="">Select...</option>
+                <option value="Complete">Complete</option><option value="Partial">Partial</option>
+              </Select>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
+          <div className="flex justify-end gap-3 pt-8 mt-8 border-t border-slate-100">
+            <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              Save & Process
+            <Button onClick={handleSave} className="px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+              Save Details
             </Button>
           </div>
         </div>

@@ -28,6 +28,7 @@ export const DashboardLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [expandedGroup, setExpandedGroup] = useState(null);
+  const [expandedSubMenu, setExpandedSubMenu] = useState(null);
 
   const currentUser = (() => {
     try { return JSON.parse(localStorage.getItem('rm_user')) || { role: 'Admin User', id: 'admin' }; }
@@ -42,9 +43,18 @@ export const DashboardLayout = () => {
   // Auto-expand group if it contains the active link
   React.useEffect(() => {
     navGroups.forEach(group => {
-      if (group.links.some(l => location.pathname === l.path)) {
+      const hasActive = group.links.some(l => 
+        location.pathname === l.path || 
+        (l.subLinks && l.subLinks.some(sl => location.pathname === sl.path))
+      );
+      if (hasActive) {
         setExpandedGroup(group.title);
       }
+      group.links.forEach(l => {
+        if (l.subLinks && l.subLinks.some(sl => location.pathname === sl.path)) {
+          setExpandedSubMenu(l.label);
+        }
+      });
     });
   }, [location.pathname]);
 
@@ -53,32 +63,28 @@ export const DashboardLayout = () => {
     setExpandedGroup(prev => prev === title ? null : title);
   };
 
+  const toggleSubMenu = (label) => {
+    if (!isSidebarOpen) setSidebarOpen(true);
+    setExpandedSubMenu(prev => prev === label ? null : label);
+  };
+
   const navGroups = [
     {
-      title: "Procurement",
+      title: "Purchase",
       links: [
-        { path: '/procurement-planning', label: 'Procurement Planning', icon: LineChart },
-        { path: '/procurement-approval', label: 'Procurement Approval', icon: Target },
-        { path: '/mandi-selection', label: 'Mandi Selection', icon: Map },
-        { path: '/market-price', label: 'Current Market Price', icon: BarChart },
-        { path: '/government-msp', label: 'Government MSP', icon: Database },
-        { path: '/lab-quality', label: 'Lab Quality', icon: TestTube },
-        { path: '/final-approval', label: 'Approval', icon: ShieldCheck },
-        { path: '/transportation-cost', label: 'Transportation Cost', icon: Truck },
         { path: '/purchase-requirement', label: 'Purchase Requirement', icon: ShoppingCart },
-      ]
-    },
-    {
-      title: "Purchase Execution",
-      links: [
-        { path: '/purchase-indent', label: 'Purchase Indent', icon: ShoppingCart },
+        { path: '/source-selection', label: 'Source Selection', icon: Map },
         { path: '/purchase-approval', label: 'Purchase Approval', icon: ShieldCheck },
-        { path: '/create-po', label: 'Create PO', icon: FileText },
+        { path: '/po-do-entry', label: 'PO / DO Entry', icon: FileText },
         { path: '/arrange-logistics-purchase', label: 'Arrange Logistics', icon: Truck },
-        { path: '/po-entry', label: 'PO Entry', icon: Target },
+        { path: '/source-entry', label: 'Source Entry', icon: Target },
         { path: '/advance-payment', label: 'Advance Payment', icon: Calculator },
         { path: '/lift', label: 'Lift', icon: Map },
-        { path: '/lab-report', label: 'Lab Report', icon: TestTube },
+        { path: '/weighment', label: 'Weighment', icon: Scale },
+        { path: '/material-receipt', label: 'Material Receipt', icon: Database },
+        { path: '/laboratory-report', label: 'Laboratory Report', icon: TestTube },
+        { path: '/accounts-verification', label: 'Accounts Verification', icon: Calculator },
+        { path: '/full-kitting', label: 'Full Kitting', icon: Package },
         { path: '/purchase-closure', label: 'Purchase Closure', icon: Database },
       ]
     },
@@ -89,70 +95,51 @@ export const DashboardLayout = () => {
       ]
     },
     {
-      title: "Manufacturing",
+      title: "Production",
       links: [
         { path: '/production-planning', label: 'Production Planning', icon: Calculator },
-        { path: '/actual-production', label: 'Actual Production', icon: Factory },
-        { path: '/paddy-cleaning', label: 'Paddy Cleaning', icon: Cog },
-        { path: '/dehusking', label: 'Dehusking', icon: Cog },
-        { path: '/separation', label: 'Separation', icon: Package },
-        { path: '/polishing', label: 'Polishing', icon: Settings },
-        { path: '/grading', label: 'Grading', icon: Database },
-        { path: '/color-sorting', label: 'Color Sorting', icon: TestTube },
-        { path: '/expected-vs-actual', label: 'Expected vs Actual', icon: BarChart },
+        { path: '/production-order', label: 'Production Order', icon: FileText },
+        { path: '/batch-creation', label: 'Batch Creation', icon: Factory },
+        { path: '/raw-material-issue', label: 'Raw Material Issue', icon: Database },
+        { path: '/pre-qc', label: 'Pre-Process QC', icon: TestTube },
+        { 
+          label: 'Milling Process', 
+          icon: Cog,
+          subLinks: [
+            { path: '/paddy-cleaning', label: '1. Paddy Cleaning' },
+            { path: '/dehusking', label: '2. Dehusking' },
+            { path: '/separation', label: '3. Separation' },
+            { path: '/polishing', label: '4. Polishing' },
+            { path: '/grading', label: '5. Grading' },
+            { path: '/color-sorting', label: '6. Color Sorting' }
+          ]
+        },
+        { path: '/final-qc', label: 'Final QC', icon: ShieldCheck },
+        { path: '/yield-calculation', label: 'Yield Calculation', icon: BarChart },
+        { path: '/finished-goods-entry', label: 'Finished Goods Entry', icon: Package },
+        { path: '/packing', label: 'Packing', icon: Settings },
+        { path: '/fg-warehouse-entry', label: 'FG Warehouse Entry', icon: Warehouse },
+        { path: '/production-closure', label: 'Production Closure', icon: ShieldCheck },
       ]
     },
     {
-      title: "Packing & Finished Goods",
+      title: "Order & Dispatch",
       links: [
-        { path: '/packing-order', label: 'Packing Order', icon: Package },
-        { path: '/bag-selection', label: 'Bag Selection', icon: Settings },
-        { path: '/barcode', label: 'Barcode Generation', icon: Database },
-        { path: '/qrcode', label: 'QR Code Generation', icon: TestTube },
-        { path: '/batch-number', label: 'Batch Number', icon: Factory },
-        { path: '/lot-number', label: 'Lot Number', icon: Database },
-        { path: '/weight-verification', label: 'Weight Verification', icon: Scale },
-        { path: '/packing-qc', label: 'Packing QC', icon: ShieldCheck },
-        { path: '/finished-goods', label: 'Finished Goods Inventory', icon: Warehouse },
-      ]
-    },
-    {
-      title: "Sales",
-      links: [
-        { path: '/order-receive', label: 'Order Receive', icon: ShoppingCart },
-        { path: '/sent-quotation', label: 'Sent Quotation', icon: FileText },
-        { path: '/order-follow-up', label: 'Order Follow-up', icon: Target },
+        { path: '/sales-order', label: 'Sales Order', icon: ShoppingCart },
         { path: '/order-approval', label: 'Order Approval', icon: ShieldCheck },
-        { path: '/order-completion', label: 'Order Completion', icon: Database },
-      ]
-    },
-    {
-      title: "Export Management",
-      links: [
-        { path: '/export-contract', label: 'Export Contract', icon: FileText },
-        { path: '/packing-list', label: 'Packing List', icon: Package },
-        { path: '/container-booking', label: 'Container Booking', icon: Globe },
-        { path: '/container-loading', label: 'Container Loading', icon: Truck },
-        { path: '/shipping-line', label: 'Shipping Line', icon: Map },
-        { path: '/shipping-bill', label: 'Shipping Bill', icon: FileText },
-        { path: '/bill-of-lading', label: 'Bill of Lading', icon: FileText },
-        { path: '/certificate-of-origin', label: 'Certificate of Origin', icon: ShieldCheck },
-        { path: '/export-documentation', label: 'Documentation & Bank', icon: Database },
-        { path: '/export-payment', label: 'Export Payment', icon: Calculator },
-      ]
-    },
-    {
-      title: "Dispatch",
-      links: [
-        { path: '/dispatch-order', label: 'Dispatch Order', icon: Truck },
-        { path: '/dispatch-planning', label: 'Dispatch Planning', icon: FileText },
-        { path: '/arrange-logistics', label: 'Arrange Logistics', icon: Truck },
-        { path: '/picking-list', label: 'Picking List', icon: Package },
-        { path: '/logistics-details', label: 'Logistics Details', icon: Map },
-        { path: '/test-certificate', label: 'Test Certificate', icon: ShieldCheck },
-        { path: '/dispatch-weight', label: 'Dispatch Weight', icon: Database },
-        { path: '/invoice', label: 'Invoice', icon: FileText },
-        { path: '/delivery-confirmation', label: 'Delivery Confirmation', icon: ShieldCheck },
+        { path: '/stock-availability-check', label: 'Stock Availability', icon: Database },
+        { path: '/stock-reservation', label: 'Stock Reservation', icon: Warehouse },
+        { path: '/dispatch-planning', label: 'Dispatch Planning', icon: LineChart },
+        { path: '/packing-instruction', label: 'Packing Instruction', icon: Package },
+        { path: '/quality-clearance', label: 'Quality Clearance', icon: TestTube },
+        { path: '/dispatch-order', label: 'Dispatch Order', icon: FileText },
+        { path: '/vehicle-allocation', label: 'Vehicle / Container', icon: Truck },
+        { path: '/loading', label: 'Loading', icon: Cog },
+        { path: '/final-weighment', label: 'Final Weighment', icon: Scale },
+        { path: '/dispatch-documents', label: 'Dispatch Documents', icon: Globe },
+        { path: '/gate-pass', label: 'Gate Pass', icon: ShieldCheck },
+        { path: '/dispatch-confirmation', label: 'Dispatch Confirmation', icon: Settings },
+        { path: '/billing-closure', label: 'Billing & Closure', icon: Calculator },
       ]
     },
     {
@@ -196,8 +183,13 @@ export const DashboardLayout = () => {
 
   const getActiveLabel = () => {
     for (const group of visibleGroups) {
-      const link = group.links.find(l => l.path === location.pathname);
-      if (link) return link.label;
+      for (const link of group.links) {
+        if (link.path === location.pathname) return link.label;
+        if (link.subLinks) {
+          const sub = link.subLinks.find(sl => sl.path === location.pathname);
+          if (sub) return sub.label;
+        }
+      }
     }
     return 'Dashboard';
   };
@@ -259,16 +251,49 @@ export const DashboardLayout = () => {
                   </div>
                 )}
                 
-                <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ${isExpanded || !isSidebarOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ${isExpanded || !isSidebarOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                   {group.links.map((link) => (
-                    <SidebarLink 
-                      key={link.path}
-                      to={link.path}
-                      icon={link.icon}
-                      label={link.label}
-                      isActive={location.pathname === link.path}
-                      isSidebarOpen={isSidebarOpen}
-                    />
+                    <React.Fragment key={link.label}>
+                      {link.subLinks ? (
+                        <div className="mb-1">
+                          <div 
+                            className={`flex items-center justify-between px-3 py-2 mx-2 rounded-lg text-slate-700 font-semibold mt-1 cursor-pointer transition-colors ${isSidebarOpen ? 'bg-slate-50 border border-slate-100 hover:bg-slate-100' : 'justify-center hover:bg-slate-100'}`} 
+                            title={!isSidebarOpen ? link.label : ''}
+                            onClick={() => toggleSubMenu(link.label)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <link.icon size={18} className="shrink-0 text-slate-500" />
+                              {isSidebarOpen && <span className="text-sm">{link.label}</span>}
+                            </div>
+                            {isSidebarOpen && (
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${expandedSubMenu === link.label ? 'rotate-180' : ''}`} />
+                            )}
+                          </div>
+                          <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ${expandedSubMenu === link.label || !isSidebarOpen ? 'max-h-[500px] opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
+                            <div className={`${isSidebarOpen ? 'ml-6 border-l-2 border-slate-100 pl-2' : ''}`}>
+                              {link.subLinks.map(sub => (
+                                <SidebarLink 
+                                  key={sub.path}
+                                  to={sub.path}
+                                  icon={() => <div className={`w-1.5 h-1.5 rounded-full mx-1 shrink-0 ${location.pathname === sub.path ? 'bg-primary' : 'bg-slate-300'}`} />}
+                                  label={sub.label}
+                                  isActive={location.pathname === sub.path}
+                                  isSidebarOpen={isSidebarOpen}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <SidebarLink 
+                          to={link.path}
+                          icon={link.icon}
+                          label={link.label}
+                          isActive={location.pathname === link.path}
+                          isSidebarOpen={isSidebarOpen}
+                        />
+                      )}
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

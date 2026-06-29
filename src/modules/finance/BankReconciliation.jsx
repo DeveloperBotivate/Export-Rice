@@ -270,263 +270,343 @@ export const BankReconciliation = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         title="Bank Reconciliation Details"
+        size="5xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
-            
-            <div className="space-y-1.5">
-              <Label>P&L ID</Label>
-              <Input 
-                type="text"
-                value={formData.plId || ''} 
-                onChange={(e) => setFormData({...formData, plId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
+        <div className="max-h-[85vh] overflow-y-auto">
+          <div className="bg-gradient-to-r from-green-900 to-green-800 px-6 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-green-300 text-xs font-medium uppercase tracking-widest">Finance Module</p>
+              <h3 className="text-white text-lg font-bold mt-0.5">Bank Reconciliation Details</h3>
             </div>
-            <div className="space-y-1.5">
-              <Label>Recon ID</Label>
-              <Input 
-                type="text"
-                value={formData.brId || ''} 
-                onChange={(e) => setFormData({...formData, brId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Recon Date</Label>
-              <Input 
-                type="date"
-                value={formData.reconDate || ''} 
-                onChange={(e) => setFormData({...formData, reconDate: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Bank Name</Label>
-              <Input 
-                type="text"
-                value={formData.bankName || ''} 
-                onChange={(e) => setFormData({...formData, bankName: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Branch Name</Label>
-              <Input 
-                type="text"
-                value={formData.branchName || ''} 
-                onChange={(e) => setFormData({...formData, branchName: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Account No</Label>
-              <Input 
-                type="text"
-                value={formData.accountNo || ''} 
-                onChange={(e) => setFormData({...formData, accountNo: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Account Type</Label>
-              <Select 
-                value={formData.accountType || ''} 
-                onChange={(e) => setFormData({...formData, accountType: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Account Type</option>
-                <option value="Current">Current</option><option value="CC">CC</option><option value="OD">OD</option>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Opening Balance (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.openingBal || ''} 
-                onChange={(e) => setFormData({...formData, openingBal: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Closing Balance as per Bank Statement (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.bankClosingBal || ''} 
-                onChange={(e) => setFormData({...formData, bankClosingBal: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Closing Balance as per Books (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.bookClosingBal || ''} 
-                onChange={(e) => setFormData({...formData, bookClosingBal: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Uncleared Cheques Issued (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.unclearedIssued || ''} 
-                onChange={(e) => setFormData({...formData, unclearedIssued: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Cheques in Transit — Received (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.transitReceived || ''} 
-                onChange={(e) => setFormData({...formData, transitReceived: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Deposits in Transit (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.depositsTransit || ''} 
-                onChange={(e) => setFormData({...formData, depositsTransit: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Bank Charges (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.bankCharges || ''} 
-                onChange={(e) => setFormData({...formData, bankCharges: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Interest Earned (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.interestEarned || ''} 
-                onChange={(e) => setFormData({...formData, interestEarned: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>ECS/NACH Debits (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.ecsDebits || ''} 
-                onChange={(e) => setFormData({...formData, ecsDebits: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Other Adjustments (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.otherAdj || ''} 
-                onChange={(e) => setFormData({...formData, otherAdj: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Reconciled Balance (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.reconciledBal || ''} 
-                onChange={(e) => setFormData({...formData, reconciledBal: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Variance (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.variance || ''} 
-                onChange={(e) => setFormData({...formData, variance: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Reconciliation Status</Label>
-              <Select 
-                value={formData.reconStatus || ''} 
-                onChange={(e) => setFormData({...formData, reconStatus: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Reconciliation Status</option>
-                <option value="Matched">Matched</option><option value="Unmatched">Unmatched</option>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Reconciled By</Label>
-              <Input 
-                type="text"
-                value={formData.reconciledBy || ''} 
-                onChange={(e) => setFormData({...formData, reconciledBy: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Verified By</Label>
-              <Input 
-                type="text"
-                value={formData.verifiedBy || ''} 
-                onChange={(e) => setFormData({...formData, verifiedBy: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+              <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
+              <span className="text-white text-xs font-medium">Recording</span>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
-              Cancel
-            </Button>
-            <Button onClick={handleSave}>
-              Save & Process
-            </Button>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">P&L ID</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.plId || ''} 
+                  onChange={(e) => setFormData({...formData, plId: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Recon ID</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.brId || ''} 
+                  onChange={(e) => setFormData({...formData, brId: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Recon Date</Label>
+                  
+                </div>
+                <Input 
+                  type="date"
+                  value={formData.reconDate || ''} 
+                  onChange={(e) => setFormData({...formData, reconDate: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bank Name</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.bankName || ''} 
+                  onChange={(e) => setFormData({...formData, bankName: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Branch Name</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.branchName || ''} 
+                  onChange={(e) => setFormData({...formData, branchName: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Account No</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.accountNo || ''} 
+                  onChange={(e) => setFormData({...formData, accountNo: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Account Type</Label>
+                  
+                </div>
+                <Select 
+                  value={formData.accountType || ''} 
+                  onChange={(e) => setFormData({...formData, accountType: e.target.value})}
+                  disabled={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                >
+                  <option value="">Select...</option>
+                  <option value="Current">Current</option><option value="CC">CC</option><option value="OD">OD</option>
+                </Select>
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Opening Balance (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.openingBal || ''} 
+                  onChange={(e) => setFormData({...formData, openingBal: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Closing Balance as per Bank Statement (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.bankClosingBal || ''} 
+                  onChange={(e) => setFormData({...formData, bankClosingBal: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Closing Balance as per Books (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.bookClosingBal || ''} 
+                  onChange={(e) => setFormData({...formData, bookClosingBal: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Uncleared Cheques Issued (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.unclearedIssued || ''} 
+                  onChange={(e) => setFormData({...formData, unclearedIssued: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Cheques in Transit — Received (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.transitReceived || ''} 
+                  onChange={(e) => setFormData({...formData, transitReceived: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Deposits in Transit (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.depositsTransit || ''} 
+                  onChange={(e) => setFormData({...formData, depositsTransit: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bank Charges (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.bankCharges || ''} 
+                  onChange={(e) => setFormData({...formData, bankCharges: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Interest Earned (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.interestEarned || ''} 
+                  onChange={(e) => setFormData({...formData, interestEarned: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">ECS/NACH Debits (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.ecsDebits || ''} 
+                  onChange={(e) => setFormData({...formData, ecsDebits: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Other Adjustments (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.otherAdj || ''} 
+                  onChange={(e) => setFormData({...formData, otherAdj: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Reconciled Balance (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.reconciledBal || ''} 
+                  onChange={(e) => setFormData({...formData, reconciledBal: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Variance (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.variance || ''} 
+                  onChange={(e) => setFormData({...formData, variance: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Reconciliation Status</Label>
+                  
+                </div>
+                <Select 
+                  value={formData.reconStatus || ''} 
+                  onChange={(e) => setFormData({...formData, reconStatus: e.target.value})}
+                  disabled={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                >
+                  <option value="">Select...</option>
+                  <option value="Matched">Matched</option><option value="Unmatched">Unmatched</option>
+                </Select>
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Reconciled By</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.reconciledBy || ''} 
+                  onChange={(e) => setFormData({...formData, reconciledBy: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Verified By</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.verifiedBy || ''} 
+                  onChange={(e) => setFormData({...formData, verifiedBy: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
+                Cancel
+              </Button>
+              <Button onClick={handleSave} className="px-6 bg-gradient-to-r from-green-700 to-green-600 shadow-md text-white">
+                Save & Process
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>

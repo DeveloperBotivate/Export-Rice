@@ -84,24 +84,23 @@ const DataTable = ({
               {data.length > 0 && (
                 data.map((item, index) => {
                   const row = renderRow(item, index);
-                  if (!row || !item || !item.orderType) return row;
-                  
-                  const isUrgent = item.orderType.trim().toLowerCase() === 'urgent order';
-                  const isStock = item.orderType.trim().toLowerCase() === 'stock order';
+                  if (!row || !item) return row;
                   
                   let customClass = '';
-                  if (isUrgent) {
-                    customClass = 'order-row-urgent';
-                  } else if (isStock) {
-                    customClass = 'order-row-stock';
+                  const type = item.orderType || item.purchaseType || '';
+                  
+                  if (type === 'Domestic' || type === 'Government') {
+                    customClass = 'bg-blue-50/50 hover:bg-blue-100/60 transition-colors border-l-4 border-l-blue-400';
+                  } else if (type === 'Export' || type === 'Market') {
+                    customClass = 'bg-emerald-50/50 hover:bg-emerald-100/60 transition-colors border-l-4 border-l-emerald-400';
+                  } else {
+                    // Common/Other
+                    customClass = 'hover:bg-slate-50 transition-colors';
                   }
                   
-                  if (customClass) {
-                    return React.cloneElement(row, {
-                      className: `${row.props.className || ''} ${customClass}`
-                    });
-                  }
-                  return row;
+                  return React.cloneElement(row, {
+                    className: `${row.props.className || ''} ${customClass}`
+                  });
                 })
               )}
             </tbody>

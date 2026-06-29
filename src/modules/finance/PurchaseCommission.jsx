@@ -251,141 +251,188 @@ export const PurchaseCommission = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         title="Purchase Commission Summary"
+        size="5xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
-            
-            <div className="space-y-1.5">
-              <Label>Commission ID</Label>
-              <Input 
-                type="text"
-                value={formData.commissionId || ''} 
-                onChange={(e) => setFormData({...formData, commissionId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
+        <div className="max-h-[85vh] overflow-y-auto">
+          <div className="bg-gradient-to-r from-green-900 to-green-800 px-6 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-green-300 text-xs font-medium uppercase tracking-widest">Finance Module</p>
+              <h3 className="text-white text-lg font-bold mt-0.5">Purchase Commission Summary</h3>
             </div>
-            <div className="space-y-1.5">
-              <Label>PR Number</Label>
-              <Input 
-                type="text"
-                value={formData.prNumber || ''} 
-                onChange={(e) => setFormData({...formData, prNumber: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>PO Number</Label>
-              <Input 
-                type="text"
-                value={formData.poNumber || ''} 
-                onChange={(e) => setFormData({...formData, poNumber: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Purchase Commission ID</Label>
-              <Input 
-                type="text"
-                value={formData.pcId || ''} 
-                onChange={(e) => setFormData({...formData, pcId: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Period</Label>
-              <Select 
-                value={formData.period || ''} 
-                onChange={(e) => setFormData({...formData, period: e.target.value})}
-                disabled={false}
-                className={false ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select Period</option>
-                <option value="Month">Month</option><option value="Quarter">Quarter</option><option value="Year">Year</option>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Purchases (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.totalPurchases || ''} 
-                onChange={(e) => setFormData({...formData, totalPurchases: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Total Commission Paid (₹)</Label>
-              <Input 
-                type="number"
-                value={formData.totalCommission || ''} 
-                onChange={(e) => setFormData({...formData, totalCommission: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Commission % on Total Purchase</Label>
-              <Input 
-                type="number"
-                value={formData.commissionPercent || ''} 
-                onChange={(e) => setFormData({...formData, commissionPercent: e.target.value})}
-                readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>No. of Purchase Transactions</Label>
-              <Input 
-                type="number"
-                value={formData.noOfTransactions || ''} 
-                onChange={(e) => setFormData({...formData, noOfTransactions: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Summary Prepared By</Label>
-              <Input 
-                type="text"
-                value={formData.preparedBy || ''} 
-                onChange={(e) => setFormData({...formData, preparedBy: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Remarks</Label>
-              <Input 
-                type="text"
-                value={formData.remarks || ''} 
-                onChange={(e) => setFormData({...formData, remarks: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
-                placeholder=""
-              />
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+              <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
+              <span className="text-white text-xs font-medium">Recording</span>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
-              Cancel
-            </Button>
-            <Button onClick={handleSave}>
-              Save & Process
-            </Button>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Commission ID</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.commissionId || ''} 
+                  onChange={(e) => setFormData({...formData, commissionId: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">PR Number</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.prNumber || ''} 
+                  onChange={(e) => setFormData({...formData, prNumber: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">PO Number</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.poNumber || ''} 
+                  onChange={(e) => setFormData({...formData, poNumber: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Purchase Commission ID</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.pcId || ''} 
+                  onChange={(e) => setFormData({...formData, pcId: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Period</Label>
+                  
+                </div>
+                <Select 
+                  value={formData.period || ''} 
+                  onChange={(e) => setFormData({...formData, period: e.target.value})}
+                  disabled={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                >
+                  <option value="">Select...</option>
+                  <option value="Month">Month</option><option value="Quarter">Quarter</option><option value="Year">Year</option>
+                </Select>
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Purchases (₹)</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.totalPurchases || ''} 
+                  onChange={(e) => setFormData({...formData, totalPurchases: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Commission Paid (₹)</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.totalCommission || ''} 
+                  onChange={(e) => setFormData({...formData, totalCommission: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Commission % on Total Purchase</Label>
+                  <span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.commissionPercent || ''} 
+                  onChange={(e) => setFormData({...formData, commissionPercent: e.target.value})}
+                  readOnly={true}
+                  className={'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">No. of Purchase Transactions</Label>
+                  
+                </div>
+                <Input 
+                  type="number"
+                  value={formData.noOfTransactions || ''} 
+                  onChange={(e) => setFormData({...formData, noOfTransactions: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Summary Prepared By</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.preparedBy || ''} 
+                  onChange={(e) => setFormData({...formData, preparedBy: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+              <div className={'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Remarks</Label>
+                  
+                </div>
+                <Input 
+                  type="text"
+                  value={formData.remarks || ''} 
+                  onChange={(e) => setFormData({...formData, remarks: e.target.value})}
+                  readOnly={false}
+                  className={'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'}
+                  placeholder=""
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
+                Cancel
+              </Button>
+              <Button onClick={handleSave} className="px-6 bg-gradient-to-r from-green-700 to-green-600 shadow-md text-white">
+                Save & Process
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>

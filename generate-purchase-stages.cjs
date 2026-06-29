@@ -3,705 +3,857 @@ const path = require('path');
 
 const stages = [
   {
-    file: 'PurchaseApproval.jsx', name: 'PurchaseApproval', title: 'Stage 2 - Purchase Approval', action: 'Approve', modalTitle: 'Approval Details',
-    pendingCols: [
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Indent Date', accessor: 'indentDate' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Mandi', accessor: 'agencyMandi' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Qty MT', accessor: 'qtyMt' },
-      { header: 'Budget / Mandated Rate ₹', accessor: 'rate' },
-      { header: 'Required By Date', accessor: 'requiredByDate' },
-      { header: 'Requested By', accessor: 'requestedBy' }
-    ],
-    historyCols: [
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Approval ID', accessor: 'approvalId' },
-      { header: 'Indent Date', accessor: 'indentDate' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Mandi', accessor: 'agencyMandi' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Approved Qty MT', accessor: 'approvedQty' },
-      { header: 'Approved Rate ₹/Qt', accessor: 'approvedRate' },
-      { header: 'Approved Budget ₹', accessor: 'approvedBudget' },
-      { header: 'Approved By', accessor: 'approvedBy' },
-      { header: 'Approval Date', accessor: 'approvalDate' },
-      { header: 'Priority', accessor: 'priority' },
-      { header: 'Approval Status', accessor: 'approvalStatus' }
+    title: 'Purchase Requirement',
+    file: 'PurchaseRequirement.jsx',
+    prev: null, next: '/source-selection', storageKey: 'purchase_1_history', readFrom: null,
+    pendingColumns: [],
+    historyColumns: [
+      ['Requirement No', 'requirementNo'], ['Date', 'requirementDate'], ['Purchase Type', 'purchaseType'],
+      ['Gov Ref', 'procurementRef'], ['Target Mandi', 'targetMandi'], ['Broker Name', 'brokerName'],
+      ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], ['Qty MT', 'govQtyMT|mktQtyMT'], 
+      ['Rate ₹/Qt', 'mspRate|budgetRate'], ['Required By', 'requiredByDate'], ['Requested By', 'requestedBy'], ['Status', 'status']
     ],
     fields: [
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Purchase Type', name: 'purchaseType', type: 'text', readOnly: true },
-      { label: 'Agency / Mandi', name: 'agencyMandi', type: 'text', readOnly: true },
-      { label: 'Approval ID', name: 'approvalId', type: 'text', readOnly: true },
-      { label: 'Approval Date', name: 'approvalDate', type: 'date' },
-      { label: 'Approved By (Name & Designation)', name: 'approvedBy', type: 'text' },
-      { label: 'Approved Quantity MT', name: 'approvedQty', type: 'number' },
-      { label: 'Approved Rate ₹/Qt', name: 'approvedRate', type: 'number' },
-      { label: 'Approved Budget Total ₹', name: 'approvedBudget', type: 'number', readOnly: true },
-      { label: 'Priority Level', name: 'priority', type: 'select', options: ['High', 'Medium', 'Low'] },
-      { label: 'Approval Status', name: 'approvalStatus', type: 'select', options: ['Approved', 'Rejected', 'On Hold'] },
-      { label: 'Rejection/Hold Reason', name: 'reason', type: 'text' },
-      { label: 'Approval Remarks', name: 'remarks', type: 'text' }
+      { name: 'requirementNo', label: 'Requirement No', type: 'text', readOnly: true },
+      { name: 'requirementDate', label: 'Requirement Date', type: 'date' },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'select', options: ['Government', 'Market'] },
+      { name: 'procurementRef', label: 'Procurement Ref No', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'govPaddyGrade', label: 'Paddy Grade (Gov)', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'govQtyMT', label: 'Qty MT (Gov)', type: 'number', readOnly: true, condition: 'Government' },
+      { name: 'mspRate', label: 'MSP Rate ₹/Qt', type: 'number', readOnly: true, condition: 'Government' },
+      { name: 'targetSeason', label: 'Target Season', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'procurementRegion', label: 'Procurement Region', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'targetMandi', label: 'Target Mandi', type: 'text', condition: 'Market' },
+      { name: 'mktPaddyGrade', label: 'Paddy Grade Required', type: 'text', condition: 'Market' },
+      { name: 'mktQtyMT', label: 'Qty MT', type: 'number', condition: 'Market' },
+      { name: 'budgetRate', label: 'Budget ₹/Qt', type: 'number', condition: 'Market' },
+      { name: 'brokerName', label: 'Broker / Arhtiya Name', type: 'text', condition: 'Market' },
+      { name: 'brokerCode', label: 'Broker Code', type: 'text', condition: 'Market' },
+      { name: 'requiredByDate', label: 'Required By Date', type: 'date' },
+      { name: 'requestedBy', label: 'Requested By', type: 'text' },
+      { name: 'department', label: 'Department', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
     ]
   },
   {
-    file: 'CreatePO.jsx', name: 'CreatePO', title: 'Stage 3 - Create PO', action: 'Create PO', modalTitle: 'Create Purchase Order',
-    pendingCols: [
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Approval ID', accessor: 'approvalId' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Mandi', accessor: 'agencyMandi' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Approved Qty MT', accessor: 'approvedQty' },
-      { header: 'Approved Rate ₹/Qt', accessor: 'approvedRate' },
-      { header: 'Approved By', accessor: 'approvedBy' },
-      { header: 'Approval Date', accessor: 'approvalDate' }
+    title: 'Source Selection & Indent',
+    file: 'SourceSelection.jsx',
+    prev: '/purchase-requirement', next: '/purchase-approval', storageKey: 'purchase_2_history', readFrom: 'purchase_1_history',
+    pendingColumns: [
+      ['Action', ''], ['Requirement No', 'requirementNo'], ['Date', 'requirementDate'], ['Purchase Type', 'purchaseType'],
+      ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], ['Qty MT', 'govQtyMT|mktQtyMT'], ['Rate ₹/Qt', 'mspRate|budgetRate'],
+      ['Required By', 'requiredByDate'], ['Requested By', 'requestedBy']
     ],
-    historyCols: [
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Approval ID', accessor: 'approvalId' },
-      { header: 'PO Date', accessor: 'poDate' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Vendor Name', accessor: 'agencyVendorName' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Quantity MT', accessor: 'qtyMt' },
-      { header: 'Rate ₹/Qt', accessor: 'rate' },
-      { header: 'Total PO Value ₹', accessor: 'totalPoValue' },
-      { header: 'Payment Terms', accessor: 'paymentTerms' },
-      { header: 'PO Validity Date', accessor: 'poValidityDate' },
-      { header: 'Created By', accessor: 'createdBy' }
+    historyColumns: [
+      ['Indent No', 'indentNo'], ['Indent Date', 'indentDate'], ['Purchase Type', 'purchaseType'],
+      ['Agency/Broker', 'agencyName|brokerName'], ['Season/Mandi', 'season|mandiName'],
+      ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], ['Qty MT', 'govQtyMT|mktQtyMT'], ['Rate ₹/Qt', 'mandatedRate|mktRate'],
+      ['Required By', 'requiredByDate'], ['Requested By', 'requestedBy'], ['Status', 'status']
     ],
     fields: [
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Approval ID', name: 'approvalId', type: 'text', readOnly: true },
-      { label: 'Purchase Type', name: 'purchaseType', type: 'text', readOnly: true },
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'PO Date', name: 'poDate', type: 'date' },
-      { label: 'PO Validity Date', name: 'poValidityDate', type: 'date' },
-      { label: 'Agency Name', name: 'agencyVendorName', type: 'text' },
-      { label: 'Government Season', name: 'season', type: 'text' },
-      { label: 'Allocation Order Ref', name: 'allocationOrderRef', type: 'text' },
-      { label: 'Mandated Rate ₹/Qt', name: 'mandatedRate', type: 'number' },
-      { label: 'Vendor / Farmer Name', name: 'vendorName', type: 'text' },
-      { label: 'Vendor Phone', name: 'vendorPhone', type: 'text' },
-      { label: 'Vendor Aadhaar / PAN', name: 'vendorId', type: 'text' },
-      { label: 'Paddy Grade', name: 'paddyGrade', type: 'text', readOnly: true },
-      { label: 'Quantity MT', name: 'qtyMt', type: 'number' },
-      { label: 'Rate ₹/Qt', name: 'rate', type: 'number' },
-      { label: 'Total PO Value ₹', name: 'totalPoValue', type: 'number', readOnly: true },
-      { label: 'Delivery Terms', name: 'deliveryTerms', type: 'text' },
-      { label: 'Payment Terms', name: 'paymentTerms', type: 'select', options: ['Advance', 'Credit', 'Full'] },
-      { label: 'PO Remarks', name: 'remarks', type: 'text' }
+      { name: 'indentNo', label: 'Indent No', type: 'text', readOnly: true },
+      { name: 'indentDate', label: 'Indent Date', type: 'date' },
+      { name: 'requirementNo', label: 'Requirement No', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'agencyName', label: 'Agency Name', type: 'select', options: ['FCI', 'MARKFED', 'PUNSUP', 'NAFED', 'State Agency'], condition: 'Government' },
+      { name: 'season', label: 'Season', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'govPaddyGrade', label: 'Paddy Grade', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'govQtyMT', label: 'Qty MT', type: 'number', readOnly: true, condition: 'Government' },
+      { name: 'mandatedRate', label: 'Mandated Rate ₹/Qt', type: 'number', readOnly: true, condition: 'Government' },
+      { name: 'allocationRef', label: 'Allocation Order Ref No', type: 'text', condition: 'Government' },
+      { name: 'doNo', label: 'DO (Delivery Order) No', type: 'text', condition: 'Government' },
+      { name: 'brokerName', label: 'Broker / Arhtiya Name', type: 'text', condition: 'Market' },
+      { name: 'brokerCode', label: 'Broker Code', type: 'text', condition: 'Market' },
+      { name: 'mandiName', label: 'Mandi Name', type: 'text', condition: 'Market' },
+      { name: 'supplierName', label: 'Supplier / Farmer Name', type: 'text', condition: 'Market' },
+      { name: 'paddyVariety', label: 'Paddy Variety', type: 'text', condition: 'Market' },
+      { name: 'mktSeason', label: 'Season', type: 'text', condition: 'Market' },
+      { name: 'mktQtyMT', label: 'Qty MT', type: 'number', condition: 'Market' },
+      { name: 'mktRate', label: 'Rate ₹/Qt', type: 'number', condition: 'Market' },
+      { name: 'commission', label: 'Commission %', type: 'number', condition: 'Market' },
+      { name: 'brokerage', label: 'Brokerage %', type: 'number', condition: 'Market' },
+      { name: 'loadingCharges', label: 'Loading Charges ₹', type: 'number', condition: 'Market' },
+      { name: 'hamaliCharges', label: 'Hamali Charges ₹', type: 'number', condition: 'Market' },
+      { name: 'otherCharges', label: 'Other Charges ₹', type: 'number', condition: 'Market' },
+      { name: 'requiredByDate', label: 'Required By Date', type: 'date' },
+      { name: 'requestedBy', label: 'Requested By', type: 'text' },
+      { name: 'department', label: 'Department', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
     ]
   },
   {
-    file: 'ArrangeLogistics.jsx', name: 'ArrangeLogistics', title: 'Stage 4 - Arrange Logistics', action: 'Arrange Logistics', modalTitle: 'Logistics Details',
-    pendingCols: [
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Vendor Name', accessor: 'agencyVendorName' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Quantity MT', accessor: 'qtyMt' },
-      { header: 'Rate ₹/Qt', accessor: 'rate' },
-      { header: 'PO Date', accessor: 'poDate' },
-      { header: 'PO Validity Date', accessor: 'poValidityDate' }
+    title: 'Purchase Approval',
+    file: 'PurchaseApproval.jsx',
+    prev: '/source-selection', next: '/po-do-entry', storageKey: 'purchase_3_history', readFrom: 'purchase_2_history',
+    pendingColumns: [
+      ['Action', ''], ['Indent No', 'indentNo'], ['Indent Date', 'indentDate'], ['Purchase Type', 'purchaseType'],
+      ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
+      ['Qty MT', 'govQtyMT|mktQtyMT'], ['Rate ₹/Qt', 'mandatedRate|mktRate'], ['Required By', 'requiredByDate'], ['Requested By', 'requestedBy']
     ],
-    historyCols: [
-      { header: 'Logistics ID', accessor: 'logisticsId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Vehicle Number', accessor: 'vehicleNumber' },
-      { header: 'Vehicle Type', accessor: 'vehicleType' },
-      { header: 'Driver Name', accessor: 'driverName' },
-      { header: 'Transporter Name', accessor: 'transporterName' },
-      { header: 'Route', accessor: 'route' },
-      { header: 'Distance km', accessor: 'distance' },
-      { header: 'Freight Rate ₹/MT', accessor: 'freightRate' },
-      { header: 'Total Freight ₹', accessor: 'totalFreight' },
-      { header: 'Expected Departure', accessor: 'expectedDeparture' },
-      { header: 'Expected Arrival', accessor: 'expectedArrival' }
+    historyColumns: [
+      ['Indent No', 'indentNo'], ['Approval ID', 'approvalId'], ['Purchase Type', 'purchaseType'],
+      ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
+      ['Approved Qty MT', 'approvedQtyMT'], ['Approved Rate ₹/Qt', 'approvedRate'], ['Approved Budget ₹', 'approvedTotalValue'], 
+      ['Approved By', 'approvedBy'], ['Approval Date', 'approvalDate'], ['Priority', 'priorityLevel'], ['Status', 'approvalStatus']
     ],
     fields: [
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Logistics ID', name: 'logisticsId', type: 'text', readOnly: true },
-      { label: 'Vehicle Number', name: 'vehicleNumber', type: 'text' },
-      { label: 'Vehicle Type', name: 'vehicleType', type: 'select', options: ['Truck', 'Trolley', 'Container'] },
-      { label: 'Driver Name', name: 'driverName', type: 'text' },
-      { label: 'Driver Phone', name: 'driverPhone', type: 'text' },
-      { label: 'Driver License No', name: 'driverLicenseNo', type: 'text' },
-      { label: 'Vehicle Capacity MT', name: 'vehicleCapacity', type: 'number' },
-      { label: 'Transporter Name', name: 'transporterName', type: 'text' },
-      { label: 'Transporter Phone', name: 'transporterPhone', type: 'text' },
-      { label: 'Transporter GSTIN', name: 'transporterGstin', type: 'text' },
-      { label: 'Route (Mandi / Agency → Mill)', name: 'route', type: 'text' },
-      { label: 'Distance km', name: 'distance', type: 'number' },
-      { label: 'Expected Departure Date', name: 'expectedDeparture', type: 'date' },
-      { label: 'Expected Arrival Date', name: 'expectedArrival', type: 'date' },
-      { label: 'Freight Rate ₹/MT', name: 'freightRate', type: 'number' },
-      { label: 'Total Freight ₹', name: 'totalFreight', type: 'number', readOnly: true },
-      { label: 'Advance to Driver ₹', name: 'advanceToDriver', type: 'number' },
-      { label: 'Remarks', name: 'remarks', type: 'text' }
+      { name: 'indentNo', label: 'Indent No', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'agencyName', label: 'Agency / Mandi', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'mandiName', label: 'Agency / Mandi', type: 'text', readOnly: true, condition: 'Market' },
+      { name: 'approvalId', label: 'Approval ID', type: 'text', readOnly: true },
+      { name: 'approvalDate', label: 'Approval Date', type: 'date' },
+      { name: 'approvedBy', label: 'Approved By (Name & Designation)', type: 'text' },
+      { name: 'approvedQtyMT', label: 'Approved Quantity MT', type: 'number' },
+      { name: 'approvedRate', label: 'Approved Rate ₹/Qt', type: 'number' },
+      { name: 'approvedTotalValue', label: 'Approved Budget Total ₹', type: 'number' },
+      { name: 'priorityLevel', label: 'Priority Level', type: 'select', options: ['High', 'Medium', 'Low'] },
+      { name: 'approvalStatus', label: 'Approval Status', type: 'select', options: ['Approved', 'Rejected', 'On Hold'] },
+      { name: 'rejectionReason', label: 'Rejection/Hold Reason', type: 'text' },
+      { name: 'approvalRemarks', label: 'Approval Remarks', type: 'text' }
     ]
   },
   {
-    file: 'POEntry.jsx', name: 'POEntry', title: 'Stage 5 - PO Entry', action: 'Record Entry', modalTitle: 'PO Entry Details',
-    pendingCols: [
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Logistics ID', accessor: 'logisticsId' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Vendor Name', accessor: 'agencyVendorName' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Quantity MT', accessor: 'qtyMt' },
-      { header: 'Rate ₹/Qt', accessor: 'rate' },
-      { header: 'Vehicle Number', accessor: 'vehicleNumber' },
-      { header: 'Expected Departure', accessor: 'expectedDeparture' }
+    title: 'Create PO / Government DO',
+    file: 'CreatePODO.jsx',
+    prev: '/purchase-approval', next: '/arrange-logistics-purchase', storageKey: 'purchase_4_history', readFrom: 'purchase_3_history',
+    pendingColumns: [
+      ['Action', ''], ['Indent No', 'indentNo'], ['Approval ID', 'approvalId'], ['Purchase Type', 'purchaseType'], 
+      ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
+      ['Approved Qty MT', 'approvedQtyMT'], ['Approved Rate ₹/Qt', 'approvedRate'], ['Approved By', 'approvedBy'], ['Approval Date', 'approvalDate']
     ],
-    historyCols: [
-      { header: 'PO Entry ID', accessor: 'poEntryId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Entry Date', accessor: 'entryDate' },
-      { header: 'Location', accessor: 'location' },
-      { header: 'Lot No', accessor: 'lotNo' },
-      { header: 'No. of Bags', accessor: 'noOfBags' },
-      { header: 'Gross Weight at Source Kg', accessor: 'grossWeight' },
-      { header: 'Moisture at Source %', accessor: 'moisture' },
-      { header: 'Paddy Grade Verified', accessor: 'paddyGradeVerified' },
-      { header: 'Recorded By', accessor: 'recordedBy' }
+    historyColumns: [
+      ['Indent No', 'indentNo'], ['Approval ID', 'approvalId'], ['PO/DO Number', 'poNumber|doNumber'], 
+      ['Vendor/Agency Name', 'vendorName|agencyName'], ['Purchase Type', 'purchaseType'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade|paddyGrade'], 
+      ['Qty MT', 'qtyMT'], ['Rate ₹/Qt', 'rate'], ['Total Value ₹', 'totalValue'], ['Payment Terms', 'paymentTerms'], 
+      ['Validity Date', 'poValidity|doValidity'], ['Created By', 'createdBy']
     ],
     fields: [
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Logistics ID', name: 'logisticsId', type: 'text', readOnly: true },
-      { label: 'PO Entry ID', name: 'poEntryId', type: 'text', readOnly: true },
-      { label: 'Entry Date', name: 'entryDate', type: 'date' },
-      { label: 'Mandi / Agency Location', name: 'location', type: 'text' },
-      { label: 'Lot Numbers', name: 'lotNo', type: 'text' },
-      { label: 'Auction Slot / Token No', name: 'tokenNo', type: 'text' },
-      { label: 'No. of Bags', name: 'noOfBags', type: 'number' },
-      { label: 'Gross Weight at Source Kg', name: 'grossWeight', type: 'number' },
-      { label: 'Moisture at Source %', name: 'moisture', type: 'number' },
-      { label: 'Paddy Grade Verified', name: 'paddyGradeVerified', type: 'text' },
-      { label: 'Entry Recorded By', name: 'recordedBy', type: 'text' },
-      { label: 'Remarks', name: 'remarks', type: 'text' }
+      { name: 'indentNo', label: 'Indent No', type: 'text', readOnly: true },
+      { name: 'approvalId', label: 'Approval ID', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'poNumber', label: 'PO Number', type: 'text', readOnly: true, condition: 'Market' },
+      { name: 'poDate', label: 'PO Date', type: 'date', condition: 'Market' },
+      { name: 'poValidity', label: 'PO Validity Date', type: 'date', condition: 'Market' },
+      { name: 'vendorName', label: 'Vendor / Farmer Name', type: 'text', condition: 'Market' },
+      { name: 'vendorPhone', label: 'Vendor Phone', type: 'text', condition: 'Market' },
+      { name: 'vendorId', label: 'Vendor Aadhaar / PAN', type: 'text', condition: 'Market' },
+      { name: 'doNumber', label: 'DO Number', type: 'text', condition: 'Government' },
+      { name: 'doDate', label: 'DO Date', type: 'date', condition: 'Government' },
+      { name: 'doValidity', label: 'DO Validity Date', type: 'date', condition: 'Government' },
+      { name: 'agencyName', label: 'Agency Name', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'season', label: 'Season', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'allocationRef', label: 'Allocation Order Ref', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'mandatedRate', label: 'Mandated Rate ₹/Qt', type: 'number', readOnly: true, condition: 'Government' },
+      { name: 'emdDeposit', label: 'EMD / Security Deposit ₹', type: 'number', condition: 'Government' },
+      { name: 'paddyGrade', label: 'Paddy Grade', type: 'text', readOnly: true },
+      { name: 'qtyMT', label: 'Quantity MT', type: 'number' },
+      { name: 'rate', label: 'Rate ₹/Qt', type: 'number' },
+      { name: 'totalValue', label: 'Total PO / DO Value ₹', type: 'number', readOnly: true },
+      { name: 'deliveryTerms', label: 'Delivery Terms', type: 'text' },
+      { name: 'paymentTerms', label: 'Payment Terms', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
     ]
   },
   {
-    file: 'AdvancePayment.jsx', name: 'AdvancePayment', title: 'Stage 6 - Advance Payment', action: 'Process Payment', modalTitle: 'Advance Payment Details',
-    pendingCols: [
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'PO Entry ID', accessor: 'poEntryId' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Vendor Name', accessor: 'agencyVendorName' },
-      { header: 'Total PO Value ₹', accessor: 'totalPoValue' },
-      { header: 'Rate ₹/Qt', accessor: 'rate' },
-      { header: 'Quantity MT', accessor: 'qtyMt' },
-      { header: 'Payment Terms', accessor: 'paymentTerms' }
+    title: 'Arrange Logistics',
+    file: 'ArrangeLogistics.jsx',
+    prev: '/po-do-entry', next: '/source-entry', storageKey: 'purchase_5_history', readFrom: 'purchase_4_history',
+    pendingColumns: [
+      ['Action', ''], ['PO/DO Number', 'poNumber|doNumber|poDoNumber'], ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], 
+      ['Vendor/Agency Name', 'vendorName|agencyName'], ['Paddy Grade', 'paddyGrade|govPaddyGrade|mktPaddyGrade'], 
+      ['Qty MT', 'qtyMT'], ['Rate ₹/Qt', 'rate'], ['Validity Date', 'poValidity|doValidity']
     ],
-    historyCols: [
-      { header: 'Advance Payment ID', accessor: 'advanceId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Payment Date', accessor: 'paymentDate' },
-      { header: 'Payee Name', accessor: 'payeeName' },
-      { header: 'Advance Amount ₹', accessor: 'advanceAmount' },
-      { header: 'TDS ₹', accessor: 'tdsAmount' },
-      { header: 'Net Paid ₹', accessor: 'netPaid' },
-      { header: 'Payment Mode', accessor: 'paymentMode' },
-      { header: 'UTR / Cheque No', accessor: 'utrNo' },
-      { header: 'Paid By', accessor: 'paidBy' }
+    historyColumns: [
+      ['Logistics ID', 'logisticsId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Vehicle Number', 'vehicleNumber'], ['Vehicle Type', 'vehicleType'], ['Driver Name', 'driverName'], 
+      ['Transporter Name', 'transporterName'], ['Route', 'route'], ['Distance km', 'distance'], 
+      ['Freight Rate ₹/MT', 'freightRate'], ['Total Freight ₹', 'totalFreight'], ['Expected Departure', 'expectedDeparture'], ['Expected Arrival', 'expectedArrival']
     ],
     fields: [
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'PO Entry ID', name: 'poEntryId', type: 'text', readOnly: true },
-      { label: 'Advance Payment ID', name: 'advanceId', type: 'text', readOnly: true },
-      { label: 'Payment Date', name: 'paymentDate', type: 'date' },
-      { label: 'Payee Name', name: 'payeeName', type: 'text' },
-      { label: 'Payee Bank Account No', name: 'bankAccount', type: 'text' },
-      { label: 'Payee IFSC Code', name: 'ifscCode', type: 'text' },
-      { label: 'Advance Amount ₹', name: 'advanceAmount', type: 'number' },
-      { label: 'Payment Mode', name: 'paymentMode', type: 'select', options: ['NEFT', 'RTGS', 'Cheque', 'Cash'] },
-      { label: 'Bank Name', name: 'bankName', type: 'text' },
-      { label: 'UTR / Cheque No', name: 'utrNo', type: 'text' },
-      { label: 'Cheque Date', name: 'chequeDate', type: 'date' },
-      { label: 'TDS Rate %', name: 'tdsRate', type: 'number' },
-      { label: 'TDS Amount ₹', name: 'tdsAmount', type: 'number', readOnly: true },
-      { label: 'Net Amount Paid ₹', name: 'netPaid', type: 'number', readOnly: true },
-      { label: 'Paid By', name: 'paidBy', type: 'text' },
-      { label: 'Approval Reference', name: 'approvalRef', type: 'text' },
-      { label: 'Remarks', name: 'remarks', type: 'text' }
+      { name: 'poDoNumber', label: 'PO / DO Number', type: 'text', readOnly: true },
+      { name: 'indentNo', label: 'Indent No', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'logisticsId', label: 'Logistics ID', type: 'text', readOnly: true },
+      { name: 'vehicleNumber', label: 'Vehicle Number', type: 'text' },
+      { name: 'vehicleType', label: 'Vehicle Type', type: 'select', options: ['Truck', 'Trolley', 'Container'] },
+      { name: 'driverName', label: 'Driver Name', type: 'text' },
+      { name: 'driverPhone', label: 'Driver Phone', type: 'text' },
+      { name: 'driverLicense', label: 'Driver License No', type: 'text' },
+      { name: 'vehicleCapacity', label: 'Vehicle Capacity MT', type: 'number' },
+      { name: 'transporterName', label: 'Transporter Name', type: 'text' },
+      { name: 'transporterPhone', label: 'Transporter Phone', type: 'text' },
+      { name: 'transporterGst', label: 'Transporter GSTIN', type: 'text' },
+      { name: 'route', label: 'Route (Mandi/Agency → Mill)', type: 'text' },
+      { name: 'distance', label: 'Distance km', type: 'number' },
+      { name: 'expectedDeparture', label: 'Expected Departure Date', type: 'date' },
+      { name: 'expectedArrival', label: 'Expected Arrival Date', type: 'date' },
+      { name: 'freightRate', label: 'Freight Rate ₹/MT', type: 'number' },
+      { name: 'totalFreight', label: 'Total Freight ₹', type: 'number', readOnly: true },
+      { name: 'advanceDriver', label: 'Advance to Driver ₹', type: 'number' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
     ]
   },
   {
-    file: 'Lift.jsx', name: 'Lift', title: 'Stage 7 - Lift', action: 'Record Lift', modalTitle: 'Lift Details',
-    pendingCols: [
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Advance Payment ID', accessor: 'advanceId' },
-      { header: 'Logistics ID', accessor: 'logisticsId' },
-      { header: 'Vehicle Number', accessor: 'vehicleNumber' },
-      { header: 'Driver Name', accessor: 'driverName' },
-      { header: 'Agency / Vendor Name', accessor: 'agencyVendorName' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Quantity MT', accessor: 'qtyMt' },
-      { header: 'Entry Date', accessor: 'entryDate' },
-      { header: 'Advance Paid ₹', accessor: 'advancePaid' }
+    title: 'Source Entry',
+    file: 'SourceEntry.jsx',
+    prev: '/arrange-logistics-purchase', next: '/advance-payment', storageKey: 'purchase_6_history', readFrom: 'purchase_5_history',
+    pendingColumns: [
+      ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Logistics ID', 'logisticsId'], 
+      ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], ['Paddy Grade', 'paddyGrade|govPaddyGrade|mktPaddyGrade'], 
+      ['Qty MT', 'qtyMT'], ['Vehicle Number', 'vehicleNumber'], ['Expected Departure', 'expectedDeparture']
     ],
-    historyCols: [
-      { header: 'Lift ID', accessor: 'liftId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Lift Date', accessor: 'liftDate' },
-      { header: 'Vehicle Number', accessor: 'vehicleNumber' },
-      { header: 'Driver Name', accessor: 'driverName' },
-      { header: 'No. of Bags', accessor: 'noOfBags' },
-      { header: 'Gross Weight Kg', accessor: 'grossWeight' },
-      { header: 'Net Weight Lifted Kg', accessor: 'netWeight' },
-      { header: 'Moisture at Lift %', accessor: 'moisture' },
-      { header: 'Lifted From', accessor: 'liftedFrom' },
-      { header: 'Supervisor', accessor: 'supervisor' }
+    historyColumns: [
+      ['PO Entry ID', 'poEntryId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Entry Date', 'entryDate'], 
+      ['Mandi/Agency', 'mandiName|agencyName'], ['Broker/Godown', 'brokerName|agencyGodown'], ['Lot No', 'lotNumbers'], 
+      ['No. of Bags', 'noOfBags'], ['Gross Weight Kg', 'grossWeightSource'], ['Moisture %', 'moistureSource'], 
+      ['Paddy Grade Verified', 'paddyGradeVerified'], ['Recorded By', 'recordedBy']
     ],
     fields: [
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Logistics ID', name: 'logisticsId', type: 'text', readOnly: true },
-      { label: 'Advance Payment ID', name: 'advanceId', type: 'text', readOnly: true },
-      { label: 'Lift ID', name: 'liftId', type: 'text', readOnly: true },
-      { label: 'Lift Date & Time', name: 'liftDate', type: 'datetime-local' },
-      { label: 'Vehicle Number', name: 'vehicleNumber', type: 'text', readOnly: true },
-      { label: 'Driver Name', name: 'driverName', type: 'text', readOnly: true },
-      { label: 'No. of Bags Loaded', name: 'noOfBags', type: 'number' },
-      { label: 'Gross Weight Loaded Kg', name: 'grossWeight', type: 'number' },
-      { label: 'Tare Weight Kg', name: 'tareWeight', type: 'number' },
-      { label: 'Net Weight Lifted Kg', name: 'netWeight', type: 'number', readOnly: true },
-      { label: 'Paddy Grade', name: 'paddyGrade', type: 'text', readOnly: true },
-      { label: 'Moisture at Lift %', name: 'moisture', type: 'number' },
-      { label: 'Lifted From (Mandi / Agency Name)', name: 'liftedFrom', type: 'text' },
-      { label: 'Supervisor Name', name: 'supervisor', type: 'text' },
-      { label: 'Seal No', name: 'sealNo', type: 'text' },
-      { label: 'Loading Remarks', name: 'remarks', type: 'text' }
+      { name: 'poDoNumber', label: 'PO / DO Number', type: 'text', readOnly: true },
+      { name: 'indentNo', label: 'Indent No', type: 'text', readOnly: true },
+      { name: 'logisticsId', label: 'Logistics ID', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'poEntryId', label: 'PO Entry ID', type: 'text', readOnly: true },
+      { name: 'entryDate', label: 'Entry Date', type: 'date' },
+      { name: 'mandiName', label: 'Mandi Name', type: 'text', condition: 'Market' },
+      { name: 'mandiLocation', label: 'Mandi Location', type: 'text', condition: 'Market' },
+      { name: 'auctionSlot', label: 'Auction Slot / Token No', type: 'text', condition: 'Market' },
+      { name: 'brokerName', label: 'Broker Name', type: 'text', readOnly: true, condition: 'Market' },
+      { name: 'commissionAmt', label: 'Commission Amount ₹', type: 'number', condition: 'Market' },
+      { name: 'agencyName', label: 'Agency Name', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'agencyGodown', label: 'Agency Godown Name', type: 'text', condition: 'Government' },
+      { name: 'allocationNumber', label: 'Allocation Number', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'lotNumbers', label: 'Lot Numbers', type: 'text' },
+      { name: 'noOfBags', label: 'No. of Bags', type: 'number' },
+      { name: 'grossWeightSource', label: 'Gross Weight at Source Kg', type: 'number' },
+      { name: 'moistureSource', label: 'Moisture at Source %', type: 'number' },
+      { name: 'paddyGradeVerified', label: 'Paddy Grade Verified', type: 'text' },
+      { name: 'recordedBy', label: 'Entry Recorded By', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
     ]
   },
   {
-    file: 'LabReport.jsx', name: 'LabReport', title: 'Stage 8 - Lab Report', action: 'Enter Report', modalTitle: 'Lab Report Details',
-    pendingCols: [
-      { header: 'Lift ID', accessor: 'liftId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Vehicle Number', accessor: 'vehicleNumber' },
-      { header: 'Net Weight Lifted Kg', accessor: 'netWeight' },
-      { header: 'Paddy Grade', accessor: 'paddyGrade' },
-      { header: 'Moisture at Lift %', accessor: 'moisture' },
-      { header: 'Lift Date', accessor: 'liftDate' }
+    title: 'Advance Payment',
+    file: 'AdvancePayment.jsx',
+    prev: '/source-entry', next: '/lift', storageKey: 'purchase_7_history', readFrom: 'purchase_6_history',
+    pendingColumns: [
+      ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['PO Entry ID', 'poEntryId'], 
+      ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], ['Rate ₹/Qt', 'rate'], ['Qty MT', 'qtyMT']
     ],
-    historyCols: [
-      { header: 'Lab Report ID', accessor: 'labReportId' },
-      { header: 'Lift ID', accessor: 'liftId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Lab Name', accessor: 'labName' },
-      { header: 'Test Date', accessor: 'testDate' },
-      { header: 'Moisture %', accessor: 'moisture' },
-      { header: 'Broken %', accessor: 'broken' },
-      { header: 'Chalky %', accessor: 'chalky' },
-      { header: 'Foreign Matter %', accessor: 'foreignMatter' },
-      { header: 'Paddy Grade Result', accessor: 'gradeResult' },
-      { header: 'Recovery % Expected', accessor: 'recovery' },
-      { header: 'Lab Result', accessor: 'labResult' },
-      { header: 'Approved for Purchase', accessor: 'approved' },
-      { header: 'Lab Technician', accessor: 'technician' }
+    historyColumns: [
+      ['Advance Payment ID', 'advancePaymentId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Payment Date', 'paymentDate'], 
+      ['Purchase Type', 'purchaseType'], ['Payee Name', 'payeeName|agencyName'], ['Advance Amount ₹', 'advanceAmount'], 
+      ['TDS ₹', 'tdsAmount'], ['Net Paid ₹', 'netAmount'], ['Payment Mode', 'paymentMode'], ['UTR/Cheque No', 'utrNo|ddRtgs'], ['Paid By', 'paidBy']
     ],
     fields: [
-      { label: 'Lift ID', name: 'liftId', type: 'text', readOnly: true },
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Lab Report ID', name: 'labReportId', type: 'text', readOnly: true },
-      { label: 'Lab Name', name: 'labName', type: 'text' },
-      { label: 'Test Date', name: 'testDate', type: 'date' },
-      { label: 'Moisture Content %', name: 'moisture', type: 'number' },
-      { label: 'Broken Grain %', name: 'broken', type: 'number' },
-      { label: 'Chalky Grain %', name: 'chalky', type: 'number' },
-      { label: 'Foreign Matter %', name: 'foreignMatter', type: 'number' },
-      { label: 'Immature Grain %', name: 'immature', type: 'number' },
-      { label: 'Red Grain %', name: 'redGrain', type: 'number' },
-      { label: 'Damaged / Discoloured %', name: 'damaged', type: 'number' },
-      { label: 'Paddy Grade Result', name: 'gradeResult', type: 'select', options: ['A', 'B', 'C', 'Reject'] },
-      { label: 'Recovery % Expected', name: 'recovery', type: 'number' },
-      { label: 'Lab Technician Name', name: 'technician', type: 'text' },
-      { label: 'Lab Remarks', name: 'remarks', type: 'text' },
-      { label: 'Lab Result', name: 'labResult', type: 'select', options: ['Pass', 'Fail', 'Conditional'] },
-      { label: 'Approved for Purchase', name: 'approved', type: 'select', options: ['Yes', 'No'] }
+      { name: 'poDoNumber', label: 'PO / DO Number', type: 'text', readOnly: true },
+      { name: 'poEntryId', label: 'PO Entry ID', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'advancePaymentId', label: 'Advance Payment ID', type: 'text', readOnly: true },
+      { name: 'paymentDate', label: 'Payment Date', type: 'date' },
+      { name: 'payeeName', label: 'Payee Name', type: 'text', condition: 'Market' },
+      { name: 'bankAccount', label: 'Bank Account No', type: 'text', condition: 'Market' },
+      { name: 'ifsc', label: 'IFSC', type: 'text', condition: 'Market' },
+      { name: 'agencyName', label: 'Agency Name', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'paymentAdvice', label: 'Payment Advice No', type: 'text', condition: 'Government' },
+      { name: 'ddRtgs', label: 'Demand Draft / RTGS Ref', type: 'text', condition: 'Government' },
+      { name: 'advanceAmount', label: 'Advance Amount ₹', type: 'number' },
+      { name: 'paymentMode', label: 'Payment Mode', type: 'select', options: ['NEFT', 'RTGS', 'DD', 'Cash'] },
+      { name: 'bankName', label: 'Bank Name', type: 'text' },
+      { name: 'utrNo', label: 'UTR / Cheque / DD No', type: 'text' },
+      { name: 'tdsRate', label: 'TDS Rate %', type: 'number' },
+      { name: 'tdsAmount', label: 'TDS Amount ₹', type: 'number', readOnly: true },
+      { name: 'netAmount', label: 'Net Amount Paid ₹', type: 'number', readOnly: true },
+      { name: 'paidBy', label: 'Paid By', type: 'text' },
+      { name: 'approvalRef', label: 'Approval Reference', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
     ]
   },
-
   {
-    file: 'PurchaseClosure.jsx', name: 'PurchaseClosure', title: 'Stage 10 - Purchase Closure → Inventory', action: 'Close & Update', modalTitle: 'Purchase Closure Details',
-    pendingCols: [
-      { header: 'Full Kitting ID', accessor: 'kittingId' },
-      { header: 'Challan No', accessor: 'challanNo' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Farmer / Agency Name', accessor: 'agencyVendorName' },
-      { header: 'Net Weight Kg', accessor: 'netWeight' },
-      { header: 'Rate ₹/Qt', accessor: 'rate' },
-      { header: 'Net Payable ₹', accessor: 'netPayable' },
-      { header: 'Kitting Date', accessor: 'kittingDate' }
+    title: 'Lift',
+    file: 'Lift.jsx',
+    prev: '/advance-payment', next: '/weighment', storageKey: 'purchase_8_history', readFrom: 'purchase_7_history',
+    pendingColumns: [
+      ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['PO Entry ID', 'poEntryId'], 
+      ['Purchase Type', 'purchaseType'], ['Vendor/Agency', 'vendorName|agencyName'], ['Qty MT', 'qtyMT'], ['Advance Paid ₹', 'advanceAmount']
     ],
-    historyCols: [
-      { header: 'Purchase Closure ID', accessor: 'closureId' },
-      { header: 'Full Kitting ID', accessor: 'kittingId' },
-      { header: 'PO Number', accessor: 'poNumber' },
-      { header: 'Indent No', accessor: 'indentNo' },
-      { header: 'Closure Date', accessor: 'closureDate' },
-      { header: 'Purchase Type', accessor: 'purchaseType' },
-      { header: 'Agency / Vendor Name', accessor: 'agencyVendorName' },
-      { header: 'Lot Number', accessor: 'lotNo' },
-      { header: 'Batch Number', accessor: 'batchNo' },
-      { header: 'Net Qty Added MT', accessor: 'netQtyMt' },
-      { header: 'Warehouse', accessor: 'warehouse' },
-      { header: 'Go-down', accessor: 'godown' },
-      { header: 'Bin / Rack', accessor: 'binRack' },
-      { header: 'Quality Grade', accessor: 'qualityGrade' },
-      { header: 'Moisture %', accessor: 'moisture' },
-      { header: 'Total Purchase Value ₹', accessor: 'totalPurchaseValue' },
-      { header: 'Freight Cost ₹', accessor: 'freightCost' },
-      { header: 'Total Landed Cost ₹', accessor: 'totalLandedCost' },
-      { header: 'Valuation Rate ₹/MT', accessor: 'valuationRate' },
-      { header: 'Inventory Updated By', accessor: 'updatedBy' }
+    historyColumns: [
+      ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Lift Date', 'liftDate'], 
+      ['Vehicle Number', 'vehicleNumber'], ['Driver Name', 'driverName'], ['No. of Bags', 'noOfBags'], 
+      ['Gross Weight Kg', 'grossWeight'], ['Net Weight Kg', 'netWeight'], ['Moisture %', 'moisture'], 
+      ['Lifted From', 'liftedFrom'], ['Supervisor', 'supervisor']
     ],
     fields: [
-      { label: 'Full Kitting ID', name: 'kittingId', type: 'text', readOnly: true },
-      { label: 'Challan No', name: 'challanNo', type: 'text', readOnly: true },
-      { label: 'PO Number', name: 'poNumber', type: 'text', readOnly: true },
-      { label: 'Indent No', name: 'indentNo', type: 'text', readOnly: true },
-      { label: 'Purchase Closure ID', name: 'closureId', type: 'text', readOnly: true },
-      { label: 'Closure Date', name: 'closureDate', type: 'date' },
-      { label: 'Net Quantity MT', name: 'netQtyMt', type: 'number' },
-      { label: 'Warehouse Location', name: 'warehouse', type: 'text' },
-      { label: 'Go-down', name: 'godown', type: 'text' },
-      { label: 'Bin / Rack', name: 'binRack', type: 'text' },
-      { label: 'Lot Number', name: 'lotNo', type: 'text', readOnly: true },
-      { label: 'Batch Number', name: 'batchNo', type: 'text', readOnly: true },
-      { label: 'Quality Grade', name: 'qualityGrade', type: 'text', readOnly: true },
-      { label: 'Moisture at Receipt %', name: 'moisture', type: 'number', readOnly: true },
-      { label: 'Purchase Type', name: 'purchaseType', type: 'text', readOnly: true },
-      { label: 'Agency / Vendor Name', name: 'agencyVendorName', type: 'text', readOnly: true },
-      { label: 'Total Purchase Value ₹', name: 'totalPurchaseValue', type: 'number', readOnly: true },
-      { label: 'Freight Cost ₹', name: 'freightCost', type: 'number', readOnly: true },
-      { label: 'Total Landed Cost ₹', name: 'totalLandedCost', type: 'number', readOnly: true },
-      { label: 'Valuation Rate ₹/MT', name: 'valuationRate', type: 'number', readOnly: true },
-      { label: 'Inventory Updated By', name: 'updatedBy', type: 'text' },
-      { label: 'Storage Remarks', name: 'remarks', type: 'text' }
+      { name: 'poDoNumber', label: 'PO / DO Number', type: 'text', readOnly: true },
+      { name: 'indentNo', label: 'Indent No', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'liftId', label: 'Lift ID', type: 'text', readOnly: true },
+      { name: 'liftDate', label: 'Lift Date & Time', type: 'datetime-local' },
+      { name: 'vehicleNumber', label: 'Vehicle Number', type: 'text', readOnly: true },
+      { name: 'driverName', label: 'Driver Name', type: 'text', readOnly: true },
+      { name: 'noOfBags', label: 'No. of Bags Loaded', type: 'number' },
+      { name: 'grossWeight', label: 'Gross Weight Loaded Kg', type: 'number' },
+      { name: 'tareWeight', label: 'Tare Weight Kg', type: 'number' },
+      { name: 'netWeight', label: 'Net Weight Lifted Kg', type: 'number', readOnly: true },
+      { name: 'paddyGrade', label: 'Paddy Grade', type: 'text', readOnly: true },
+      { name: 'moisture', label: 'Moisture at Lift %', type: 'number' },
+      { name: 'liftedFrom', label: 'Lifted From', type: 'text' },
+      { name: 'supervisor', label: 'Supervisor Name', type: 'text' },
+      { name: 'sealNo', label: 'Seal No', type: 'text' },
+      { name: 'lorryReceipt', label: 'Lorry Receipt No', type: 'text', condition: 'Government' },
+      { name: 'doBalance', label: 'DO Balance Qty MT', type: 'number', readOnly: true, condition: 'Government' },
+      { name: 'remarks', label: 'Loading Remarks', type: 'text' }
+    ]
+  },
+  {
+    title: 'Weighment',
+    file: 'Weighment.jsx',
+    prev: '/lift', next: '/material-receipt', storageKey: 'purchase_9_history', readFrom: 'purchase_8_history',
+    pendingColumns: [
+      ['Action', ''], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Vehicle Number', 'vehicleNumber'], ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['No. of Bags', 'noOfBags'], 
+      ['Net Weight Lifted Kg', 'netWeight'], ['Moisture %', 'moisture'], ['Lift Date', 'liftDate']
+    ],
+    historyColumns: [
+      ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Weigh Date', 'weighDate'], ['Vehicle Number', 'vehicleNumber'], ['Gross Weight Kg', 'grossWeight'], 
+      ['Tare Weight Kg', 'tareWeight'], ['Net Weight Kg', 'netWeight'], ['Variance Kg', 'varianceKg'], 
+      ['Variance %', 'variancePct'], ['Operator', 'operator']
+    ],
+    fields: [
+      { name: 'liftId', label: 'Lift ID', type: 'text', readOnly: true },
+      { name: 'poDoNumber', label: 'PO / DO Number', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'weighSlipNo', label: 'Weighbridge Slip No', type: 'text', readOnly: true },
+      { name: 'weighDate', label: 'Weigh Date & Time', type: 'datetime-local' },
+      { name: 'vehicleNumber', label: 'Vehicle Number', type: 'text', readOnly: true },
+      { name: 'grossWeight', label: 'Gross Weight Kg', type: 'number' },
+      { name: 'tareWeight', label: 'Tare Weight Kg', type: 'number' },
+      { name: 'netWeight', label: 'Net Weight Kg', type: 'number', readOnly: true },
+      { name: 'weighbridgeId', label: 'Weighbridge ID', type: 'text' },
+      { name: 'operator', label: 'Weighbridge Operator', type: 'text' },
+      { name: 'varianceKg', label: 'Variance vs Lift Weight Kg', type: 'number', readOnly: true },
+      { name: 'variancePct', label: 'Variance %', type: 'number', readOnly: true },
+      { name: 'varianceReason', label: 'Variance Reason', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
+    ]
+  },
+  {
+    title: 'Material Receipt',
+    file: 'MaterialReceipt.jsx',
+    prev: '/weighment', next: '/laboratory-report', storageKey: 'purchase_10_history', readFrom: 'purchase_9_history',
+    pendingColumns: [
+      ['Action', ''], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['Vehicle Number', 'vehicleNumber'], ['Net Weight Kg', 'netWeight'], 
+      ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['Weigh Date', 'weighDate']
+    ],
+    historyColumns: [
+      ['GRN No', 'grnNo'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['GRN Date', 'grnDate'], ['Lot No', 'lotNo'], ['Batch No', 'batchNo'], 
+      ['Warehouse', 'warehouse'], ['Go-down', 'godown'], ['Received Qty Kg', 'receivedQty'], 
+      ['Shortage Kg', 'shortage'], ['Excess Kg', 'excess'], ['Received By', 'receivedBy']
+    ],
+    fields: [
+      { name: 'weighSlipNo', label: 'Weighbridge Slip No', type: 'text', readOnly: true },
+      { name: 'liftId', label: 'Lift ID', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'grnNo', label: 'GRN No', type: 'text', readOnly: true },
+      { name: 'grnDate', label: 'GRN Date', type: 'date' },
+      { name: 'warehouse', label: 'Warehouse Location', type: 'text' },
+      { name: 'godown', label: 'Go-down', type: 'text' },
+      { name: 'binRack', label: 'Bin / Rack', type: 'text' },
+      { name: 'lotNo', label: 'Lot Number', type: 'text', readOnly: true },
+      { name: 'batchNo', label: 'Batch Number', type: 'text', readOnly: true },
+      { name: 'receivedQty', label: 'Received Qty Kg', type: 'number' },
+      { name: 'expectedQty', label: 'Expected Qty Kg', type: 'number', readOnly: true },
+      { name: 'shortage', label: 'Shortage Kg', type: 'number', readOnly: true },
+      { name: 'excess', label: 'Excess Kg', type: 'number', readOnly: true },
+      { name: 'shortageReason', label: 'Shortage / Excess Reason', type: 'text' },
+      { name: 'noOfBags', label: 'No. of Bags Received', type: 'number' },
+      { name: 'paddyGrade', label: 'Paddy Grade', type: 'text', readOnly: true },
+      { name: 'receivedBy', label: 'Received By', type: 'text' },
+      { name: 'warehouseIncharge', label: 'Warehouse In-charge', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
+    ]
+  },
+  {
+    title: 'Laboratory Report',
+    file: 'LaboratoryReport.jsx',
+    prev: '/material-receipt', next: '/accounts-verification', storageKey: 'purchase_11_history', readFrom: 'purchase_10_history',
+    pendingColumns: [
+      ['Action', ''], ['GRN No', 'grnNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['Lot No', 'lotNo'], ['Net Weight Kg', 'netWeight|receivedQty'], 
+      ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['GRN Date', 'grnDate']
+    ],
+    historyColumns: [
+      ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Lot No', 'lotNo'], ['Lab Name', 'labName'], ['Test Date', 'testDate'], ['Moisture %', 'moisture'], 
+      ['Broken %', 'broken'], ['Paddy Grade Result', 'paddyGradeResult'], ['Recovery %', 'recovery'], 
+      ['Lab Result', 'labResult'], ['Approved', 'approved'], ['Technician', 'technician']
+    ],
+    fields: [
+      { name: 'grnNo', label: 'GRN No', type: 'text', readOnly: true },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'labReportId', label: 'Lab Report ID', type: 'text', readOnly: true },
+      { name: 'labName', label: 'Lab Name', type: 'text' },
+      { name: 'testDate', label: 'Test Date', type: 'date' },
+      { name: 'moisture', label: 'Moisture Content %', type: 'number' },
+      { name: 'broken', label: 'Broken Grain %', type: 'number' },
+      { name: 'chalky', label: 'Chalky Grain %', type: 'number' },
+      { name: 'foreign', label: 'Foreign Matter %', type: 'number' },
+      { name: 'immature', label: 'Immature Grain %', type: 'number' },
+      { name: 'redGrain', label: 'Red Grain %', type: 'number' },
+      { name: 'damaged', label: 'Damaged / Discoloured %', type: 'number' },
+      { name: 'paddyGradeResult', label: 'Paddy Grade Result', type: 'select', options: ['A', 'B', 'C', 'Reject'] },
+      { name: 'recovery', label: 'Recovery % Expected', type: 'number' },
+      { name: 'technician', label: 'Lab Technician Name', type: 'text' },
+      { name: 'remarks', label: 'Lab Remarks', type: 'text' },
+      { name: 'labResult', label: 'Lab Result', type: 'select', options: ['Pass', 'Fail', 'Conditional'] },
+      { name: 'approved', label: 'Approved for Receipt', type: 'select', options: ['Yes', 'No'] }
+    ]
+  },
+  {
+    title: 'Accounts Verification',
+    file: 'AccountsVerification.jsx',
+    prev: '/laboratory-report', next: '/full-kitting', storageKey: 'purchase_12_history', readFrom: 'purchase_11_history',
+    pendingColumns: [
+      ['Action', ''], ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
+      ['Net Weight Kg', 'netWeight|receivedQty'], ['Lab Result', 'labResult']
+    ],
+    historyColumns: [
+      ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
+      ['Purchase Type', 'purchaseType'], ['Supplier/Govt Bill ₹', 'supplierBillAmt|govtBillAmt'], 
+      ['Freight ₹', 'freightAmount'], ['Labour ₹', 'labourCharges'], ['Advance Paid ₹', 'advancePaid|advanceAmount'], 
+      ['Balance Payable ₹', 'balancePayable'], ['TDS ₹', 'tdsAmount'], ['Net Payable ₹', 'netPayable'], 
+      ['Status', 'paymentStatus'], ['Verified By', 'verifiedBy']
+    ],
+    fields: [
+      { name: 'accountsVerificationId', label: 'Accounts Verification ID', type: 'text', readOnly: true },
+      { name: 'verificationDate', label: 'Verification Date', type: 'date' },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'supplierBillNo', label: 'Supplier Bill No', type: 'text', condition: 'Market' },
+      { name: 'supplierBillAmt', label: 'Supplier Bill Amount ₹', type: 'number', condition: 'Market' },
+      { name: 'brokerCommission', label: 'Broker Commission ₹', type: 'number', condition: 'Market' },
+      { name: 'hamaliCharges', label: 'Hamali Charges ₹', type: 'number', condition: 'Market' },
+      { name: 'loadingCharges', label: 'Loading Charges ₹', type: 'number', condition: 'Market' },
+      { name: 'mandiCess', label: 'Mandi Cess ₹', type: 'number', condition: 'Market' },
+      { name: 'otherCharges', label: 'Other Charges ₹', type: 'number', condition: 'Market' },
+      { name: 'govtBillNo', label: 'Government Bill No', type: 'text', condition: 'Government' },
+      { name: 'govtBillAmt', label: 'Government Bill Amount ₹', type: 'number', condition: 'Government' },
+      { name: 'emdRefund', label: 'EMD / Security Refund ₹', type: 'number', condition: 'Government' },
+      { name: 'freightBillNo', label: 'Freight Bill No', type: 'text' },
+      { name: 'freightAmount', label: 'Freight Amount ₹', type: 'number' },
+      { name: 'labourCharges', label: 'Labour Charges ₹', type: 'number' },
+      { name: 'advancePaid', label: 'Advance Already Paid ₹', type: 'number', readOnly: true },
+      { name: 'balancePayable', label: 'Balance Payable ₹', type: 'number', readOnly: true },
+      { name: 'paymentStatus', label: 'Payment Status', type: 'select', options: ['Unpaid', 'Partial', 'Paid'] },
+      { name: 'tdsRate', label: 'TDS Rate %', type: 'number' },
+      { name: 'tdsAmount', label: 'TDS Amount ₹', type: 'number', readOnly: true },
+      { name: 'netPayable', label: 'Net Payable ₹', type: 'number', readOnly: true },
+      { name: 'verifiedBy', label: 'Verified By', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' }
+    ]
+  },
+  {
+    title: 'Full Kitting',
+    file: 'FullKitting.jsx',
+    prev: '/accounts-verification', next: '/purchase-closure', storageKey: 'purchase_13_history', readFrom: 'purchase_12_history',
+    pendingColumns: [
+      ['Action', ''], ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
+      ['Net Payable ₹', 'netPayable'], ['Payment Status', 'paymentStatus']
+    ],
+    historyColumns: [
+      ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['AV ID', 'accountsVerificationId'], 
+      ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Kitting Date', 'kittingDate'], 
+      ['Farmer/Agency Name', 'farmerName|agencyName'], ['No. of Bags', 'noOfBags'], ['Net Weight Kg', 'netWeight'], 
+      ['Rate ₹/Qt', 'rate'], ['Total Amount ₹', 'totalAmount'], ['Advance Paid ₹', 'advancePaid|advanceAmount'], 
+      ['Balance Paid ₹', 'balancePayable'], ['Net Payable ₹', 'netPayable'], ['Paid By', 'paidBy']
+    ],
+    fields: [
+      { name: 'fullKittingId', label: 'Full Kitting ID', type: 'text', readOnly: true },
+      { name: 'challanNo', label: 'Challan No', type: 'text', readOnly: true },
+      { name: 'challanDate', label: 'Challan Date', type: 'date' },
+      { name: 'kittingDate', label: 'Kitting Date', type: 'date' },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'farmerName', label: 'Farmer Name', type: 'text', readOnly: true, condition: 'Market' },
+      { name: 'farmerId', label: 'Farmer ID / Aadhaar', type: 'text', condition: 'Market' },
+      { name: 'agencyName', label: 'Agency Name', type: 'text', readOnly: true, condition: 'Government' },
+      { name: 'govtRef', label: 'Government Reference No', type: 'text', condition: 'Government' },
+      { name: 'noOfBags', label: 'No. of Bags', type: 'number', readOnly: true },
+      { name: 'netWeight', label: 'Net Weight Kg', type: 'number', readOnly: true },
+      { name: 'rate', label: 'Rate ₹/Qt', type: 'number', readOnly: true },
+      { name: 'totalAmount', label: 'Total Amount ₹', type: 'number', readOnly: true },
+      { name: 'commissionAmount', label: 'Commission Amount ₹', type: 'number', condition: 'Market' },
+      { name: 'netPayable', label: 'Net Payable ₹', type: 'number', readOnly: true },
+      { name: 'advancePaid', label: 'Advance Paid ₹', type: 'number', readOnly: true },
+      { name: 'balancePayable', label: 'Balance Payable ₹', type: 'number', readOnly: true },
+      { name: 'balancePaymentMode', label: 'Balance Payment Mode', type: 'select', options: ['NEFT', 'RTGS', 'DD', 'Cash'] },
+      { name: 'balanceUtr', label: 'Balance UTR / Cheque No', type: 'text' },
+      { name: 'paidBy', label: 'Paid By', type: 'text' },
+      { name: 'remarks', label: 'Kitting Remarks', type: 'text' }
+    ]
+  },
+  {
+    title: 'Purchase Closure',
+    file: 'PurchaseClosure.jsx',
+    prev: '/full-kitting', next: null, storageKey: 'purchase_14_history', readFrom: 'purchase_13_history',
+    pendingColumns: [
+      ['Action', ''], ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['Agency/Vendor Name', 'agencyName|vendorName'], ['Net Weight Kg', 'netWeight'], 
+      ['Rate ₹/Qt', 'rate'], ['Net Payable ₹', 'netPayable'], ['Kitting Date', 'kittingDate']
+    ],
+    historyColumns: [
+      ['Purchase Closure ID', 'purchaseClosureId'], ['Full Kitting ID', 'fullKittingId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
+      ['Indent No', 'indentNo'], ['Closure Date', 'closureDate'], ['Purchase Type', 'purchaseType'], 
+      ['Vendor/Agency Name', 'vendorName|agencyName'], ['Lot No', 'lotNo'], ['Batch No', 'batchNo'], 
+      ['Net Qty Added MT', 'netQty'], ['Warehouse', 'warehouse'], ['Go-down', 'godown'], 
+      ['Quality Grade', 'qualityGrade'], ['Moisture %', 'moisture'], ['Total Landed Cost ₹', 'totalLandedCost'], 
+      ['Valuation Rate ₹/MT', 'valuationRate'], ['Status', 'closureStatus']
+    ],
+    fields: [
+      { name: 'purchaseClosureId', label: 'Purchase Closure ID', type: 'text', readOnly: true },
+      { name: 'closureDate', label: 'Closure Date', type: 'date' },
+      { name: 'purchaseType', label: 'Purchase Type', type: 'text', readOnly: true },
+      { name: 'netQty', label: 'Net Qty MT', type: 'number' },
+      { name: 'warehouse', label: 'Warehouse Location', type: 'text' },
+      { name: 'godown', label: 'Go-down', type: 'text' },
+      { name: 'binRack', label: 'Bin / Rack', type: 'text' },
+      { name: 'lotNo', label: 'Lot No', type: 'text', readOnly: true },
+      { name: 'batchNo', label: 'Batch No', type: 'text', readOnly: true },
+      { name: 'qualityGrade', label: 'Quality Grade', type: 'text', readOnly: true },
+      { name: 'moisture', label: 'Moisture at Receipt %', type: 'number', readOnly: true },
+      { name: 'totalPurchaseValue', label: 'Total Purchase Value ₹', type: 'number', readOnly: true },
+      { name: 'freightCost', label: 'Freight Cost ₹', type: 'number', readOnly: true },
+      { name: 'totalLandedCost', label: 'Total Landed Cost ₹', type: 'number', readOnly: true },
+      { name: 'valuationRate', label: 'Valuation Rate ₹/MT', type: 'number', readOnly: true },
+      { name: 'govtCharges', label: 'Total Govt Charges ₹', type: 'number', condition: 'Government' },
+      { name: 'brokerCommission', label: 'Total Broker Commission ₹', type: 'number', condition: 'Market' },
+      { name: 'updatedBy', label: 'Inventory Updated By', type: 'text' },
+      { name: 'remarks', label: 'Storage Remarks', type: 'text' },
+      { name: 'closureStatus', label: 'Closure Status', type: 'select', options: ['Complete', 'Partial'] }
     ]
   }
 ];
 
-const template = (stage) => `import React, { useState, useEffect } from 'react';
-import { Search, Play, Plus, AlertCircle } from 'lucide-react';
+const template = (stage, isStage1) => `import React, { useState, useEffect } from 'react';
+import { Search, Plus, Filter, Clock, History as HistoryIcon } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
-import DataTable from '../../components/DataTable';
-import { usePagination } from '../../hooks/usePagination';
 import { Modal } from '../../components/ui/Modal';
-import { PageTabs } from '../../components/PageTabs';
+import { WorkflowNavigation } from '../../components/WorkflowNavigation';
 
-const generateDummyData = () => {
-  return Array.from({ length: 40 }, (_, i) => {
-    const isGov = i % 2 === 0;
-    const orderType = isGov ? 'Government' : 'Direct Market';
-    return {
-      id: i + 1,
-      indentNo: \`IND-00\${(i + 1).toString().padStart(2, '0')}\`,
-      indentDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      purchaseType: orderType,
-      agencyMandi: isGov ? 'FCI' : 'Local Mandi',
-      paddyGrade: ['Grade A', 'Grade B', 'Common'][Math.floor(Math.random() * 3)],
-      qtyMt: Math.floor(Math.random() * 50) + 10,
-      rate: Math.floor(Math.random() * 500) + 2000,
-      requiredByDate: \`2026-07-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      requestedBy: \`User \${i+1}\`,
-      
-      approvalId: \`APR-00\${(i + 1).toString().padStart(2, '0')}\`,
-      approvedQty: Math.floor(Math.random() * 50) + 10,
-      approvedRate: Math.floor(Math.random() * 500) + 2000,
-      approvedBudget: 100000,
-      approvedBy: 'Manager',
-      approvalDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      priority: 'High',
-      approvalStatus: 'Approved',
-      
-      poNumber: \`PO-00\${(i + 1).toString().padStart(2, '0')}\`,
-      poDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      agencyVendorName: isGov ? 'FCI' : 'Farmer Singh',
-      totalPoValue: 100000,
-      paymentTerms: 'Advance',
-      poValidityDate: \`2026-07-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      createdBy: 'Buyer',
-      
-      logisticsId: \`LOG-00\${(i + 1).toString().padStart(2, '0')}\`,
-      vehicleNumber: 'PB01A1234',
-      vehicleType: 'Truck',
-      driverName: 'Driver X',
-      transporterName: 'Trans Y',
-      route: 'Mandi-Mill',
-      distance: 50,
-      freightRate: 100,
-      totalFreight: 5000,
-      expectedDeparture: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      expectedArrival: \`2026-06-\${(i % 28 + 2).toString().padStart(2, '0')}\`,
-      
-      poEntryId: \`POE-00\${(i + 1).toString().padStart(2, '0')}\`,
-      entryDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      location: 'Gate 1',
-      lotNo: 'L-123',
-      noOfBags: 500,
-      grossWeight: 25000,
-      moisture: 14.5,
-      paddyGradeVerified: 'Yes',
-      recordedBy: 'Guard',
-      
-      advanceId: \`ADV-00\${(i + 1).toString().padStart(2, '0')}\`,
-      paymentDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      payeeName: isGov ? 'FCI' : 'Farmer Singh',
-      advanceAmount: 20000,
-      tdsAmount: 0,
-      netPaid: 20000,
-      paymentMode: 'NEFT',
-      utrNo: 'UTR123456',
-      paidBy: 'Finance',
-      
-      liftId: \`LIFT-00\${(i + 1).toString().padStart(2, '0')}\`,
-      liftDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      netWeight: 24500,
-      liftedFrom: 'Mandi',
-      supervisor: 'Supervisor A',
-      
-      labReportId: \`LAB-00\${(i + 1).toString().padStart(2, '0')}\`,
-      labName: 'Inhouse',
-      testDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      broken: 2.1,
-      chalky: 1.5,
-      foreignMatter: 0.5,
-      gradeResult: 'A',
-      recovery: 67,
-      labResult: 'Pass',
-      approved: i % 5 === 0 ? 'No' : 'Yes',
-      technician: 'Tech 1',
-      
-      kittingId: \`FK-00\${(i + 1).toString().padStart(2, '0')}\`,
-      challanNo: \`CHL-00\${(i + 1).toString().padStart(2, '0')}\`,
-      kittingDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      totalAmount: 100000,
-      advancePaid: 20000,
-      balancePaid: 80000,
-      netPayable: 80000,
-      
-      closureId: \`PC-00\${(i + 1).toString().padStart(2, '0')}\`,
-      closureDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      batchNo: 'B-123',
-      netQtyMt: 24.5,
-      warehouse: 'W1',
-      godown: 'G1',
-      binRack: 'R1',
-      qualityGrade: 'A',
-      totalPurchaseValue: 100000,
-      freightCost: 5000,
-      totalLandedCost: 105000,
-      valuationRate: 4285,
-      updatedBy: 'Store',
-      
-      status: 'Completed'
-    };
-  });
+const getVal = (item, keyStr) => {
+  if (!keyStr) return '-';
+  const keys = keyStr.split('|');
+  for (let k of keys) {
+    if (item[k]) return item[k];
+  }
+  return '-';
 };
 
-export const ${stage.name} = () => {
-  const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
-  const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
-  
-  const [activeTab, setActiveTab] = useState("pending");
-  const [searchTerm, setSearchTerm] = useState("");
-  
+export const ${stage.file.replace('.jsx', '')} = () => {
+  const [items, setItems] = useState([]);
+  const [historyItems, setHistoryItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [selectedType, setSelectedType] = useState('All');
+  const [activeTab, setActiveTab] = useState('${isStage1 ? 'history' : 'pending'}');
 
-  const displayData = activeTab === "pending" ? pendingItems : historyItems;
-  
-  const filteredData = displayData.filter(item => 
-    Object.values(item).some(val => 
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  useEffect(() => {
+    const masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    const resolveItems = (rawArray) => {
+      return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
+    };
 
-  const pagination = usePagination(filteredData, 10);
-
-  const handleActionClick = (item) => {
-    if ("${stage.name}" === "FullKitting" && item.approved === 'No') {
-      alert("Cannot process kitting for rejected lab reports.");
-      return;
+    ${isStage1 ? `
+    // Dummy Data seeding across all stages using Normalized Storage to save quota
+    let rawHistory = JSON.parse(localStorage.getItem('purchase_1_history'));
+    
+    if (!rawHistory || rawHistory.length === 0) {
+      const dummyDataArray = [];
+      // Generate 280 items to satisfy 20 pending + 20 history across 14 stages
+      for (let i = 1; i <= 280; i++) {
+        const pReq = "PRQ-" + i.toString().padStart(4, '0');
+        const pInd = "IND-" + i.toString().padStart(4, '0');
+        const pPo = "PO-" + i.toString().padStart(4, '0');
+        const pType = i % 2 === 0 ? 'Government' : 'Market';
+        
+        dummyDataArray.push({
+          id: i, requirementNo: pReq, requirementDate: '2023-10-15', purchaseType: pType, targetMandi: 'Karnal Mandi', mktPaddyGrade: 'Basmati 1121', mktQtyMT: 300 + i*10, budgetRate: 3500, brokerName: 'Ramesh Trading', brokerCode: 'BRK-045', requiredByDate: '2023-11-05', requestedBy: 'Admin', department: 'Procurement', status: 'Processed',
+          indentNo: pInd, indentDate: '2023-10-16', mandiName: 'Karnal Mandi', supplierName: 'Kisan Traders', paddyVariety: 'Basmati', mktSeason: 'Kharif', mktRate: 3450, commission: 2, brokerage: 1, loadingCharges: 500, hamaliCharges: 200, otherCharges: 100,
+          approvalId: "APR-" + i.toString().padStart(4, '0'), approvalDate: '2023-10-17', approvedBy: 'Manager', approvedQtyMT: 300 + i*10, approvedRate: 3450, approvedTotalValue: 1035000, priorityLevel: 'High', approvalStatus: 'Approved',
+          poNumber: pPo, poDate: '2023-10-18', poValidity: '2023-11-18', vendorName: 'Kisan Traders', vendorPhone: '9876543210', vendorId: 'PAN12345', qtyMT: 300 + i*10, rate: 3450, totalValue: 1035000, paymentTerms: 'Net 30', deliveryTerms: 'FOB',
+          logisticsId: "LOG-" + i.toString().padStart(4, '0'), vehicleNumber: 'HR-45-A-1234', vehicleType: 'Truck', driverName: 'Raju', transporterName: 'Speedy Transport', route: 'Karnal -> Mill', distance: 50, expectedDeparture: '2023-10-19', expectedArrival: '2023-10-20', freightRate: 500, totalFreight: 10000, advanceDriver: 2000,
+          poEntryId: "POE-" + i.toString().padStart(4, '0'), entryDate: '2023-10-20', mandiLocation: 'Karnal', auctionSlot: 'A-12', commissionAmt: 20700, lotNumbers: "LOT-K-" + i, noOfBags: 600, grossWeightSource: 30000, moistureSource: 17.5, paddyGradeVerified: 'Basmati 1121', recordedBy: 'Gate Keeper',
+          advancePaymentId: "ADV-" + i.toString().padStart(4, '0'), paymentDate: '2023-10-21', payeeName: 'Kisan Traders', bankAccount: 'AC123456', advanceAmount: 50000, paymentMode: 'NEFT', utrNo: 'UTR98765', tdsAmount: 500, netAmount: 49500, paidBy: 'Finance',
+          liftId: "LIFT-" + i.toString().padStart(4, '0'), liftDate: '2023-10-22T08:00', grossWeight: 30000, tareWeight: 10000, netWeight: 20000, moisture: 17.4, liftedFrom: 'Karnal Godown', supervisor: 'Amit',
+          weighSlipNo: "WB-" + i.toString().padStart(4, '0'), weighDate: '2023-10-22T14:00', weighbridgeId: 'WB-A1', operator: 'Suresh', varianceKg: 0, variancePct: 0,
+          grnNo: "GRN-" + i.toString().padStart(4, '0'), grnDate: '2023-10-22', warehouse: 'WH-1', godown: 'G-1', lotNo: "LT-" + i.toString().padStart(4, '0'), batchNo: "BT-" + i.toString().padStart(4, '0'), receivedQty: 20000, expectedQty: 20000, shortage: 0, excess: 0, receivedBy: 'Store Keeper',
+          labReportId: "LAB-" + i.toString().padStart(4, '0'), labName: 'Internal QC', testDate: '2023-10-23', broken: 2, paddyGradeResult: 'A', recovery: 68, technician: 'Dr. Singh', labResult: 'Pass', approved: 'Yes',
+          accountsVerificationId: "AV-" + i.toString().padStart(4, '0'), verificationDate: '2023-10-24', supplierBillAmt: 690000, brokerCommission: 13800, freightAmount: 10000, advancePaid: 50000, balancePayable: 666500, paymentStatus: 'Paid', netPayable: 666500, verifiedBy: 'Accounts Dept',
+          fullKittingId: "FK-" + i.toString().padStart(4, '0'), challanNo: "CHL-" + i.toString().padStart(4, '0'), kittingDate: '2023-10-25', farmerName: 'Ramesh Farmer', totalAmount: 690000,
+          purchaseClosureId: "PC-" + i.toString().padStart(4, '0'), closureDate: '2023-10-26', netQty: 20, qualityGrade: 'A', totalPurchaseValue: 690000, totalLandedCost: 715000, valuationRate: 35750, closureStatus: 'Complete',
+          // Gov Specific Fields
+          procurementRef: "PROC-Gov-" + (100+i), govPaddyGrade: 'Grade A', govQtyMT: 500, mspRate: 2203, targetSeason: 'Kharif 2023', agencyName: 'FCI', season: 'Kharif 2023', mandatedRate: 2203, allocationRef: "ALLOC-" + i, doNo: "DO-FCI-" + i
+        });
+      }
+      
+      // Store full objects ONCE to save memory limit
+      localStorage.setItem('purchase_master', JSON.stringify(dummyDataArray));
+      
+      // Inject only IDs into all stages via mathematical slices
+      for(let i=1; i<=14; i++) {
+        const numItems = (15 - i) * 20; 
+        const ids = Array.from({length: numItems}, (_, index) => index + 1);
+        localStorage.setItem(\`purchase_\${i}_history\`, JSON.stringify(ids));
+      }
+      
+      rawHistory = Array.from({length: 280}, (_, index) => index + 1);
     }
     
-    setSelectedItem(item);
+    setHistoryItems(resolveItems(rawHistory));
+    ` : `
+    // Load raw arrays (mix of IDs from dummy data, and full objects from manual entry)
+    const rawPending = JSON.parse(localStorage.getItem('${stage.readFrom}')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
     
-    let autoFields = {};
-    if ("${stage.name}" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
-    if ("${stage.name}" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
+    // Resolve to full objects
+    const pending = resolveItems(rawPending);
+    const history = resolveItems(rawHistory);
     
-    const readOnlyFields = ${JSON.stringify(stage.fields.filter(f => f.readOnly).map(f => f.name))};
-    const initialFormData = {};
-    readOnlyFields.forEach(field => {
-      initialFormData[field] = item[field];
-    });
+    // Filter pending
+    const historyIds = history.map(h => h.id);
+    const unresolvedPending = pending.filter(p => !historyIds.includes(p.id));
     
-    setFormData({ ...initialFormData, ...autoFields });
+    setItems(unresolvedPending);
+    setHistoryItems(history);
+    `}
+  }, []);
+
+  const handleAction = (item, type = 'Market') => {
+    const autoGen = !item.requirementNo ? { requirementNo: 'REQ-2026-' + Math.floor(Math.random() * 10000) } : {};
+    setFormData({ ...item, purchaseType: type, ...autoGen });
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    const processedItem = { ...selectedItem, ...formData, status: "Completed" };
-    setHistoryItems([processedItem, ...historyItems]);
-    setPendingItems(pendingItems.filter(p => p.id !== selectedItem.id));
+    const newItem = { ...formData, status: 'Processed' };
+    if (!newItem.id) newItem.id = Date.now();
+    
+    // Save new item directly to raw history array
+    const rawHistory = JSON.parse(localStorage.getItem('${stage.storageKey}')) || [];
+    rawHistory.push(newItem);
+    localStorage.setItem('${stage.storageKey}', JSON.stringify(rawHistory));
+    
+    setHistoryItems([...historyItems, newItem]);
+
+    
+    ${!isStage1 ? `
+    const remainingItems = items.filter(i => i.id !== formData.id);
+    setItems(remainingItems);
+    ` : ''}
+    
     setIsModalOpen(false);
-    setSelectedItem(null);
+    setFormData({});
   };
 
-  const actionColumn = {
-    header: "Action",
-    className: "text-right",
-    cell: (row) => {
-      if ("${stage.name}" === "FullKitting" && row.approved === 'No') {
-        return (
-          <div className="flex justify-end">
-            <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded font-medium">
-              <AlertCircle size={12} /> Blocked
-            </span>
-          </div>
-        );
-      }
-      return (
-        <div className="flex justify-end">
-          <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
-            <Play size={14} />
-            ${stage.action}
-          </Button>
-        </div>
-      );
-    }
+  const getRowClass = (type) => {
+    if (type === 'Domestic' || type === 'Government') return 'bg-blue-50/50 hover:bg-blue-100/60 transition-colors border-l-4 border-l-blue-400';
+    if (type === 'Export' || type === 'Market') return 'bg-emerald-50/50 hover:bg-emerald-100/60 transition-colors border-l-4 border-l-emerald-400';
+    return 'hover:bg-slate-50 transition-colors';
   };
-
-  const pendingCols = ${JSON.stringify(stage.pendingCols)}.map(col => {
-    if (col.accessor === 'approved' && "${stage.name}" === "FullKitting") {
-      return {
-        ...col,
-        cell: (row) => (
-          <span className={\`px-2 py-1 rounded text-xs font-semibold \${row.approved === 'Yes' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}\`}>
-            {row.approved}
-          </span>
-        )
-      };
-    }
-    return col;
-  });
-  
-  const historyCols = ${JSON.stringify(stage.historyCols)};
-
-  const columns = activeTab === "pending" ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800">${stage.title}</h2>
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">${stage.title}</h1>
+          <p className="text-slate-500">Manage ${stage.title.toLowerCase()}</p>
+        </div>
+        ${isStage1 ? `
+        <div className="flex gap-3">
+          <Button onClick={() => handleAction({}, 'Market')} className="bg-amber-600 hover:bg-amber-700">
+            <Plus className="w-4 h-4 mr-2" />
+            Market Requirement
+          </Button>
+          <Button onClick={() => handleAction({}, 'Government')} className="bg-indigo-600 hover:bg-indigo-700">
+            <Plus className="w-4 h-4 mr-2" />
+            Govt Requirement
+          </Button>
+        </div>` : ''}
       </div>
 
-      <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      <Card>
-        <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <Input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+      <div className="border-b border-slate-200 mb-6">
+        <div className="flex gap-6">
+          ${!isStage1 ? `
+          <button 
+            onClick={() => setActiveTab('pending')}
+            className={\`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 \${
+              activeTab === 'pending' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }\`}
+          >
+            <Clock className="w-4 h-4" />
+            Pending Action
+          </button>
+          ` : ''}
+          <button 
+            onClick={() => setActiveTab('history')}
+            className={\`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 \${
+              activeTab === 'history' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }\`}
+          >
+            <HistoryIcon className="w-4 h-4" />
+            History / Completed
+          </button>
         </div>
+      </div>
 
-        <DataTable 
-          columns={columns} 
-          data={pagination.paginatedData} 
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          itemsPerPage={pagination.itemsPerPage}
-          onPageChange={pagination.setCurrentPage}
-          onItemsPerPageChange={pagination.setItemsPerPage}
-          totalResults={pagination.totalResults}
-        />
+      <Card className="p-0 border-0 shadow-sm ring-1 ring-slate-200 rounded-xl overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+          <div className="relative w-64">
+            <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <Input className="pl-9 bg-slate-50 border-slate-200" placeholder="Search..." />
+          </div>
+          ${!isStage1 ? `
+          <Select 
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="w-48 bg-slate-50 border-slate-200"
+          >
+            <option value="All">All Types</option>
+            <option value="Market">Market (Mkt)</option>
+            <option value="Government">Government (Gov)</option>
+          </Select>
+          ` : ''}
+        </div>
+        
+        <div className="overflow-x-auto bg-white">
+          <table className="w-full text-sm text-left whitespace-nowrap">
+            <thead className="text-xs text-slate-600 bg-slate-50 uppercase tracking-wide border-b border-slate-200">
+              <tr>
+                {activeTab === 'pending' ? (
+                  <>
+                    ${!isStage1 ? stage.pendingColumns.map(col => `<th className="px-6 py-4 font-bold">${col[0]}</th>`).join('\n                    ') : ''}
+                  </>
+                ) : (
+                  <>
+                    ${stage.historyColumns.map(col => `<th className="px-6 py-4 font-bold">${col[0]}</th>`).join('\n                    ')}
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {activeTab === 'pending' && (
+                <>
+                  {items
+                    .filter(item => selectedType === 'All' || item.purchaseType === selectedType)
+                    .map((item, index) => (
+                    <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
+                      <td className="px-6 py-4">
+                        <Button 
+                          onClick={() => handleAction(item, item.purchaseType)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-4 py-2 text-xs rounded-md shadow-sm font-medium"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          Process
+                        </Button>
+                      </td>
+                      ${!isStage1 ? stage.pendingColumns.slice(1).map(col => `<td className="px-6 py-4 font-medium text-slate-700">{getVal(item, '${col[1]}')}</td>`).join('\n                      ') : ''}
+                    </tr>
+                  ))}
+                  {items.length === 0 && (
+                    <tr><td colSpan="${!isStage1 ? stage.pendingColumns.length : 1}" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                  )}
+                </>
+              )}
+              
+              {activeTab === 'history' && (
+                <>
+                  {historyItems.map((item, index) => (
+                    <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
+                      ${stage.historyColumns.map(col => `<td className="px-6 py-4 font-medium text-slate-700">{getVal(item, '${col[1]}')}</td>`).join('\n                      ')}
+                    </tr>
+                  ))}
+                  {historyItems.length === 0 && (
+                    <tr><td colSpan="${stage.historyColumns.length}" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
+        </div>
       </Card>
 
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="${stage.modalTitle}"
+        title={\`${stage.title} Details\`}
+        size="4xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="max-h-[85vh] overflow-y-auto p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             ${stage.fields.map(f => {
+              const isRO = !!f.readOnly;
+              const inputClass = isRO
+                ? "'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'"
+                : "'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'";
+                
+              let fieldWrapper = `<div className="space-y-1">`;
+              let endWrapper = `</div>`;
+              
+              if (f.condition === 'Government') {
+                fieldWrapper = `{formData.purchaseType === 'Government' && (\n              <div className="space-y-1">`;
+                endWrapper = `</div>\n              )}`;
+              } else if (f.condition === 'Market') {
+                fieldWrapper = `{formData.purchaseType === 'Market' && (\n              <div className="space-y-1">`;
+                endWrapper = `</div>\n              )}`;
+              }
+
               if (f.type === 'select') {
                 return `
-            <div className="space-y-1.5">
-              <Label>${f.label}</Label>
+            ${fieldWrapper}
+              <Label className="text-sm font-medium text-slate-700">${f.label}</Label>
               <Select 
-                value={formData.${f.name} || ""} 
+                value={formData.${f.name} || ''} 
                 onChange={(e) => setFormData({...formData, ${f.name}: e.target.value})}
-                disabled={${!!f.readOnly}}
-                className={${!!f.readOnly} ? "bg-slate-100" : ""}
+                disabled={${isRO}}
+                className={${inputClass}}
               >
-                <option value="">Select ${f.label}</option>
+                <option value="">Select...</option>
                 ${f.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
               </Select>
-            </div>`;
+            ${endWrapper}`;
               } else {
                 return `
-            <div className="space-y-1.5">
-              <Label>${f.label}</Label>
+            ${fieldWrapper}
+              <Label className="text-sm font-medium text-slate-700">${f.label}</Label>
               <Input 
                 type="${f.type}"
-                value={formData.${f.name} || ""} 
+                value={formData.${f.name} || ''} 
                 onChange={(e) => setFormData({...formData, ${f.name}: e.target.value})}
-                readOnly={${!!f.readOnly}}
-                className={${!!f.readOnly} ? "bg-slate-100" : ""}
+                readOnly={${isRO}}
+                className={${inputClass}}
               />
-            </div>`;
+            ${endWrapper}`;
               }
             }).join('')}
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
+          <div className="flex justify-end gap-3 pt-8 mt-8 border-t border-slate-100">
+            <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              Save & Process
+            <Button onClick={handleSave} className="px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+              Save Details
             </Button>
           </div>
         </div>
@@ -709,352 +861,11 @@ export const ${stage.name} = () => {
     </div>
   );
 };
-`
+`;
 
-const stage1Template = () => `import React, { useState } from 'react';
-import { Search, Plus, Play } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input, Label, Select } from '../../components/ui/Input';
-import { Card } from '../../components/ui/Card';
-import DataTable from '../../components/DataTable';
-import { usePagination } from '../../hooks/usePagination';
-import { Modal } from '../../components/ui/Modal';
-import { PageTabs } from '../../components/PageTabs';
-
-const generateDummyData = (type, offset = 0) => {
-  return Array.from({ length: 20 }, (_, i) => {
-    const num = i + 1 + offset;
-    return {
-      id: type + num,
-      indentNo: \`IND-00\${num.toString().padStart(2, '0')}\`,
-      indentDate: \`2026-06-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      purchaseType: type,
-      procurementRef: type === 'Government' ? \`PROC-00\${num.toString().padStart(2, '0')}\` : '-',
-      prNumber: type === 'Government' ? \`PR-00\${num.toString().padStart(2, '0')}\` : '-',
-      agencyName: type === 'Government' ? 'FCI' : '-',
-      targetMandi: type === 'Direct Market' ? 'Local Mandi' : '-',
-      season: type === 'Government' ? 'Kharif' : '-',
-      paddyGrade: ['Grade A', 'Grade B', 'Common'][Math.floor(Math.random() * 3)],
-      qtyMt: Math.floor(Math.random() * 50) + 10,
-      mandatedRate: type === 'Government' ? 2200 : '-',
-      budget: type === 'Direct Market' ? 2100 : '-',
-      region: type === 'Government' ? 'Punjab' : '-',
-      allocationOrderRef: type === 'Government' ? \`ALLOC-00\${num}\` : '-',
-      requiredByDate: \`2026-07-\${(i % 28 + 1).toString().padStart(2, '0')}\`,
-      requestedBy: \`User \${num}\`,
-      department: 'Procurement',
-      status: 'Completed'
-    };
-  });
-};
-
-export const PurchaseIndent = () => {
-  const [activeTab, setActiveTab] = useState("gov");
-  const [govItems, setGovItems] = useState(generateDummyData('Government', 0));
-  const [dmItems, setDmItems] = useState(generateDummyData('Direct Market', 20));
-  
-  const [isTypeSelectorOpen, setIsTypeSelectorOpen] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState('');
-  const [formData, setFormData] = useState({});
-  const [selectedItem, setSelectedItem] = useState(null);
-
-  const handleAddClick = () => {
-    setSelectedItem(null);
-    setIsTypeSelectorOpen(true);
-  };
-
-  const handleActionClick = (item, type) => {
-    setSelectedItem(item);
-    setSelectedType(type);
-    setFormData({
-      ...item,
-      indentNo: "IND-00" + Math.floor(Math.random()*100),
-      indentDate: new Date().toISOString().split('T')[0]
-    });
-    setIsFormOpen(true);
-  };
-
-  const handleTypeSelect = (type) => {
-    setSelectedType(type);
-    setIsTypeSelectorOpen(false);
-    setFormData({
-      indentNo: "IND-00" + Math.floor(Math.random()*100),
-      purchaseType: type,
-      indentDate: new Date().toISOString().split('T')[0],
-      procurementRef: type === 'Government' ? 'PROC-00' + Math.floor(Math.random()*100) : '',
-      prNumber: type === 'Government' ? 'PR-00' + Math.floor(Math.random()*100) : '',
-      season: type === 'Government' ? 'Kharif' : '',
-      paddyGrade: 'Grade A',
-      qtyMt: 50,
-      mandatedRate: type === 'Government' ? 2200 : '',
-      region: type === 'Government' ? 'Punjab' : ''
-    });
-    setIsFormOpen(true);
-  };
-
-  const handleSave = () => {
-    const newItem = { ...formData, id: Math.random(), status: 'Completed' };
-    if (selectedType === 'Government') {
-      if (selectedItem) {
-        setGovItems(govItems.map(p => p.id === selectedItem.id ? newItem : p));
-      } else {
-        setGovItems([newItem, ...govItems]);
-      }
-    } else {
-      if (selectedItem) {
-        setDmItems(dmItems.map(p => p.id === selectedItem.id ? newItem : p));
-      } else {
-        setDmItems([newItem, ...dmItems]);
-      }
-    }
-    setIsFormOpen(false);
-  };
-
-  const actionColumn = (type) => ({
-    header: "Action",
-    className: "text-center",
-    cell: (row) => (
-      row.status !== 'Completed' ? (
-        <div className="flex justify-center">
-          <Button size="sm" onClick={() => handleActionClick(row, type)} className="flex items-center gap-1 bg-primary text-white">
-            <Play size={14} /> Process
-          </Button>
-        </div>
-      ) : (
-        <span className="text-slate-400 font-medium">Completed</span>
-      )
-    )
-  });
-
-  const govCols = [
-    actionColumn('Government'),
-    { header: "Indent No", accessor: "indentNo" },
-    { header: "Indent Date", accessor: "indentDate" },
-    { header: "Purchase Type", accessor: "purchaseType", cell: (row) => <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">{row.purchaseType}</span> },
-    { header: "Procurement Ref No", accessor: "procurementRef" },
-    { header: "Agency Name", accessor: "agencyName" },
-    { header: "Season", accessor: "season" },
-    { header: "Paddy Grade", accessor: "paddyGrade" },
-    { header: "Qty MT", accessor: "qtyMt" },
-    { header: "Mandated Rate ₹/Qt", accessor: "mandatedRate" },
-    { header: "Region", accessor: "region" },
-    { header: "Required By Date", accessor: "requiredByDate" },
-    { header: "Requested By", accessor: "requestedBy" },
-    { header: "Status", accessor: "status" }
-  ];
-
-  const dmCols = [
-    actionColumn('Direct Market'),
-    { header: "Indent No", accessor: "indentNo" },
-    { header: "Indent Date", accessor: "indentDate" },
-    { header: "Purchase Type", accessor: "purchaseType", cell: (row) => <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">{row.purchaseType}</span> },
-    { header: "Target Mandi", accessor: "targetMandi" },
-    { header: "Paddy Grade", accessor: "paddyGrade" },
-    { header: "Qty MT", accessor: "qtyMt" },
-    { header: "Budget ₹/Qt", accessor: "budget" },
-    { header: "Required By Date", accessor: "requiredByDate" },
-    { header: "Requested By", accessor: "requestedBy" },
-    { header: "Status", accessor: "status" }
-  ];
-
-  const govPagination = usePagination(govItems, 10);
-  const dmPagination = usePagination(dmItems, 10);
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-800">Stage 1 - Purchase Indent</h2>
-        <Button onClick={handleAddClick} className="flex items-center gap-2">
-          <Plus size={16} /> Add Indent
-        </Button>
-      </div>
-
-      <div className="flex border-b border-slate-200">
-        <button 
-          onClick={() => setActiveTab('gov')} 
-          className={\`px-6 py-3 font-medium transition-colors \${activeTab === 'gov' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}\`}
-        >
-          Government Indents
-        </button>
-        <button 
-          onClick={() => setActiveTab('dm')} 
-          className={\`px-6 py-3 font-medium transition-colors \${activeTab === 'dm' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}\`}
-        >
-          Direct Market Indents
-        </button>
-      </div>
-
-      {activeTab === 'gov' && (
-        <Card>
-          <div className="p-4 border-b border-slate-200">
-            <h3 className="text-lg font-semibold">Government Indents</h3>
-          </div>
-          <DataTable 
-            columns={govCols} 
-            data={govPagination.paginatedData} 
-            currentPage={govPagination.currentPage}
-            totalPages={govPagination.totalPages}
-            itemsPerPage={govPagination.itemsPerPage}
-            onPageChange={govPagination.setCurrentPage}
-            onItemsPerPageChange={govPagination.setItemsPerPage}
-            totalResults={govPagination.totalResults}
-          />
-        </Card>
-      )}
-
-      {activeTab === 'dm' && (
-        <Card>
-          <div className="p-4 border-b border-slate-200">
-            <h3 className="text-lg font-semibold">Direct Market Indents</h3>
-          </div>
-          <DataTable 
-            columns={dmCols} 
-            data={dmPagination.paginatedData} 
-            currentPage={dmPagination.currentPage}
-            totalPages={dmPagination.totalPages}
-            itemsPerPage={dmPagination.itemsPerPage}
-            onPageChange={dmPagination.setCurrentPage}
-            onItemsPerPageChange={dmPagination.setItemsPerPage}
-            totalResults={dmPagination.totalResults}
-          />
-        </Card>
-      )}
-
-      <Modal isOpen={isTypeSelectorOpen} onClose={() => setIsTypeSelectorOpen(false)} title="Select Purchase Type">
-        <div className="p-6 flex flex-col gap-4">
-          <Button onClick={() => handleTypeSelect('Government')} className="w-full justify-center text-lg py-6" variant="outline">
-            Government (FCI / State Agency)
-          </Button>
-          <Button onClick={() => handleTypeSelect('Direct Market')} className="w-full justify-center text-lg py-6" variant="outline">
-            Direct Market (Mandi / Farmer)
-          </Button>
-        </div>
-      </Modal>
-
-      <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={\`Create \${selectedType} Indent\`}>
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label>Indent No</Label>
-              <Input type="text" value={formData.indentNo || ""} readOnly className="bg-slate-100" />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Indent Date</Label>
-              <Input type="date" value={formData.indentDate || ""} onChange={(e) => setFormData({...formData, indentDate: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Purchase Type</Label>
-              <Input type="text" value={formData.purchaseType || ""} readOnly className="bg-slate-100" />
-            </div>
-            
-            {selectedType === 'Government' && (
-              <>
-                <div className="space-y-1.5">
-                  <Label>Procurement Ref No</Label>
-                  <Input type="text" value={formData.procurementRef || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>PR Number from Procurement</Label>
-                  <Input type="text" value={formData.prNumber || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Agency Name</Label>
-                  <Select value={formData.agencyName || ""} onChange={(e) => setFormData({...formData, agencyName: e.target.value})}>
-                    <option value="">Select Agency</option>
-                    <option value="FCI">FCI</option>
-                    <option value="NAFED">NAFED</option>
-                    <option value="State Agency">State Agency</option>
-                    <option value="Other">Other</option>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Government Season</Label>
-                  <Input type="text" value={formData.season || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Paddy Grade</Label>
-                  <Input type="text" value={formData.paddyGrade || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Quantity Required MT</Label>
-                  <Input type="number" value={formData.qtyMt || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Mandated Rate ₹/Qt</Label>
-                  <Input type="number" value={formData.mandatedRate || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Procurement Region / State</Label>
-                  <Input type="text" value={formData.region || ""} readOnly className="bg-slate-100" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Allocation Order Ref No</Label>
-                  <Input type="text" value={formData.allocationOrderRef || ""} onChange={(e) => setFormData({...formData, allocationOrderRef: e.target.value})} />
-                </div>
-              </>
-            )}
-
-            {selectedType === 'Direct Market' && (
-              <>
-                <div className="space-y-1.5">
-                  <Label>Target Mandi</Label>
-                  <Input type="text" value={formData.targetMandi || ""} onChange={(e) => setFormData({...formData, targetMandi: e.target.value})} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Paddy Grade Required</Label>
-                  <Input type="text" value={formData.paddyGrade || ""} onChange={(e) => setFormData({...formData, paddyGrade: e.target.value})} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Quantity Required MT</Label>
-                  <Input type="number" value={formData.qtyMt || ""} onChange={(e) => setFormData({...formData, qtyMt: e.target.value})} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Budget ₹/Qt</Label>
-                  <Input type="number" value={formData.budget || ""} onChange={(e) => setFormData({...formData, budget: e.target.value})} />
-                </div>
-              </>
-            )}
-            
-            <div className="space-y-1.5">
-              <Label>Required By Date</Label>
-              <Input type="date" value={formData.requiredByDate || ""} onChange={(e) => setFormData({...formData, requiredByDate: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Requested By</Label>
-              <Input type="text" value={formData.requestedBy || ""} onChange={(e) => setFormData({...formData, requestedBy: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Department</Label>
-              <Input type="text" value={formData.department || ""} onChange={(e) => setFormData({...formData, department: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Remarks</Label>
-              <Input type="text" value={formData.remarks || ""} onChange={(e) => setFormData({...formData, remarks: e.target.value})} />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsFormOpen(false)} variant="outline">Cancel</Button>
-            <Button onClick={handleSave}>Save Indent</Button>
-          </div>
-        </div>
-      </Modal>
-    </div>
-  );
-};
-`
-
-const dir = path.join(__dirname, 'src', 'modules', 'purchase');
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir, { recursive: true });
-}
-
-fs.writeFileSync(path.join(dir, 'PurchaseIndent.jsx'), stage1Template());
-console.log('Created PurchaseIndent.jsx');
-
-stages.forEach(stage => {
-  const filePath = path.join(dir, stage.file);
-  fs.writeFileSync(filePath, template(stage));
+// Write Stages 1-14
+stages.forEach((stage, i) => {
+  const filePath = path.join(__dirname, 'src/modules/purchase', stage.file);
+  fs.writeFileSync(filePath, template(stage, i === 0));
   console.log('Created ' + stage.file);
 });

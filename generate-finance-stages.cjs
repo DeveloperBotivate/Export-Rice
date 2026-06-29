@@ -793,48 +793,76 @@ export const ${stage.name} = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         title="${stage.modalTitle}"
+        size="5xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
-            ${stage.fields.map(f => {
-              if (f.type === 'select') {
-                return `
-            <div className="space-y-1.5">
-              <Label>${f.label}</Label>
-              <Select 
-                value={formData.${f.name} || ''} 
-                onChange={(e) => setFormData({...formData, ${f.name}: e.target.value})}
-                disabled={${!!f.readOnly}}
-                className={${!!f.readOnly} ? 'bg-slate-100' : ''}
-              >
-                <option value="">Select ${f.label}</option>
-                ${f.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-              </Select>
-            </div>`;
-              } else {
-                return `
-            <div className="space-y-1.5">
-              <Label>${f.label}</Label>
-              <Input 
-                type="${f.type}"
-                value={formData.${f.name} || ''} 
-                onChange={(e) => setFormData({...formData, ${f.name}: e.target.value})}
-                readOnly={${!!f.readOnly}}
-                className={${!!f.readOnly} ? 'bg-slate-100' : ''}
-                placeholder="${f.placeholder || ''}"
-              />
-            </div>`;
-              }
-            }).join('')}
+        <div className="max-h-[85vh] overflow-y-auto">
+          <div className="bg-gradient-to-r from-green-900 to-green-800 px-6 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-green-300 text-xs font-medium uppercase tracking-widest">Finance Module</p>
+              <h3 className="text-white text-lg font-bold mt-0.5">${stage.modalTitle}</h3>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+              <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
+              <span className="text-white text-xs font-medium">Recording</span>
+            </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
-              Cancel
-            </Button>
-            <Button onClick={handleSave}>
-              Save & Process
-            </Button>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              ${stage.fields.map(f => {
+                const isRO = !!f.readOnly;
+                const cardClass = isRO
+                  ? `'p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5'`
+                  : `'p-3 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-green-300 transition-all space-y-1.5'`;
+                const inputClass = isRO
+                  ? `'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed text-sm'`
+                  : `'border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 text-sm bg-white'`;
+
+                if (f.type === 'select') {
+                  return `
+              <div className={${cardClass}}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">${f.label}</Label>
+                  ${isRO ? `<span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>` : ''}
+                </div>
+                <Select 
+                  value={formData.${f.name} || ''} 
+                  onChange={(e) => setFormData({...formData, ${f.name}: e.target.value})}
+                  disabled={${isRO}}
+                  className={${inputClass}}
+                >
+                  <option value="">Select...</option>
+                  ${f.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                </Select>
+              </div>`;
+                } else {
+                  return `
+              <div className={${cardClass}}>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">${f.label}</Label>
+                  ${isRO ? `<span className="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded font-medium">AUTO</span>` : ''}
+                </div>
+                <Input 
+                  type="${f.type}"
+                  value={formData.${f.name} || ''} 
+                  onChange={(e) => setFormData({...formData, ${f.name}: e.target.value})}
+                  readOnly={${isRO}}
+                  className={${inputClass}}
+                  placeholder="${f.placeholder || ''}"
+                />
+              </div>`;
+                }
+              }).join('')}
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
+                Cancel
+              </Button>
+              <Button onClick={handleSave} className="px-6 bg-gradient-to-r from-green-700 to-green-600 shadow-md text-white">
+                Save & Process
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>
@@ -1078,12 +1106,12 @@ export const AccountsReceivable = () => {
 `;
 
 // Write Stage 1
-fs.writeFileSync(path.join('c:/Users/devel/Downloads/Rice Mill/src/modules/finance', 'AccountsReceivable.jsx'), stage1Template());
+fs.writeFileSync(path.join(__dirname, 'src/modules/finance', 'AccountsReceivable.jsx'), stage1Template());
 console.log('Created AccountsReceivable.jsx');
 
 // Write Stages 2-12
 stages.forEach(stage => {
-  const filePath = path.join('c:/Users/devel/Downloads/Rice Mill/src/modules/finance', stage.file);
+  const filePath = path.join(__dirname, 'src/modules/finance', stage.file);
   fs.writeFileSync(filePath, template(stage));
   console.log('Created ' + stage.file);
 });

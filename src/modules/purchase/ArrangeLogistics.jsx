@@ -1,475 +1,469 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Play, Plus, AlertCircle } from 'lucide-react';
+import { Search, Plus, Filter, Clock, History as HistoryIcon } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input, Label, Select } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
-import DataTable from '../../components/DataTable';
-import { usePagination } from '../../hooks/usePagination';
 import { Modal } from '../../components/ui/Modal';
-import { PageTabs } from '../../components/PageTabs';
+import { WorkflowNavigation } from '../../components/WorkflowNavigation';
 
-const generateDummyData = () => {
-  return Array.from({ length: 40 }, (_, i) => {
-    const isGov = i % 2 === 0;
-    const orderType = isGov ? 'Government' : 'Direct Market';
-    return {
-      id: i + 1,
-      indentNo: `IND-00${(i + 1).toString().padStart(2, '0')}`,
-      indentDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      purchaseType: orderType,
-      agencyMandi: isGov ? 'FCI' : 'Local Mandi',
-      paddyGrade: ['Grade A', 'Grade B', 'Common'][Math.floor(Math.random() * 3)],
-      qtyMt: Math.floor(Math.random() * 50) + 10,
-      rate: Math.floor(Math.random() * 500) + 2000,
-      requiredByDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      requestedBy: `User ${i+1}`,
-      
-      approvalId: `APR-00${(i + 1).toString().padStart(2, '0')}`,
-      approvedQty: Math.floor(Math.random() * 50) + 10,
-      approvedRate: Math.floor(Math.random() * 500) + 2000,
-      approvedBudget: 100000,
-      approvedBy: 'Manager',
-      approvalDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      priority: 'High',
-      approvalStatus: 'Approved',
-      
-      poNumber: `PO-00${(i + 1).toString().padStart(2, '0')}`,
-      poDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      agencyVendorName: isGov ? 'FCI' : 'Farmer Singh',
-      totalPoValue: 100000,
-      paymentTerms: 'Advance',
-      poValidityDate: `2026-07-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      createdBy: 'Buyer',
-      
-      logisticsId: `LOG-00${(i + 1).toString().padStart(2, '0')}`,
-      vehicleNumber: 'PB01A1234',
-      vehicleType: 'Truck',
-      driverName: 'Driver X',
-      transporterName: 'Trans Y',
-      route: 'Mandi-Mill',
-      distance: 50,
-      freightRate: 100,
-      totalFreight: 5000,
-      expectedDeparture: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      expectedArrival: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
-      
-      poEntryId: `POE-00${(i + 1).toString().padStart(2, '0')}`,
-      entryDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      location: 'Gate 1',
-      lotNo: 'L-123',
-      noOfBags: 500,
-      grossWeight: 25000,
-      moisture: 14.5,
-      paddyGradeVerified: 'Yes',
-      recordedBy: 'Guard',
-      
-      advanceId: `ADV-00${(i + 1).toString().padStart(2, '0')}`,
-      paymentDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      payeeName: isGov ? 'FCI' : 'Farmer Singh',
-      advanceAmount: 20000,
-      tdsAmount: 0,
-      netPaid: 20000,
-      paymentMode: 'NEFT',
-      utrNo: 'UTR123456',
-      paidBy: 'Finance',
-      
-      liftId: `LIFT-00${(i + 1).toString().padStart(2, '0')}`,
-      liftDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      netWeight: 24500,
-      liftedFrom: 'Mandi',
-      supervisor: 'Supervisor A',
-      
-      labReportId: `LAB-00${(i + 1).toString().padStart(2, '0')}`,
-      labName: 'Inhouse',
-      testDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      broken: 2.1,
-      chalky: 1.5,
-      foreignMatter: 0.5,
-      gradeResult: 'A',
-      recovery: 67,
-      labResult: 'Pass',
-      approved: i % 5 === 0 ? 'No' : 'Yes',
-      technician: 'Tech 1',
-      
-      kittingId: `FK-00${(i + 1).toString().padStart(2, '0')}`,
-      challanNo: `CHL-00${(i + 1).toString().padStart(2, '0')}`,
-      kittingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      totalAmount: 100000,
-      advancePaid: 20000,
-      balancePaid: 80000,
-      netPayable: 80000,
-      
-      closureId: `PC-00${(i + 1).toString().padStart(2, '0')}`,
-      closureDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      batchNo: 'B-123',
-      netQtyMt: 24.5,
-      warehouse: 'W1',
-      godown: 'G1',
-      binRack: 'R1',
-      qualityGrade: 'A',
-      totalPurchaseValue: 100000,
-      freightCost: 5000,
-      totalLandedCost: 105000,
-      valuationRate: 4285,
-      updatedBy: 'Store',
-      
-      status: 'Completed'
-    };
-  });
+const getVal = (item, keyStr) => {
+  if (!keyStr) return '-';
+  const keys = keyStr.split('|');
+  for (let k of keys) {
+    if (item[k]) return item[k];
+  }
+  return '-';
 };
 
 export const ArrangeLogistics = () => {
-  const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
-  const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
-  
-  const [activeTab, setActiveTab] = useState("pending");
-  const [searchTerm, setSearchTerm] = useState("");
-  
+  const [items, setItems] = useState([]);
+  const [historyItems, setHistoryItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [selectedType, setSelectedType] = useState('All');
+  const [activeTab, setActiveTab] = useState('pending');
 
-  const displayData = activeTab === "pending" ? pendingItems : historyItems;
-  
-  const filteredData = displayData.filter(item => 
-    Object.values(item).some(val => 
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  useEffect(() => {
+    const masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    const resolveItems = (rawArray) => {
+      return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
+    };
 
-  const pagination = usePagination(filteredData, 10);
+    
+    // Load raw arrays (mix of IDs from dummy data, and full objects from manual entry)
+    const rawPending = JSON.parse(localStorage.getItem('purchase_4_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_5_history')) || [];
+    
+    // Resolve to full objects
+    const pending = resolveItems(rawPending);
+    const history = resolveItems(rawHistory);
+    
+    // Filter pending
+    const historyIds = history.map(h => h.id);
+    const unresolvedPending = pending.filter(p => !historyIds.includes(p.id));
+    
+    setItems(unresolvedPending);
+    setHistoryItems(history);
+    
+  }, []);
 
-  const handleActionClick = (item) => {
-    if ("ArrangeLogistics" === "FullKitting" && item.approved === 'No') {
-      alert("Cannot process kitting for rejected lab reports.");
-      return;
-    }
-    
-    setSelectedItem(item);
-    
-    let autoFields = {};
-    if ("ArrangeLogistics" === "PurchaseApproval") autoFields = { approvalId: "APR-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "CreatePO") autoFields = { poNumber: "PO-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "ArrangeLogistics") autoFields = { logisticsId: "LOG-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "POEntry") autoFields = { poEntryId: "POE-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "AdvancePayment") autoFields = { advanceId: "ADV-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "Lift") autoFields = { liftId: "LIFT-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "LabReport") autoFields = { labReportId: "LAB-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "FullKitting") autoFields = { kittingId: "FK-00" + Math.floor(Math.random()*100), challanNo: "CHL-00" + Math.floor(Math.random()*100) };
-    if ("ArrangeLogistics" === "PurchaseClosure") autoFields = { closureId: "PC-00" + Math.floor(Math.random()*100), lotNo: "LT-00" + Math.floor(Math.random()*100), batchNo: "BT-00" + Math.floor(Math.random()*100) };
-    
-    const readOnlyFields = ["poNumber","indentNo","logisticsId","totalFreight"];
-    const initialFormData = {};
-    readOnlyFields.forEach(field => {
-      initialFormData[field] = item[field];
-    });
-    
-    setFormData({ ...initialFormData, ...autoFields });
+  const handleAction = (item, type = 'Market') => {
+    const autoGen = !item.requirementNo ? { requirementNo: 'REQ-2026-' + Math.floor(Math.random() * 10000) } : {};
+    setFormData({ ...item, purchaseType: type, ...autoGen });
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    const processedItem = { ...selectedItem, ...formData, status: "Completed" };
-    setHistoryItems([processedItem, ...historyItems]);
-    setPendingItems(pendingItems.filter(p => p.id !== selectedItem.id));
+    const newItem = { ...formData, status: 'Processed' };
+    if (!newItem.id) newItem.id = Date.now();
+    
+    // Save new item directly to raw history array
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_5_history')) || [];
+    rawHistory.push(newItem);
+    localStorage.setItem('purchase_5_history', JSON.stringify(rawHistory));
+    
+    setHistoryItems([...historyItems, newItem]);
+
+    
+    
+    const remainingItems = items.filter(i => i.id !== formData.id);
+    setItems(remainingItems);
+    
+    
     setIsModalOpen(false);
-    setSelectedItem(null);
+    setFormData({});
   };
 
-  const actionColumn = {
-    header: "Action",
-    className: "text-right",
-    cell: (row) => {
-      if ("ArrangeLogistics" === "FullKitting" && row.approved === 'No') {
-        return (
-          <div className="flex justify-end">
-            <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded font-medium">
-              <AlertCircle size={12} /> Blocked
-            </span>
-          </div>
-        );
-      }
-      return (
-        <div className="flex justify-end">
-          <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
-            <Play size={14} />
-            Arrange Logistics
-          </Button>
-        </div>
-      );
-    }
+  const getRowClass = (type) => {
+    if (type === 'Domestic' || type === 'Government') return 'bg-blue-50/50 hover:bg-blue-100/60 transition-colors border-l-4 border-l-blue-400';
+    if (type === 'Export' || type === 'Market') return 'bg-emerald-50/50 hover:bg-emerald-100/60 transition-colors border-l-4 border-l-emerald-400';
+    return 'hover:bg-slate-50 transition-colors';
   };
-
-  const pendingCols = [{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Purchase Type","accessor":"purchaseType"},{"header":"Agency / Vendor Name","accessor":"agencyVendorName"},{"header":"Paddy Grade","accessor":"paddyGrade"},{"header":"Quantity MT","accessor":"qtyMt"},{"header":"Rate ₹/Qt","accessor":"rate"},{"header":"PO Date","accessor":"poDate"},{"header":"PO Validity Date","accessor":"poValidityDate"}].map(col => {
-    if (col.accessor === 'approved' && "ArrangeLogistics" === "FullKitting") {
-      return {
-        ...col,
-        cell: (row) => (
-          <span className={`px-2 py-1 rounded text-xs font-semibold ${row.approved === 'Yes' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-            {row.approved}
-          </span>
-        )
-      };
-    }
-    return col;
-  });
-  
-  const historyCols = [{"header":"Logistics ID","accessor":"logisticsId"},{"header":"PO Number","accessor":"poNumber"},{"header":"Indent No","accessor":"indentNo"},{"header":"Vehicle Number","accessor":"vehicleNumber"},{"header":"Vehicle Type","accessor":"vehicleType"},{"header":"Driver Name","accessor":"driverName"},{"header":"Transporter Name","accessor":"transporterName"},{"header":"Route","accessor":"route"},{"header":"Distance km","accessor":"distance"},{"header":"Freight Rate ₹/MT","accessor":"freightRate"},{"header":"Total Freight ₹","accessor":"totalFreight"},{"header":"Expected Departure","accessor":"expectedDeparture"},{"header":"Expected Arrival","accessor":"expectedArrival"}];
-
-  const columns = activeTab === "pending" ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 4 - Arrange Logistics</h2>
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Arrange Logistics</h1>
+          <p className="text-slate-500">Manage arrange logistics</p>
+        </div>
+        
       </div>
 
-      <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      <Card>
-        <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <Input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+      <div className="border-b border-slate-200 mb-6">
+        <div className="flex gap-6">
+          
+          <button 
+            onClick={() => setActiveTab('pending')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+              activeTab === 'pending' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <Clock className="w-4 h-4" />
+            Pending Action
+          </button>
+          
+          <button 
+            onClick={() => setActiveTab('history')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+              activeTab === 'history' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <HistoryIcon className="w-4 h-4" />
+            History / Completed
+          </button>
         </div>
+      </div>
 
-        <DataTable 
-          columns={columns} 
-          data={pagination.paginatedData} 
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          itemsPerPage={pagination.itemsPerPage}
-          onPageChange={pagination.setCurrentPage}
-          onItemsPerPageChange={pagination.setItemsPerPage}
-          totalResults={pagination.totalResults}
-        />
+      <Card className="p-0 border-0 shadow-sm ring-1 ring-slate-200 rounded-xl overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+          <div className="relative w-64">
+            <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <Input className="pl-9 bg-slate-50 border-slate-200" placeholder="Search..." />
+          </div>
+          
+          <Select 
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="w-48 bg-slate-50 border-slate-200"
+          >
+            <option value="All">All Types</option>
+            <option value="Market">Market (Mkt)</option>
+            <option value="Government">Government (Gov)</option>
+          </Select>
+          
+        </div>
+        
+        <div className="overflow-x-auto bg-white">
+          <table className="w-full text-sm text-left whitespace-nowrap">
+            <thead className="text-xs text-slate-600 bg-slate-50 uppercase tracking-wide border-b border-slate-200">
+              <tr>
+                {activeTab === 'pending' ? (
+                  <>
+                    <th className="px-6 py-4 font-bold">Action</th>
+                    <th className="px-6 py-4 font-bold">PO/DO Number</th>
+                    <th className="px-6 py-4 font-bold">Indent No</th>
+                    <th className="px-6 py-4 font-bold">Purchase Type</th>
+                    <th className="px-6 py-4 font-bold">Vendor/Agency Name</th>
+                    <th className="px-6 py-4 font-bold">Paddy Grade</th>
+                    <th className="px-6 py-4 font-bold">Qty MT</th>
+                    <th className="px-6 py-4 font-bold">Rate ₹/Qt</th>
+                    <th className="px-6 py-4 font-bold">Validity Date</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="px-6 py-4 font-bold">Logistics ID</th>
+                    <th className="px-6 py-4 font-bold">PO/DO Number</th>
+                    <th className="px-6 py-4 font-bold">Indent No</th>
+                    <th className="px-6 py-4 font-bold">Vehicle Number</th>
+                    <th className="px-6 py-4 font-bold">Vehicle Type</th>
+                    <th className="px-6 py-4 font-bold">Driver Name</th>
+                    <th className="px-6 py-4 font-bold">Transporter Name</th>
+                    <th className="px-6 py-4 font-bold">Route</th>
+                    <th className="px-6 py-4 font-bold">Distance km</th>
+                    <th className="px-6 py-4 font-bold">Freight Rate ₹/MT</th>
+                    <th className="px-6 py-4 font-bold">Total Freight ₹</th>
+                    <th className="px-6 py-4 font-bold">Expected Departure</th>
+                    <th className="px-6 py-4 font-bold">Expected Arrival</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {activeTab === 'pending' && (
+                <>
+                  {items
+                    .filter(item => selectedType === 'All' || item.purchaseType === selectedType)
+                    .map((item, index) => (
+                    <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
+                      <td className="px-6 py-4">
+                        <Button 
+                          onClick={() => handleAction(item, item.purchaseType)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-4 py-2 text-xs rounded-md shadow-sm font-medium"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          Process
+                        </Button>
+                      </td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poNumber|doNumber|poDoNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'purchaseType')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vendorName|agencyName')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'paddyGrade|govPaddyGrade|mktPaddyGrade')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'qtyMT')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'rate')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poValidity|doValidity')}</td>
+                    </tr>
+                  ))}
+                  {items.length === 0 && (
+                    <tr><td colSpan="9" className="px-6 py-12 text-center text-slate-500">No pending records found</td></tr>
+                  )}
+                </>
+              )}
+              
+              {activeTab === 'history' && (
+                <>
+                  {historyItems.map((item, index) => (
+                    <tr key={index} className={getRowClass(item.orderType || item.purchaseType)}>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'logisticsId')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poDoNumber|poNumber|doNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'indentNo')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleType')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'driverName')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'transporterName')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'route')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'distance')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'freightRate')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'totalFreight')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'expectedDeparture')}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'expectedArrival')}</td>
+                    </tr>
+                  ))}
+                  {historyItems.length === 0 && (
+                    <tr><td colSpan="13" className="px-6 py-12 text-center text-slate-500">No history records found</td></tr>
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
+        </div>
       </Card>
 
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Logistics Details"
+        title={`Arrange Logistics Details`}
+        size="4xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="max-h-[85vh] overflow-y-auto p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             
-            <div className="space-y-1.5">
-              <Label>PO Number</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">PO / DO Number</Label>
               <Input 
                 type="text"
-                value={formData.poNumber || ""} 
-                onChange={(e) => setFormData({...formData, poNumber: e.target.value})}
+                value={formData.poDoNumber || ''} 
+                onChange={(e) => setFormData({...formData, poDoNumber: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Indent No</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Indent No</Label>
               <Input 
                 type="text"
-                value={formData.indentNo || ""} 
+                value={formData.indentNo || ''} 
                 onChange={(e) => setFormData({...formData, indentNo: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Logistics ID</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Purchase Type</Label>
               <Input 
                 type="text"
-                value={formData.logisticsId || ""} 
+                value={formData.purchaseType || ''} 
+                onChange={(e) => setFormData({...formData, purchaseType: e.target.value})}
+                readOnly={true}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Logistics ID</Label>
+              <Input 
+                type="text"
+                value={formData.logisticsId || ''} 
                 onChange={(e) => setFormData({...formData, logisticsId: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Vehicle Number</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Vehicle Number</Label>
               <Input 
                 type="text"
-                value={formData.vehicleNumber || ""} 
+                value={formData.vehicleNumber || ''} 
                 onChange={(e) => setFormData({...formData, vehicleNumber: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Vehicle Type</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Vehicle Type</Label>
               <Select 
-                value={formData.vehicleType || ""} 
+                value={formData.vehicleType || ''} 
                 onChange={(e) => setFormData({...formData, vehicleType: e.target.value})}
                 disabled={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               >
-                <option value="">Select Vehicle Type</option>
+                <option value="">Select...</option>
                 <option value="Truck">Truck</option><option value="Trolley">Trolley</option><option value="Container">Container</option>
               </Select>
             </div>
-            <div className="space-y-1.5">
-              <Label>Driver Name</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Driver Name</Label>
               <Input 
                 type="text"
-                value={formData.driverName || ""} 
+                value={formData.driverName || ''} 
                 onChange={(e) => setFormData({...formData, driverName: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Driver Phone</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Driver Phone</Label>
               <Input 
                 type="text"
-                value={formData.driverPhone || ""} 
+                value={formData.driverPhone || ''} 
                 onChange={(e) => setFormData({...formData, driverPhone: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Driver License No</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Driver License No</Label>
               <Input 
                 type="text"
-                value={formData.driverLicenseNo || ""} 
-                onChange={(e) => setFormData({...formData, driverLicenseNo: e.target.value})}
+                value={formData.driverLicense || ''} 
+                onChange={(e) => setFormData({...formData, driverLicense: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Vehicle Capacity MT</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Vehicle Capacity MT</Label>
               <Input 
                 type="number"
-                value={formData.vehicleCapacity || ""} 
+                value={formData.vehicleCapacity || ''} 
                 onChange={(e) => setFormData({...formData, vehicleCapacity: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Transporter Name</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Transporter Name</Label>
               <Input 
                 type="text"
-                value={formData.transporterName || ""} 
+                value={formData.transporterName || ''} 
                 onChange={(e) => setFormData({...formData, transporterName: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Transporter Phone</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Transporter Phone</Label>
               <Input 
                 type="text"
-                value={formData.transporterPhone || ""} 
+                value={formData.transporterPhone || ''} 
                 onChange={(e) => setFormData({...formData, transporterPhone: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Transporter GSTIN</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Transporter GSTIN</Label>
               <Input 
                 type="text"
-                value={formData.transporterGstin || ""} 
-                onChange={(e) => setFormData({...formData, transporterGstin: e.target.value})}
+                value={formData.transporterGst || ''} 
+                onChange={(e) => setFormData({...formData, transporterGst: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Route (Mandi / Agency → Mill)</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Route (Mandi/Agency → Mill)</Label>
               <Input 
                 type="text"
-                value={formData.route || ""} 
+                value={formData.route || ''} 
                 onChange={(e) => setFormData({...formData, route: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Distance km</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Distance km</Label>
               <Input 
                 type="number"
-                value={formData.distance || ""} 
+                value={formData.distance || ''} 
                 onChange={(e) => setFormData({...formData, distance: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Expected Departure Date</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Expected Departure Date</Label>
               <Input 
                 type="date"
-                value={formData.expectedDeparture || ""} 
+                value={formData.expectedDeparture || ''} 
                 onChange={(e) => setFormData({...formData, expectedDeparture: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Expected Arrival Date</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Expected Arrival Date</Label>
               <Input 
                 type="date"
-                value={formData.expectedArrival || ""} 
+                value={formData.expectedArrival || ''} 
                 onChange={(e) => setFormData({...formData, expectedArrival: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Freight Rate ₹/MT</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Freight Rate ₹/MT</Label>
               <Input 
                 type="number"
-                value={formData.freightRate || ""} 
+                value={formData.freightRate || ''} 
                 onChange={(e) => setFormData({...formData, freightRate: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Total Freight ₹</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Total Freight ₹</Label>
               <Input 
                 type="number"
-                value={formData.totalFreight || ""} 
+                value={formData.totalFreight || ''} 
                 onChange={(e) => setFormData({...formData, totalFreight: e.target.value})}
                 readOnly={true}
-                className={true ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Advance to Driver ₹</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Advance to Driver ₹</Label>
               <Input 
                 type="number"
-                value={formData.advanceToDriver || ""} 
-                onChange={(e) => setFormData({...formData, advanceToDriver: e.target.value})}
+                value={formData.advanceDriver || ''} 
+                onChange={(e) => setFormData({...formData, advanceDriver: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Remarks</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Remarks</Label>
               <Input 
                 type="text"
-                value={formData.remarks || ""} 
+                value={formData.remarks || ''} 
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 readOnly={false}
-                className={false ? "bg-slate-100" : ""}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
+          <div className="flex justify-end gap-3 pt-8 mt-8 border-t border-slate-100">
+            <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              Save & Process
+            <Button onClick={handleSave} className="px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+              Save Details
             </Button>
           </div>
         </div>

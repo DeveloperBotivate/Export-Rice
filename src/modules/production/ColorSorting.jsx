@@ -14,111 +14,175 @@ const generateDummyData = () => {
     
     return {
       id: i + 1,
+      planNo: `PP-2026-${(i + 1).toString().padStart(4, '0')}`,
       productionOrderNo: `PRD-2026-${(i + 1).toString().padStart(4, '0')}`,
+      batchNo: `BT-2026-${(i + 1).toString().padStart(4, '0')}`,
+      lotNo: `LT-2026-${(i + 1).toString().padStart(4, '0')}`,
       planDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      paddyGrade: ['Grade A', 'Grade B', 'Grade C'][Math.floor(Math.random() * 3)],
-      sourceStockId: `STK-${Math.floor(Math.random() * 1000)}`,
-      lotNo: `LOT-${i+1}`,
-      batchNo: `BATCH-${i+1}`,
+      paddyVariety: ['Basmati', 'Sona Masuri', 'IR64'][Math.floor(Math.random() * 3)],
       plannedInputQty: qty,
-      expectedPremiumRice: (qty * 0.6).toFixed(2),
-      expectedBrokenRice: (qty * 0.1).toFixed(2),
-      expectedBran: (qty * 0.08).toFixed(2),
-      expectedHusk: (qty * 0.2).toFixed(2),
-      expectedPolish: (qty * 0.02).toFixed(2),
-      recoveryTarget: 60,
-      machineAssigned: `MCH-${Math.floor(Math.random() * 10)}`,
-      operatorAssigned: 'Ramesh Operator',
+      targetHeadRice: (qty * 0.6).toFixed(2),
+      expectedRecovery: 60,
+      plant: 'Mill Unit 1',
       shift: ['Morning', 'Evening', 'Night'][Math.floor(Math.random() * 3)],
-      productionDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      supervisor: 'Rajesh',
       plannedBy: 'Production Head',
-      
-      actualStartDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-      actualStartTime: '08:00 AM',
-      
-      cleaningId: `CLN-${(i + 1).toString().padStart(4, '0')}`,
-      cleaningDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T10:00`,
-      cleaningInputQty: qty,
-      cleanedOutput: (qty * 0.98).toFixed(2),
-      dustWastage: Math.floor(Math.random() * 50) + 10,
-      stoneWastage: Math.floor(Math.random() * 20) + 5,
-      foreignMatter: Math.floor(Math.random() * 30) + 5,
-      cleaningMachine: `CLN-MCH-${Math.floor(Math.random() * 5)}`,
-      cleaningOperator: 'Suresh Cleaner',
-
-      dehuskingId: `DHK-${(i + 1).toString().padStart(4, '0')}`,
-      dehuskingInputQty: (qty * 0.98).toFixed(2),
-      brownRiceOutput: (qty * 0.78).toFixed(2),
-      huskOutput: (qty * 0.2).toFixed(2),
+      orderDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      operatorAllocated: 'Suresh',
+      productionStartDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      productionEndDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
+      priority: 'Normal',
+      status: 'In Progress',
+      batchDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      sourceStockId: `STK-${Math.floor(Math.random() * 1000)}`,
+      sourceWarehouse: 'Godown A',
+      qtyToProcess: qty,
+      machineUsed: `MCH-${Math.floor(Math.random() * 10)}`,
+      batchStartTime: '08:00',
+      batchEndTime: '16:00',
+      issueId: `RMI-2026-${(i + 1).toString().padStart(4, '0')}`,
+      issueDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T08:30`,
+      paddyQtyIssued: qty,
+      ppBagsIssued: 'PP-50KG (1000)',
+      boppBagsIssued: 'BOPP-25KG (500)',
+      threadIssued: 'TH-01 (10)',
+      labelsIssued: 'LBL-01 (2000)',
+      issuedBy: 'Store Keeper',
+      receivedBy: 'Suresh',
+      preQcId: `PQC-2026-${(i + 1).toString().padStart(4, '0')}`,
+      testDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T09:00`,
+      moisturePercent: 12.5,
+      foreignMatterPercent: 1.2,
+      brokenPercent: 2.5,
+      chalkyPercent: 1.0,
+      paddyGradeConfirmed: 'A',
+      expectedRecoveryAfterTest: 62,
+      qcResult: 'Pass',
+      approvedForProduction: 'Yes',
+      labTechnician: 'Dr. Kumar',
+      millingSessionId: `MILL-2026-${(i + 1).toString().padStart(4, '0')}`,
+      cleaningId: `CLN-2026-${(i + 1).toString().padStart(4, '0')}`,
+      cleaningInputMt: qty,
+      cleanedOutputMt: (qty * 0.98).toFixed(2),
+      dustRemovedKg: 15,
+      stonesRemovedKg: 5,
+      foreignMatterRemovedKg: 2,
+      dehuskingId: `DHK-2026-${(i + 1).toString().padStart(4, '0')}`,
+      dehuskingInputMt: (qty * 0.98).toFixed(2),
+      brownRiceMt: (qty * 0.78).toFixed(2),
+      huskMt: (qty * 0.20).toFixed(2),
       dehuskingEfficiency: 95,
-      rubberRollId: `RR-${Math.floor(Math.random() * 100)}`,
-      machineRpm: 1200,
-      dehuskingOperator: 'Anil Husker',
-      dehuskingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T12:00`,
-
-      separationId: `SEP-${(i + 1).toString().padStart(4, '0')}`,
-      separationInputQty: (qty * 0.78).toFixed(2),
-      separatedBrownRice: (qty * 0.75).toFixed(2),
-      paddyReturned: (qty * 0.03).toFixed(2),
-      separatorMachineId: `SEP-MCH-${Math.floor(Math.random() * 5)}`,
-      separationEfficiency: 98,
-      separationOperator: 'Vijay Separator',
-      separationDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T14:00`,
-
-      polishingId: `POL-${(i + 1).toString().padStart(4, '0')}`,
-      polishingInputQty: (qty * 0.75).toFixed(2),
-      whiteRiceOutput: (qty * 0.65).toFixed(2),
-      branOutput: (qty * 0.08).toFixed(2),
-      polishOutput: (qty * 0.02).toFixed(2),
-      polishingDegree: 12,
-      polishingMachineId: `POL-MCH-${Math.floor(Math.random() * 5)}`,
-      waterUsed: Math.floor(Math.random() * 500) + 100,
-      polishingOperator: 'Mohan Polisher',
-      polishingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T16:00`,
-
-      gradingId: `GRD-${(i + 1).toString().padStart(4, '0')}`,
-      gradingInputQty: (qty * 0.65).toFixed(2),
-      gradeARice: (qty * 0.5).toFixed(2),
-      gradeBRice: (qty * 0.1).toFixed(2),
-      brokenRice: (qty * 0.03).toFixed(2),
-      smallBroken: (qty * 0.02).toFixed(2),
-      gradingMachineId: `GRD-MCH-${Math.floor(Math.random() * 5)}`,
-      sieveSize: '3.5mm',
-      gradingOperator: 'Karan Grader',
-      gradingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T18:00`,
-
-      colorSortId: `CS-${(i + 1).toString().padStart(4, '0')}`,
-      colorSortInputQty: (qty * 0.5).toFixed(2),
-      sortedOutput: (qty * 0.49).toFixed(2),
-      rejection: (qty * 0.01).toFixed(2),
-      colorSorterMachineId: `CS-MCH-${Math.floor(Math.random() * 5)}`,
+      rubberRollId: 'RR-10',
+      machineRpm: 1400,
+      separationId: `SEP-2026-${(i + 1).toString().padStart(4, '0')}`,
+      separatorInputMt: (qty * 0.78).toFixed(2),
+      separatedBrownRiceMt: (qty * 0.76).toFixed(2),
+      paddyReturnedMt: 0.5,
+      separatorEfficiency: 98,
+      polishingId: `POL-2026-${(i + 1).toString().padStart(4, '0')}`,
+      polishingInputMt: (qty * 0.76).toFixed(2),
+      whiteRiceMt: (qty * 0.68).toFixed(2),
+      branMt: (qty * 0.08).toFixed(2),
+      polishedRiceMt: (qty * 0.65).toFixed(2),
+      ricePolishMt: (qty * 0.03).toFixed(2),
+      polishingDegree: 8,
+      waterUsedL: 50,
+      gradingId: `GRD-2026-${(i + 1).toString().padStart(4, '0')}`,
+      gradingInputMt: (qty * 0.65).toFixed(2),
+      headRiceMt: (qty * 0.58).toFixed(2),
+      gradeBRiceMt: (qty * 0.02).toFixed(2),
+      brokenRiceMt: (qty * 0.05).toFixed(2),
+      smallBrokenMt: (qty * 0.01).toFixed(2),
+      sieveSize: '3mm',
+      colorSortId: `CS-2026-${(i + 1).toString().padStart(4, '0')}`,
+      colorSortingInputMt: (qty * 0.60).toFixed(2),
+      sortedRiceOutputMt: (qty * 0.59).toFixed(2),
+      rejectionMt: (qty * 0.01).toFixed(2),
+      rejectionPercent: 1.5,
       noOfPasses: 2,
-      rejectionPercent: 2,
-      colorSortOperator: 'Raj Sorter',
-      colorSortDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T20:00`,
-
-      actualTotalInput: qty,
-      actualRiceOutput: (qty * 0.49).toFixed(2),
-      actualBran: (qty * 0.08).toFixed(2),
-      actualHusk: (qty * 0.2).toFixed(2),
-      actualPolish: (qty * 0.02).toFixed(2),
-      actualBrokenRice: (qty * 0.03).toFixed(2),
-      actualRecoveryPercent: 58,
-      variance: -0.5,
-      machineHold: 'No',
-      holdReason: '',
-      inventoryTransferRef: `TRF-${Math.floor(Math.random() * 1000)}`,
-      closedBy: 'Production Head',
-      closureDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-
-      status: 'Completed'
+      totalMillingDuration: 8,
+      powerConsumed: 450,
+      millingDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T10:00`,
+      finalQcId: `FQC-2026-${(i + 1).toString().padStart(4, '0')}`,
+      inspectionDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}T17:00`,
+      finalMoisturePercent: 13,
+      finalBrokenPercent: 4.5,
+      finalChalkyPercent: 0.5,
+      finalForeignMatterPercent: 0.1,
+      finalColour: 'L-85',
+      finalHeadRiceGrade: 'Premium',
+      finalBrokenRiceGrade: 'A',
+      finalQcResult: 'Pass',
+      finalQcInspector: 'Dr. Kumar',
+      yieldId: `YLD-2026-${(i + 1).toString().padStart(4, '0')}`,
+      yieldDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
+      totalPaddyInputMt: qty,
+      wasteMt: (qty * 0.02).toFixed(2),
+      headRiceRecovery: 58,
+      totalRiceRecovery: 63,
+      millingPercent: 65,
+      expectedHeadRiceMt: (qty * 0.6).toFixed(2),
+      varianceMt: (qty * 0.58 - qty * 0.6).toFixed(2),
+      variancePercent: -2,
+      totalMachineHours: 8,
+      downtimeHours: 0,
+      calculatedBy: 'System',
+      fgEntryId: `FGE-2026-${(i + 1).toString().padStart(4, '0')}`,
+      fgEntryDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
+      headRiceLotNo: `LT-R${(i + 1).toString().padStart(3, '0')}`,
+      headRiceBatchNo: `BT-R${(i + 1).toString().padStart(3, '0')}`,
+      targetWarehouse: 'FG Warehouse 1',
+      totalFgValue: qty * 45000,
+      fgEnteredBy: 'Store Keeper',
+      packingOrderNo: `PKO-2026-${(i + 1).toString().padStart(4, '0')}`,
+      packingDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
+      bagType: 'PP',
+      bagSize: '25kg',
+      noOfBagsRequired: (qty * 0.58 * 1000) / 25,
+      totalPackedMt: (qty * 0.58).toFixed(2),
+      barcodeSeries: `8901000${i}0000 - 8901000${i}9999`,
+      qrBatchId: `QR-2026-${(i + 1).toString().padStart(4, '0')}`,
+      mrp: 1800,
+      bestBeforeDate: `2027-06-${(i % 28 + 2).toString().padStart(2, '0')}`,
+      packingQcResult: 'Pass',
+      packingSupervisor: 'Vikram',
+      fgwEntryId: `FGW-2026-${(i + 1).toString().padStart(4, '0')}`,
+      fgwEntryDate: `2026-06-${(i % 28 + 2).toString().padStart(2, '0')}T18:00`,
+      fgWarehouse: 'FG Warehouse 1',
+      fgGodown: 'Godown 1',
+      fgRack: 'Rack A',
+      fgBin: 'Bin 1',
+      fgwStockValue: qty * 45000,
+      fgwEntryDoneBy: 'Store Keeper',
+      closureId: `PCL-2026-${(i + 1).toString().padStart(4, '0')}`,
+      closureDate: `2026-06-${(i % 28 + 3).toString().padStart(2, '0')}`,
+      machineEfficiency: 95,
+      labourCost: 5000,
+      totalBatchCost: qty * 25000 + 5000 + 2000,
+      costPerMt: (qty * 25000 + 5000 + 2000) / qty,
+      batchProfitLoss: qty * 45000 - (qty * 25000 + 5000 + 2000),
+      batchStatus: 'Closed',
+      closedBy: 'Production Head'
     };
   });
 };
 
 export const ColorSorting = () => {
-  const [pendingItems, setPendingItems] = useState(generateDummyData().slice(0, 20));
-  const [historyItems, setHistoryItems] = useState(generateDummyData().slice(20, 40));
+  const getInitialData = () => {
+    const rawPending = JSON.parse(localStorage.getItem('production_10_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('production_11_history')) || [];
+    const master = JSON.parse(localStorage.getItem('production_master')) || [];
+    
+    const resolvedPending = rawPending.map(id => master.find(m => m.id === id)).filter(Boolean);
+    const resolvedHistory = rawHistory.map(id => master.find(m => m.id === id)).filter(Boolean);
+    
+    const pending = resolvedPending.filter(p => !rawHistory.includes(p.id));
+    return { pending, history: resolvedHistory };
+  };
+
+  const initial = getInitialData();
+  const [pendingItems, setPendingItems] = useState(initial.pending);
+  const [historyItems, setHistoryItems] = useState(initial.history);
   
   const [activeTab, setActiveTab] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
@@ -146,9 +210,19 @@ export const ColorSorting = () => {
     
     
     
-    autoFields = { colorSortId: 'CS-' + Math.floor(Math.random()*10000) };
     
-    const readOnlyFields = ["gradingId","productionOrderNo"];
+    
+    
+    
+    autoFields = { colorSortId: 'CS-2026-' + Math.floor(Math.random()*10000) };
+    
+    
+    
+    
+    
+    
+    
+    const readOnlyFields = ["gradingId","productionOrderNo","colorSortId"];
     const initialFormData = {};
     readOnlyFields.forEach(field => {
       initialFormData[field] = item[field];
@@ -161,11 +235,24 @@ export const ColorSorting = () => {
   useEffect(() => {
     if (isModalOpen && formData) {
       
+      
+      
     }
-  }, [formData, isModalOpen, selectedItem]);
+  }, [formData, isModalOpen]);
 
   const handleSave = () => {
     const processedItem = { ...selectedItem, ...formData, status: 'Completed' };
+    
+    const master = JSON.parse(localStorage.getItem('production_master')) || [];
+    const updatedMaster = master.map(m => m.id === processedItem.id ? processedItem : m);
+    localStorage.setItem('production_master', JSON.stringify(updatedMaster));
+
+    const rawHistory = JSON.parse(localStorage.getItem('production_11_history')) || [];
+    if (!rawHistory.includes(processedItem.id)) {
+      rawHistory.unshift(processedItem.id);
+      localStorage.setItem('production_11_history', JSON.stringify(rawHistory));
+    }
+    
     setHistoryItems([processedItem, ...historyItems]);
     setPendingItems(pendingItems.filter(p => p.id !== selectedItem.id));
     setIsModalOpen(false);
@@ -179,21 +266,21 @@ export const ColorSorting = () => {
       <div className="flex justify-end">
         <Button size="sm" onClick={() => handleActionClick(row)} className="flex items-center gap-1 bg-primary text-white">
           <Play size={14} />
-          Process Sorting
+          Process
         </Button>
       </div>
     )
   };
 
-  const pendingCols = [{"header":"Grading ID","accessor":"gradingId"},{"header":"Production Order No","accessor":"productionOrderNo"},{"header":"Grade A Qty (MT)","accessor":"gradeARice"},{"header":"Grade B Qty (MT)","accessor":"gradeBRice"},{"header":"Broken Rice (MT)","accessor":"brokenRice"},{"header":"Date","accessor":"gradingDate"},{"header":"Operator","accessor":"gradingOperator"}];
-  const historyCols = [{"header":"Color Sort ID","accessor":"colorSortId"},{"header":"Grading ID","accessor":"gradingId"},{"header":"Production Order No","accessor":"productionOrderNo"},{"header":"Input (MT)","accessor":"colorSortInputQty"},{"header":"Sorted Output (MT)","accessor":"sortedOutput"},{"header":"Rejection (MT)","accessor":"rejection"},{"header":"Rejection %","accessor":"rejectionPercent"},{"header":"Date","accessor":"colorSortDate"},{"header":"Operator","accessor":"colorSortOperator"}];
+  const pendingCols = [{"header":"Grading ID","accessor":"gradingId"},{"header":"Production Order No","accessor":"productionOrderNo"},{"header":"Grade A Qty MT","accessor":"headRiceMt"},{"header":"Grade B Qty MT","accessor":"gradeBRiceMt"},{"header":"Broken Rice MT","accessor":"brokenRiceMt"},{"header":"Date","accessor":"millingDate"},{"header":"Operator","accessor":"operatorAllocated"}];
+  const historyCols = [{"header":"Color Sort ID","accessor":"colorSortId"},{"header":"Grading ID","accessor":"gradingId"},{"header":"Production Order No","accessor":"productionOrderNo"},{"header":"Input MT","accessor":"colorSortingInputMt"},{"header":"Sorted Output MT","accessor":"sortedRiceOutputMt"},{"header":"Rejection MT","accessor":"rejectionMt"},{"header":"Rejection %","accessor":"rejectionPercent"},{"header":"Date","accessor":"millingDate"},{"header":"Operator","accessor":"operatorAllocated"}];
 
   const columns = activeTab === 'pending' ? [actionColumn, ...pendingCols] : historyCols;
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Stage 2.6 - Color Sorting</h2>
+        <h2 className="text-2xl font-bold text-slate-800">Stage 6.6 - Color Sorting</h2>
       </div>
 
       <PageTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -227,139 +314,140 @@ export const ColorSorting = () => {
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title="Color Sorting Details"
+        title="Stage 6.6 - Color Sorting Details"
+        size="4xl"
       >
-        <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="max-h-[85vh] overflow-y-auto p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             
-            <div className="space-y-1.5">
-              <Label>Grading ID</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Grading ID</Label>
               <Input 
                 type="text"
                 value={formData.gradingId || ''} 
                 onChange={(e) => setFormData({...formData, gradingId: e.target.value})}
                 readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Production Order No</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Production Order No</Label>
               <Input 
                 type="text"
                 value={formData.productionOrderNo || ''} 
                 onChange={(e) => setFormData({...formData, productionOrderNo: e.target.value})}
                 readOnly={true}
-                className={true ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Color Sort ID</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Color Sort ID</Label>
               <Input 
                 type="text"
                 value={formData.colorSortId || ''} 
                 onChange={(e) => setFormData({...formData, colorSortId: e.target.value})}
-                readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                readOnly={true}
+                className={'w-full mt-1.5 bg-slate-50 border-slate-200 text-slate-600 cursor-not-allowed rounded-md'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Input Quantity (MT)</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Input Quantity MT</Label>
               <Input 
                 type="number"
-                value={formData.colorSortInputQty || ''} 
-                onChange={(e) => setFormData({...formData, colorSortInputQty: e.target.value})}
+                value={formData.colorSortingInputMt || ''} 
+                onChange={(e) => setFormData({...formData, colorSortingInputMt: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Sorted Rice Output (MT)</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Sorted Rice Output MT</Label>
               <Input 
                 type="number"
-                value={formData.sortedOutput || ''} 
-                onChange={(e) => setFormData({...formData, sortedOutput: e.target.value})}
+                value={formData.sortedRiceOutputMt || ''} 
+                onChange={(e) => setFormData({...formData, sortedRiceOutputMt: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Rejection/Discard (MT)</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Rejection/Discard MT</Label>
               <Input 
                 type="number"
-                value={formData.rejection || ''} 
-                onChange={(e) => setFormData({...formData, rejection: e.target.value})}
+                value={formData.rejectionMt || ''} 
+                onChange={(e) => setFormData({...formData, rejectionMt: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Color Sorter Machine ID</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Color Sorter Machine ID</Label>
               <Input 
                 type="text"
-                value={formData.colorSorterMachineId || ''} 
-                onChange={(e) => setFormData({...formData, colorSorterMachineId: e.target.value})}
+                value={formData.machineAllocated || ''} 
+                onChange={(e) => setFormData({...formData, machineAllocated: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>No. of Passes</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">No. of Passes</Label>
               <Input 
                 type="number"
                 value={formData.noOfPasses || ''} 
                 onChange={(e) => setFormData({...formData, noOfPasses: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Rejection %</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Rejection %</Label>
               <Input 
                 type="number"
                 value={formData.rejectionPercent || ''} 
                 onChange={(e) => setFormData({...formData, rejectionPercent: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Operator</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Operator Name</Label>
               <Input 
                 type="text"
-                value={formData.colorSortOperator || ''} 
-                onChange={(e) => setFormData({...formData, colorSortOperator: e.target.value})}
+                value={formData.operatorAllocated || ''} 
+                onChange={(e) => setFormData({...formData, operatorAllocated: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Date & Time</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Date & Time</Label>
               <Input 
                 type="datetime-local"
-                value={formData.colorSortDate || ''} 
-                onChange={(e) => setFormData({...formData, colorSortDate: e.target.value})}
+                value={formData.millingDate || ''} 
+                onChange={(e) => setFormData({...formData, millingDate: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Remarks</Label>
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-slate-700">Remarks</Label>
               <Input 
                 type="text"
                 value={formData.remarks || ''} 
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 readOnly={false}
-                className={false ? 'bg-slate-100' : ''}
+                className={'w-full mt-1.5 bg-white border-slate-300 text-slate-900 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm'}
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <Button onClick={() => setIsModalOpen(false)} variant="outline">
+          <div className="flex justify-end gap-3 pt-8 mt-8 border-t border-slate-100">
+            <Button onClick={() => setIsModalOpen(false)} variant="outline" className="px-6">
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              Save & Process
+            <Button onClick={handleSave} className="px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+              Save Details
             </Button>
           </div>
         </div>

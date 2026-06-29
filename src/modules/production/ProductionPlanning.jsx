@@ -10,29 +10,47 @@ import { Modal } from '../../components/ui/Modal';
 const generateDummyData = () => {
   return Array.from({ length: 40 }, (_, i) => ({
     id: i + 1,
-    productionOrderNo: `PRD-2026-${(i + 1).toString().padStart(4, '0')}`,
+    planNo: `PP-2026-${(i + 1).toString().padStart(4, '0')}`,
     planDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    paddyGrade: ['Grade A', 'Grade B', 'Grade C'][Math.floor(Math.random() * 3)],
-    sourceStockId: `STK-${Math.floor(Math.random() * 1000)}`,
-    lotNo: `LOT-${i+1}`,
-    batchNo: `BATCH-${i+1}`,
+    planType: ['Daily', 'Weekly', 'Monthly'][Math.floor(Math.random() * 3)],
+    paddyVariety: ['Basmati', 'Sona Masuri', 'IR64'][Math.floor(Math.random() * 3)],
     plannedInputQty: Math.floor(Math.random() * 50) + 10,
-    expectedPremiumRice: (Math.floor(Math.random() * 50) * 0.6).toFixed(2),
-    expectedBrokenRice: (Math.floor(Math.random() * 50) * 0.1).toFixed(2),
-    expectedBran: (Math.floor(Math.random() * 50) * 0.08).toFixed(2),
-    expectedHusk: (Math.floor(Math.random() * 50) * 0.2).toFixed(2),
-    expectedPolish: (Math.floor(Math.random() * 50) * 0.02).toFixed(2),
-    recoveryTarget: 60,
-    machineAssigned: `MCH-${Math.floor(Math.random() * 10)}`,
-    operatorAssigned: 'Ramesh Operator',
+    targetHeadRice: (Math.floor(Math.random() * 50) * 0.6).toFixed(2),
+    targetBrokenRice: (Math.floor(Math.random() * 50) * 0.1).toFixed(2),
+    targetBran: (Math.floor(Math.random() * 50) * 0.08).toFixed(2),
+    targetHusk: (Math.floor(Math.random() * 50) * 0.2).toFixed(2),
+    expectedRecovery: 60,
+    plant: 'Mill Unit 1',
     shift: ['Morning', 'Evening', 'Night'][Math.floor(Math.random() * 3)],
-    productionDate: `2026-06-${(i % 28 + 1).toString().padStart(2, '0')}`,
-    plannedBy: 'Production Head'
+    machineAllocated: `MCH-${Math.floor(Math.random() * 10)}`,
+    supervisor: 'Rajesh',
+    plannedBy: 'Production Head',
+    status: 'Open'
   }));
 };
 
 export const ProductionPlanning = () => {
-  const [historyItems, setHistoryItems] = useState(generateDummyData());
+  const getInitialData = () => {
+    let master = JSON.parse(localStorage.getItem('production_master'));
+    let historyIds = JSON.parse(localStorage.getItem('production_1_history'));
+    
+    if (!master || master.length === 0) {
+      master = generateDummyData();
+      localStorage.setItem('production_master', JSON.stringify(master));
+      
+      for(let i=1; i<=17; i++) {
+        const numItems = Math.max(0, (18 - i) * 2); 
+        const ids = Array.from({length: numItems}, (_, index) => index + 1);
+        localStorage.setItem(`production_${i}_history`, JSON.stringify(ids));
+      }
+      historyIds = Array.from({length: 40}, (_, index) => index + 1);
+      localStorage.setItem('production_1_history', JSON.stringify(historyIds));
+    }
+    
+    return historyIds.map(id => master.find(m => m.id === id)).filter(Boolean);
+  };
+
+  const [historyItems, setHistoryItems] = useState(getInitialData());
   const [searchTerm, setSearchTerm] = useState('');
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,31 +65,41 @@ export const ProductionPlanning = () => {
   const pagination = usePagination(filteredData, 10);
 
   const handleCreateNew = () => {
-    setFormData({ productionOrderNo: 'PRD-' + Math.floor(Math.random()*10000) });
+    setFormData({ planNo: 'PP-2026-' + Math.floor(Math.random()*10000) });
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    const newItem = { ...formData, id: Date.now() };
+    const newItem = { ...formData, id: Date.now(), status: 'Open' };
+    
+    const master = JSON.parse(localStorage.getItem('production_master')) || [];
+    const newMaster = [newItem, ...master];
+    localStorage.setItem('production_master', JSON.stringify(newMaster));
+    
+    const historyIds = JSON.parse(localStorage.getItem('production_1_history')) || [];
+    localStorage.setItem('production_1_history', JSON.stringify([newItem.id, ...historyIds]));
+    
     setHistoryItems([newItem, ...historyItems]);
     setIsModalOpen(false);
   };
 
   const columns = [
-    { header: 'Production Order No', accessor: 'productionOrderNo' },
+    { header: 'Plan No', accessor: 'planNo' },
     { header: 'Plan Date', accessor: 'planDate' },
-    { header: 'Paddy Grade', accessor: 'paddyGrade' },
-    { header: 'Source Stock ID', accessor: 'sourceStockId' },
-    { header: 'Lot No', accessor: 'lotNo' },
-    { header: 'Batch No', accessor: 'batchNo' },
-    { header: 'Planned Input Qty (MT)', accessor: 'plannedInputQty' },
-    { header: 'Expected Rice Output (MT)', accessor: 'expectedPremiumRice' },
-    { header: 'Expected Bran (MT)', accessor: 'expectedBran' },
-    { header: 'Expected Husk (MT)', accessor: 'expectedHusk' },
-    { header: 'Recovery % Target', accessor: 'recoveryTarget' },
-    { header: 'Machine Assigned', accessor: 'machineAssigned' },
+    { header: 'Plan Type', accessor: 'planType' },
+    { header: 'Paddy Variety', accessor: 'paddyVariety' },
+    { header: 'Planned Input MT', accessor: 'plannedInputQty' },
+    { header: 'Target Head Rice MT', accessor: 'targetHeadRice' },
+    { header: 'Target Broken MT', accessor: 'targetBrokenRice' },
+    { header: 'Target Bran MT', accessor: 'targetBran' },
+    { header: 'Target Husk MT', accessor: 'targetHusk' },
+    { header: 'Expected Recovery %', accessor: 'expectedRecovery' },
+    { header: 'Plant', accessor: 'plant' },
     { header: 'Shift', accessor: 'shift' },
-    { header: 'Planned By', accessor: 'plannedBy' }
+    { header: 'Machine', accessor: 'machineAllocated' },
+    { header: 'Supervisor', accessor: 'supervisor' },
+    { header: 'Planned By', accessor: 'plannedBy' },
+    { header: 'Status', accessor: 'status' }
   ];
 
   return (
@@ -117,64 +145,61 @@ export const ProductionPlanning = () => {
         <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label>Production Order No</Label>
-              <Input type="text" value={formData.productionOrderNo || ''} readOnly className="bg-slate-100" />
+              <Label>Production Plan No</Label>
+              <Input type="text" value={formData.planNo || ''} readOnly className="bg-slate-100" />
             </div>
             <div className="space-y-1.5">
               <Label>Plan Date</Label>
               <Input type="date" value={formData.planDate || ''} onChange={(e) => setFormData({...formData, planDate: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Paddy Grade Input</Label>
-              <Input type="text" value={formData.paddyGrade || ''} onChange={(e) => setFormData({...formData, paddyGrade: e.target.value})} />
+              <Label>Plan Type</Label>
+              <Select value={formData.planType || ''} onChange={(e) => setFormData({...formData, planType: e.target.value})}>
+                <option value="">Select Plan Type</option>
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+              </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Source Stock ID</Label>
-              <Input type="text" value={formData.sourceStockId || ''} onChange={(e) => setFormData({...formData, sourceStockId: e.target.value})} />
+              <Label>Production Requirement</Label>
+              <Input type="text" value={formData.productionRequirement || ''} onChange={(e) => setFormData({...formData, productionRequirement: e.target.value})} placeholder="Sales Order Ref" />
             </div>
             <div className="space-y-1.5">
-              <Label>Lot No</Label>
-              <Input type="text" value={formData.lotNo || ''} onChange={(e) => setFormData({...formData, lotNo: e.target.value})} />
+              <Label>Available Paddy Stock</Label>
+              <Input type="number" value={formData.availablePaddyStock || ''} onChange={(e) => setFormData({...formData, availablePaddyStock: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Batch No</Label>
-              <Input type="text" value={formData.batchNo || ''} onChange={(e) => setFormData({...formData, batchNo: e.target.value})} />
+              <Label>Paddy Variety / Grade</Label>
+              <Input type="text" value={formData.paddyVariety || ''} onChange={(e) => setFormData({...formData, paddyVariety: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Planned Input Quantity (MT)</Label>
+              <Label>Planned Input Quantity MT</Label>
               <Input type="number" value={formData.plannedInputQty || ''} onChange={(e) => setFormData({...formData, plannedInputQty: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Expected Output — Premium Rice (MT)</Label>
-              <Input type="number" value={formData.expectedPremiumRice || ''} onChange={(e) => setFormData({...formData, expectedPremiumRice: e.target.value})} />
+              <Label>Production Target — Head Rice MT</Label>
+              <Input type="number" value={formData.targetHeadRice || ''} onChange={(e) => setFormData({...formData, targetHeadRice: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Expected Output — Broken Rice (MT)</Label>
-              <Input type="number" value={formData.expectedBrokenRice || ''} onChange={(e) => setFormData({...formData, expectedBrokenRice: e.target.value})} />
+              <Label>Production Target — Broken Rice MT</Label>
+              <Input type="number" value={formData.targetBrokenRice || ''} onChange={(e) => setFormData({...formData, targetBrokenRice: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Expected Bran (MT)</Label>
-              <Input type="number" value={formData.expectedBran || ''} onChange={(e) => setFormData({...formData, expectedBran: e.target.value})} />
+              <Label>Production Target — Bran MT</Label>
+              <Input type="number" value={formData.targetBran || ''} onChange={(e) => setFormData({...formData, targetBran: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Expected Husk (MT)</Label>
-              <Input type="number" value={formData.expectedHusk || ''} onChange={(e) => setFormData({...formData, expectedHusk: e.target.value})} />
+              <Label>Production Target — Husk MT</Label>
+              <Input type="number" value={formData.targetHusk || ''} onChange={(e) => setFormData({...formData, targetHusk: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Expected Polish (MT)</Label>
-              <Input type="number" value={formData.expectedPolish || ''} onChange={(e) => setFormData({...formData, expectedPolish: e.target.value})} />
+              <Label>Expected Recovery %</Label>
+              <Input type="number" value={formData.expectedRecovery || ''} onChange={(e) => setFormData({...formData, expectedRecovery: e.target.value})} />
             </div>
             <div className="space-y-1.5">
-              <Label>Recovery % Target</Label>
-              <Input type="number" value={formData.recoveryTarget || ''} onChange={(e) => setFormData({...formData, recoveryTarget: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Machine Assigned</Label>
-              <Input type="text" value={formData.machineAssigned || ''} onChange={(e) => setFormData({...formData, machineAssigned: e.target.value})} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Operator Assigned</Label>
-              <Input type="text" value={formData.operatorAssigned || ''} onChange={(e) => setFormData({...formData, operatorAssigned: e.target.value})} />
+              <Label>Plant / Mill Unit</Label>
+              <Input type="text" value={formData.plant || ''} onChange={(e) => setFormData({...formData, plant: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Shift</Label>
@@ -186,12 +211,32 @@ export const ProductionPlanning = () => {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Production Date</Label>
-              <Input type="date" value={formData.productionDate || ''} onChange={(e) => setFormData({...formData, productionDate: e.target.value})} />
+              <Label>Shift Start Time</Label>
+              <Input type="time" value={formData.shiftStartTime || ''} onChange={(e) => setFormData({...formData, shiftStartTime: e.target.value})} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Shift End Time</Label>
+              <Input type="time" value={formData.shiftEndTime || ''} onChange={(e) => setFormData({...formData, shiftEndTime: e.target.value})} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Machine Allocated</Label>
+              <Input type="text" value={formData.machineAllocated || ''} onChange={(e) => setFormData({...formData, machineAllocated: e.target.value})} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Operator Allocated</Label>
+              <Input type="text" value={formData.operatorAllocated || ''} onChange={(e) => setFormData({...formData, operatorAllocated: e.target.value})} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Supervisor Name</Label>
+              <Input type="text" value={formData.supervisor || ''} onChange={(e) => setFormData({...formData, supervisor: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label>Planned By</Label>
               <Input type="text" value={formData.plannedBy || ''} onChange={(e) => setFormData({...formData, plannedBy: e.target.value})} />
+            </div>
+            <div className="space-y-1.5 col-span-2">
+              <Label>Remarks</Label>
+              <Input type="text" value={formData.remarks || ''} onChange={(e) => setFormData({...formData, remarks: e.target.value})} />
             </div>
           </div>
 
