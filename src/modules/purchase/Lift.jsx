@@ -16,14 +16,14 @@ const getVal = (item, keyStr) => {
 
 export const Lift = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v2')) || [];
 
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
 
-    const rawPending = JSON.parse(localStorage.getItem('purchase_7_history')) || [];
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
+    const rawPending = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
 
     const pending = resolveItems(rawPending);
     const history = resolveItems(rawHistory);
@@ -121,10 +121,10 @@ export const Lift = () => {
     };
     localStorage.setItem(`lift_data_${selectedItem.id}`, JSON.stringify(liftData));
 
-    // Save lift record to purchase_8_history for downstream stages
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
+    // Save lift record to purchase_v2_ for downstream stages
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
     rawHistory.push(liftRecord);
-    localStorage.setItem('purchase_8_history', JSON.stringify(rawHistory));
+    localStorage.setItem('purchase_v2_', JSON.stringify(rawHistory));
 
     setHistoryItems([...historyItems, liftRecord]);
 

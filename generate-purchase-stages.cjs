@@ -5,7 +5,7 @@ const stages = [
   {
     title: 'Purchase Requirement',
     file: 'PurchaseRequirement.jsx',
-    prev: null, next: '/source-selection', storageKey: 'purchase_1_history', readFrom: null,
+    prev: null, next: '/source-selection', storageKey: 'purchase_v2_', readFrom: null,
     pendingColumns: [],
     historyColumns: [
       ['Requirement No', 'requirementNo'], ['Date', 'requirementDate'], ['Purchase Type', 'purchaseType'],
@@ -38,7 +38,7 @@ const stages = [
   {
     title: 'Source Selection & Indent',
     file: 'SourceSelection.jsx',
-    prev: '/purchase-requirement', next: '/purchase-approval', storageKey: 'purchase_2_history', readFrom: 'purchase_1_history',
+    prev: '/purchase-requirement', next: '/purchase-approval', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Requirement No', 'requirementNo'], ['Date', 'requirementDate'], ['Purchase Type', 'purchaseType'],
       ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], ['Qty MT', 'govQtyMT|mktQtyMT'], ['Rate ₹/Qt', 'mspRate|budgetRate'],
@@ -84,7 +84,7 @@ const stages = [
   {
     title: 'Purchase Approval',
     file: 'PurchaseApproval.jsx',
-    prev: '/source-selection', next: '/po-do-entry', storageKey: 'purchase_3_history', readFrom: 'purchase_2_history',
+    prev: '/source-selection', next: '/po-do-entry', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Indent No', 'indentNo'], ['Indent Date', 'indentDate'], ['Purchase Type', 'purchaseType'],
       ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
@@ -116,7 +116,7 @@ const stages = [
   {
     title: 'Create PO / Government DO',
     file: 'CreatePODO.jsx',
-    prev: '/purchase-approval', next: '/arrange-logistics-purchase', storageKey: 'purchase_4_history', readFrom: 'purchase_3_history',
+    prev: '/purchase-approval', next: '/arrange-logistics-purchase', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Indent No', 'indentNo'], ['Approval ID', 'approvalId'], ['Purchase Type', 'purchaseType'], 
       ['Agency/Broker Name', 'agencyName|brokerName'], ['Paddy Grade', 'govPaddyGrade|mktPaddyGrade'], 
@@ -158,7 +158,7 @@ const stages = [
   {
     title: 'Arrange Logistics',
     file: 'ArrangeLogistics.jsx',
-    prev: '/po-do-entry', next: '/source-entry', storageKey: 'purchase_5_history', readFrom: 'purchase_4_history',
+    prev: '/po-do-entry', next: '/source-entry', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poNumber|doNumber|poDoNumber'], ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], 
       ['Vendor/Agency Name', 'vendorName|agencyName'], ['Paddy Grade', 'paddyGrade|govPaddyGrade|mktPaddyGrade'], 
@@ -197,7 +197,7 @@ const stages = [
   {
     title: 'Source Entry',
     file: 'SourceEntry.jsx',
-    prev: '/arrange-logistics-purchase', next: '/advance-payment', storageKey: 'purchase_6_history', readFrom: 'purchase_5_history',
+    prev: '/arrange-logistics-purchase', next: '/advance-payment', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['Logistics ID', 'logisticsId'], 
       ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], ['Paddy Grade', 'paddyGrade|govPaddyGrade|mktPaddyGrade'], 
@@ -236,7 +236,7 @@ const stages = [
   {
     title: 'Advance Payment',
     file: 'AdvancePayment.jsx',
-    prev: '/source-entry', next: '/lift', storageKey: 'purchase_7_history', readFrom: 'purchase_6_history',
+    prev: '/source-entry', next: '/lift', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['PO Entry ID', 'poEntryId'], 
       ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], ['Rate ₹/Qt', 'rate'], ['Qty MT', 'qtyMT']
@@ -273,7 +273,7 @@ const stages = [
   {
     title: 'Lift',
     file: 'Lift.jsx',
-    prev: '/advance-payment', next: '/weighment', storageKey: 'purchase_8_history', readFrom: 'purchase_7_history',
+    prev: '/advance-payment', next: '/weighment', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], ['PO Entry ID', 'poEntryId'], 
       ['Purchase Type', 'purchaseType'], ['Vendor/Agency', 'vendorName|agencyName'], ['Qty MT', 'qtyMT'], ['Advance Paid ₹', 'advanceAmount']
@@ -309,7 +309,7 @@ const stages = [
   {
     title: 'Weighment',
     file: 'Weighment.jsx',
-    prev: '/lift', next: '/material-receipt', storageKey: 'purchase_9_history', readFrom: 'purchase_8_history',
+    prev: '/lift', next: '/material-receipt', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], ['Indent No', 'indentNo'], 
       ['Vehicle Number', 'vehicleNumber'], ['Paddy Grade', 'paddyGrade|paddyGradeVerified'], ['No. of Bags', 'noOfBags'], 
@@ -342,7 +342,7 @@ const stages = [
   {
     title: 'Material Receipt',
     file: 'MaterialReceipt.jsx',
-    prev: '/weighment', next: '/laboratory-report', storageKey: 'purchase_10_history', readFrom: 'purchase_9_history',
+    prev: '/weighment', next: '/laboratory-report', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Weigh Slip No', 'weighSlipNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Vehicle Number', 'vehicleNumber'], ['Net Weight Kg', 'netWeight'], 
@@ -380,7 +380,7 @@ const stages = [
   {
     title: 'Laboratory Report',
     file: 'LaboratoryReport.jsx',
-    prev: '/material-receipt', next: '/accounts-verification', storageKey: 'purchase_11_history', readFrom: 'purchase_10_history',
+    prev: '/material-receipt', next: '/accounts-verification', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['GRN No', 'grnNo'], ['Lift ID', 'liftId'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Lot No', 'lotNo'], ['Net Weight Kg', 'netWeight|receivedQty'], 
@@ -416,7 +416,7 @@ const stages = [
   {
     title: 'Accounts Verification',
     file: 'AccountsVerification.jsx',
-    prev: '/laboratory-report', next: '/full-kitting', storageKey: 'purchase_12_history', readFrom: 'purchase_11_history',
+    prev: '/laboratory-report', next: '/full-kitting', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Lab Report ID', 'labReportId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
@@ -459,7 +459,7 @@ const stages = [
   {
     title: 'Full Kitting',
     file: 'FullKitting.jsx',
-    prev: '/accounts-verification', next: '/purchase-closure', storageKey: 'purchase_13_history', readFrom: 'purchase_12_history',
+    prev: '/accounts-verification', next: '/purchase-closure', storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['AV ID', 'accountsVerificationId'], ['GRN No', 'grnNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Purchase Type', 'purchaseType'], ['Vendor/Agency Name', 'vendorName|agencyName'], 
@@ -499,7 +499,7 @@ const stages = [
   {
     title: 'Purchase Closure',
     file: 'PurchaseClosure.jsx',
-    prev: '/full-kitting', next: null, storageKey: 'purchase_14_history', readFrom: 'purchase_13_history',
+    prev: '/full-kitting', next: null, storageKey: 'purchase_v2_', readFrom: 'purchase_v2_',
     pendingColumns: [
       ['Action', ''], ['Lift No', 'liftNo'], ['Pending Lift MT', 'remainingAfterLiftMT'], ['Full Kitting ID', 'fullKittingId'], ['Challan No', 'challanNo'], ['PO/DO Number', 'poDoNumber|poNumber|doNumber'], 
       ['Indent No', 'indentNo'], ['Agency/Vendor Name', 'agencyName|vendorName'], ['Net Weight Kg', 'netWeight'], 
@@ -557,7 +557,7 @@ const getVal = (item, keyStr) => {
 
 export const ${stage.file.replace('.jsx', '')} = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v2')) || [];
     
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
@@ -565,7 +565,7 @@ export const ${stage.file.replace('.jsx', '')} = () => {
 
     ${isStage1 ? `
     // Dummy Data seeding across all stages using Normalized Storage to save quota
-    let rawHistory = JSON.parse(localStorage.getItem('purchase_1_history'));
+    let rawHistory = JSON.parse(localStorage.getItem('purchase_v2_'));
     
     if (!rawHistory || rawHistory.length === 0) {
       const dummyDataArray = [];
@@ -597,7 +597,7 @@ export const ${stage.file.replace('.jsx', '')} = () => {
       }
       
       // Store full objects ONCE to save memory limit
-      localStorage.setItem('purchase_master', JSON.stringify(dummyDataArray));
+      localStorage.setItem('purchase_master_v2', JSON.stringify(dummyDataArray));
       
       // Inject only IDs into all stages via mathematical slices
       for(let i=1; i<=14; i++) {
