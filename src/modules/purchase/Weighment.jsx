@@ -17,15 +17,15 @@ const getVal = (item, keyStr) => {
 
 export const Weighment = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v2')) || [];
     
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
     };
 
     
-    const rawPending = JSON.parse(localStorage.getItem('purchase_8_history')) || [];
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_9_history')) || [];
+    const rawPending = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
     
     const pending = resolveItems(rawPending);
     const history = resolveItems(rawHistory);
@@ -56,9 +56,9 @@ export const Weighment = () => {
     if (!newItem.id) newItem.id = Date.now();
     
     // Save new item directly to raw history array
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_9_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
     rawHistory.push(newItem);
-    localStorage.setItem('purchase_9_history', JSON.stringify(rawHistory));
+    localStorage.setItem('purchase_v2_', JSON.stringify(rawHistory));
     
     setHistoryItems([...historyItems, newItem]);
 
