@@ -17,7 +17,7 @@ const getVal = (item, keyStr) => {
 
 export const PurchaseRequirement = () => {
   const getInitialData = () => {
-    let masterData = JSON.parse(localStorage.getItem('purchase_master')) || [];
+    let masterData = JSON.parse(localStorage.getItem('purchase_master_v2')) || [];
     
     const resolveItems = (rawArray) => {
       return rawArray.map(item => typeof item === 'number' ? masterData.find(m => m.id === item) : item).filter(Boolean);
@@ -25,7 +25,7 @@ export const PurchaseRequirement = () => {
 
     
     // Dummy Data seeding across all stages using Normalized Storage to save quota
-    let rawHistory = JSON.parse(localStorage.getItem('purchase_1_history'));
+    let rawHistory = JSON.parse(localStorage.getItem('purchase_v2_'));
     
     if (!rawHistory || rawHistory.length === 0) {
       const dummyDataArray = [];
@@ -57,7 +57,7 @@ export const PurchaseRequirement = () => {
       }
       
       // Store full objects ONCE to save memory limit
-      localStorage.setItem('purchase_master', JSON.stringify(dummyDataArray));
+      localStorage.setItem('purchase_master_v2', JSON.stringify(dummyDataArray));
       
       // Inject only IDs into all stages via mathematical slices
       for(let i=1; i<=14; i++) {
@@ -92,9 +92,9 @@ export const PurchaseRequirement = () => {
     if (!newItem.id) newItem.id = Date.now();
     
     // Save new item directly to raw history array
-    const rawHistory = JSON.parse(localStorage.getItem('purchase_1_history')) || [];
+    const rawHistory = JSON.parse(localStorage.getItem('purchase_v2_')) || [];
     rawHistory.push(newItem);
-    localStorage.setItem('purchase_1_history', JSON.stringify(rawHistory));
+    localStorage.setItem('purchase_v2_', JSON.stringify(rawHistory));
     
     setHistoryItems([...historyItems, newItem]);
 
