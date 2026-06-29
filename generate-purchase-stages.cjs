@@ -569,8 +569,8 @@ export const ${stage.file.replace('.jsx', '')} = () => {
     
     if (!rawHistory || rawHistory.length === 0) {
       const dummyDataArray = [];
-      // Generate 280 items to satisfy 20 pending + 20 history across 14 stages
-      for (let i = 1; i <= 280; i++) {
+      // Generate 40 items (reduced from 280 to fix slow first-load)
+      for (let i = 1; i <= 40; i++) {
         const pReq = "PRQ-" + i.toString().padStart(4, '0');
         const pInd = "IND-" + i.toString().padStart(4, '0');
         const pPo = "PO-" + i.toString().padStart(4, '0');
@@ -601,12 +601,12 @@ export const ${stage.file.replace('.jsx', '')} = () => {
       
       // Inject only IDs into all stages via mathematical slices
       for(let i=1; i<=14; i++) {
-        const numItems = (15 - i) * 20; 
+        const numItems = Math.max(2, Math.round(40 * (15 - i) / 14)); 
         const ids = Array.from({length: numItems}, (_, index) => index + 1);
         localStorage.setItem(\`purchase_\${i}_history\`, JSON.stringify(ids));
       }
       
-      rawHistory = Array.from({length: 280}, (_, index) => index + 1);
+      rawHistory = Array.from({length: 40}, (_, index) => index + 1);
     }
     
     return { pending: [], history: resolveItems(rawHistory) };
