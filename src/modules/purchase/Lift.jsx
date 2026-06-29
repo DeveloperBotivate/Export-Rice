@@ -177,31 +177,6 @@ export const Lift = () => {
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
-          <Package className="text-amber-500" size={22} />
-          <div>
-            <p className="text-xs text-amber-600 font-medium uppercase tracking-wide">Pending Lift</p>
-            <p className="text-2xl font-bold text-amber-700">{items.length}</p>
-          </div>
-        </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
-          <TrendingUp className="text-blue-500" size={22} />
-          <div>
-            <p className="text-xs text-blue-600 font-medium uppercase tracking-wide">Lift Records</p>
-            <p className="text-2xl font-bold text-blue-700">{historyItems.length}</p>
-          </div>
-        </div>
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3">
-          <Package className="text-emerald-500" size={22} />
-          <div>
-            <p className="text-xs text-emerald-600 font-medium uppercase tracking-wide">Fully Lifted</p>
-            <p className="text-2xl font-bold text-emerald-700">{historyItems.filter(h => h.status === 'Fully Lifted').length}</p>
-          </div>
-        </div>
-      </div>
-
       <div className="border-b border-slate-200 mb-6">
         <div className="flex gap-6">
           <button
