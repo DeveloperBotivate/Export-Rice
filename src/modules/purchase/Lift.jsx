@@ -73,10 +73,20 @@ export const Lift = () => {
   // Get unique paddy grades from pending items
   const uniqueGrades = [...new Set(items.map(i => i.paddyGrade || 'Standard').filter(Boolean))];
 
-  const handleOpenGroupModal = () => {
+  const [preSelectedItemId, setPreSelectedItemId] = useState(null);
+
+  const handleOpenGroupModal = (grade = '', itemId = null) => {
     setIsGroupModalOpen(true);
-    setSelectedPaddyGrade('');
-    setModalItems([]);
+    setPreSelectedItemId(itemId);
+    
+    // If it's an event object (e.g. from a raw onClick without arrow function), grade might be an object
+    const finalGrade = typeof grade === 'string' ? grade : '';
+    setSelectedPaddyGrade(finalGrade);
+    
+    if (!finalGrade) {
+      setModalItems([]);
+    }
+
     setGroupedFormData({
       liftId: `LIFT-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
       liftDate: new Date().toISOString().slice(0, 16),
@@ -94,7 +104,7 @@ export const Lift = () => {
         const stats = getLiftStats(i);
         return {
           ...i,
-          _checked: false,
+          _checked: i.id === preSelectedItemId,
           _liftQtyMT: '', // User will input this
           _stats: stats
         };
@@ -102,7 +112,7 @@ export const Lift = () => {
     } else {
       setModalItems([]);
     }
-  }, [selectedPaddyGrade, items]);
+  }, [selectedPaddyGrade, items, preSelectedItemId]);
 
   const handleModalItemChange = (index, field, value) => {
     const newItems = [...modalItems];
@@ -225,7 +235,7 @@ export const Lift = () => {
           <h1 className="text-2xl font-bold text-slate-800">Lift (Grouped)</h1>
           <p className="text-slate-500">Manage paddy lifting — batch multiple PO/DOs by Paddy Grade</p>
         </div>
-        <Button onClick={handleOpenGroupModal} className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm flex items-center gap-2">
+        <Button onClick={() => handleOpenGroupModal()} className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Create Lift
         </Button>
@@ -269,6 +279,7 @@ export const Lift = () => {
               <tr>
                 {activeTab === 'pending' ? (
                   <>
+                    <th className="px-6 py-4 font-bold">Action</th>
                     <th className="px-6 py-4 font-bold">PO/DO Number</th>
                     <th className="px-6 py-4 font-bold">Vendor / Agency</th>
                     <th className="px-6 py-4 font-bold">Paddy Grade</th>
@@ -300,6 +311,14 @@ export const Lift = () => {
                     const stats = getLiftStats(item);
                     return (
                       <tr key={index} className={getRowClass(item.purchaseType)}>
+                        <td className="px-6 py-4">
+                          <Button 
+                            onClick={() => handleOpenGroupModal(item.paddyGrade || 'Standard', item.id)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-3 py-1.5 text-xs rounded-md shadow-sm font-medium"
+                          >
+                            Lift
+                          </Button>
+                        </td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'poNumber|poDoNumber|doNumber')}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vendorName|agencyName|supplierName')}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{item.paddyGrade || 'Standard'}</td>
@@ -319,7 +338,7 @@ export const Lift = () => {
                     );
                   })}
                   {filteredPending.length === 0 && (
-                    <tr><td colSpan="8" className="px-6 py-12 text-center text-slate-500">No pending lift records found</td></tr>
+                    <tr><td colSpan="9" className="px-6 py-12 text-center text-slate-500">No pending lift records found</td></tr>
                   )}
                 </>
               )}
