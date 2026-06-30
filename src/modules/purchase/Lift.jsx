@@ -78,11 +78,11 @@ export const Lift = () => {
   const handleOpenGroupModal = (grade = '', itemId = null) => {
     setIsGroupModalOpen(true);
     setPreSelectedItemId(itemId);
-    
+
     // If it's an event object (e.g. from a raw onClick without arrow function), grade might be an object
     const finalGrade = typeof grade === 'string' ? grade : '';
     setSelectedPaddyGrade(finalGrade);
-    
+
     if (!finalGrade) {
       setModalItems([]);
     }
@@ -144,7 +144,7 @@ export const Lift = () => {
     selected.forEach(i => {
       const liftQty = parseFloat(i._liftQtyMT);
       totalGroupLiftQty += liftQty;
-      
+
       const newTotalLifted = i._stats.totalLifted + liftQty;
       const newRemaining = Math.max(0, parseFloat(i.qtyMT || 0) - newTotalLifted);
       const newLiftNo = i._stats.liftCount + 1;
@@ -235,10 +235,6 @@ export const Lift = () => {
           <h1 className="text-2xl font-bold text-slate-800">Lift (Grouped)</h1>
           <p className="text-slate-500">Manage paddy lifting — batch multiple PO/DOs by Paddy Grade</p>
         </div>
-        <Button onClick={() => handleOpenGroupModal()} className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          Create Lift
-        </Button>
       </div>
 
       <div className="border-b border-slate-200 mb-6">
@@ -312,7 +308,7 @@ export const Lift = () => {
                     return (
                       <tr key={index} className={getRowClass(item.purchaseType)}>
                         <td className="px-6 py-4">
-                          <Button 
+                          <Button
                             onClick={() => handleOpenGroupModal(item.paddyGrade || 'Standard', item.id)}
                             className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-3 py-1.5 text-xs rounded-md shadow-sm font-medium"
                           >
@@ -356,7 +352,7 @@ export const Lift = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 font-bold text-slate-800">{getVal(item, 'liftId')}</td>
-                        <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftDate')?.substring(0,10)}</td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'liftDate')?.substring(0, 10)}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{item.paddyGrade || '-'}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'vehicleNumber')}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{getVal(item, 'driverName')}</td>
@@ -415,8 +411,8 @@ export const Lift = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Select Paddy Grade to Filter</Label>
-              <Select 
-                value={selectedPaddyGrade} 
+              <Select
+                value={selectedPaddyGrade}
                 onChange={(e) => setSelectedPaddyGrade(e.target.value)}
                 className="w-full mt-1.5 bg-white border-slate-300"
               >
@@ -432,7 +428,7 @@ export const Lift = () => {
             </div>
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Lift Date</Label>
-              <Input type="datetime-local" value={groupedFormData.liftDate} onChange={(e) => setGroupedFormData({...groupedFormData, liftDate: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
+              <Input type="datetime-local" value={groupedFormData.liftDate} onChange={(e) => setGroupedFormData({ ...groupedFormData, liftDate: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
           </div>
 
@@ -460,8 +456,8 @@ export const Lift = () => {
                     {modalItems.map((mi, idx) => (
                       <tr key={idx} className={mi._checked ? 'bg-blue-50/30' : ''}>
                         <td className="px-4 py-3 text-center">
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             checked={mi._checked}
                             onChange={(e) => handleModalItemChange(idx, '_checked', e.target.checked)}
                             className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer"
@@ -474,8 +470,8 @@ export const Lift = () => {
                         <td className="px-4 py-3 text-emerald-600">{mi._stats.totalLifted}</td>
                         <td className="px-4 py-3 text-amber-600 font-bold">{mi._stats.remaining}</td>
                         <td className="px-4 py-3">
-                          <Input 
-                            type="number" 
+                          <Input
+                            type="number"
                             min="0"
                             max={mi._stats.remaining}
                             disabled={!mi._checked}
@@ -499,19 +495,19 @@ export const Lift = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Vehicle Number</Label>
-              <Input type="text" value={groupedFormData.vehicleNumber} onChange={(e) => setGroupedFormData({...groupedFormData, vehicleNumber: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
+              <Input type="text" value={groupedFormData.vehicleNumber} onChange={(e) => setGroupedFormData({ ...groupedFormData, vehicleNumber: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Driver Name</Label>
-              <Input type="text" value={groupedFormData.driverName} onChange={(e) => setGroupedFormData({...groupedFormData, driverName: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
+              <Input type="text" value={groupedFormData.driverName} onChange={(e) => setGroupedFormData({ ...groupedFormData, driverName: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
             <div className="space-y-1">
               <Label className="text-sm font-medium text-slate-700">Supervisor</Label>
-              <Input type="text" value={groupedFormData.supervisor} onChange={(e) => setGroupedFormData({...groupedFormData, supervisor: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" />
+              <Input type="text" value={groupedFormData.supervisor} onChange={(e) => setGroupedFormData({ ...groupedFormData, supervisor: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300" />
             </div>
             <div className="space-y-1 md:col-span-3">
               <Label className="text-sm font-medium text-slate-700">Remarks</Label>
-              <Input type="text" value={groupedFormData.remarks} onChange={(e) => setGroupedFormData({...groupedFormData, remarks: e.target.value})} className="w-full mt-1.5 bg-white border-slate-300" placeholder="Any additional notes..." />
+              <Input type="text" value={groupedFormData.remarks} onChange={(e) => setGroupedFormData({ ...groupedFormData, remarks: e.target.value })} className="w-full mt-1.5 bg-white border-slate-300" placeholder="Any additional notes..." />
             </div>
           </div>
 
